@@ -288,7 +288,7 @@ CK_DLL_TICK(encode2_tickf)
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // invoke our tick function; store in the magical out variable
-    if (e_obj) *out = e_obj->tickf(in, *out, 4);
+    if (e_obj) *out = e_obj->tickf(in, *out, 9);
 
     // yes
     return TRUE;
@@ -296,6 +296,150 @@ CK_DLL_TICK(encode2_tickf)
 
 // example implementation for getter
 CK_DLL_MFUN(encode2_getOrder)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // call getParam() and set the return value
+    RETURN->v_float = e_obj->getOrder();
+}
+//===============================================================
+// implementation for the default constructor
+CK_DLL_CTOR(encode3_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Encode2* e_obj = new Encode2(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = (t_CKINT)e_obj;
+}
+
+
+// implementation for the destructor
+CK_DLL_DTOR(encode3_dtor)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(e_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICK(encode3_tickf)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (e_obj) *out = e_obj->tickf(in, *out, 16);
+
+    // yes
+    return TRUE;
+}
+
+// example implementation for getter
+CK_DLL_MFUN(encode3_getOrder)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // call getParam() and set the return value
+    RETURN->v_float = e_obj->getOrder();
+}
+//===============================================================
+// implementation for the default constructor
+CK_DLL_CTOR(encode4_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Encode2* e_obj = new Encode2(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = (t_CKINT)e_obj;
+}
+
+
+// implementation for the destructor
+CK_DLL_DTOR(encode4_dtor)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(e_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICK(encode4_tickf)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (e_obj) *out = e_obj->tickf(in, *out, 25);
+
+    // yes
+    return TRUE;
+}
+
+// example implementation for getter
+CK_DLL_MFUN(encode4_getOrder)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // call getParam() and set the return value
+    RETURN->v_float = e_obj->getOrder();
+}
+//===============================================================
+// implementation for the default constructor
+CK_DLL_CTOR(encode5_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Encode2* e_obj = new Encode2(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = (t_CKINT)e_obj;
+}
+
+
+// implementation for the destructor
+CK_DLL_DTOR(encode5_dtor)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(e_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICK(encode5_tickf)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (e_obj) *out = e_obj->tickf(in, *out, 36);
+
+    // yes
+    return TRUE;
+}
+
+// example implementation for getter
+CK_DLL_MFUN(encode5_getOrder)
 {
     // get our c++ class pointer
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
