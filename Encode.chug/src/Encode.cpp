@@ -73,17 +73,33 @@ public:
         channel_matrix = new t_CKFLOAT[outCount];
     }
     // for chugins extending UGen
-    SAMPLE tickf( SAMPLE in, SAMPLE out, t_CKINT channel)
+    SAMPLE tickf(SAMPLE* in, SAMPLE* out, t_CKINT nframes)
     {
-        // default: this passes whatever input is patched into chugin
-        out = in * channel_matrix[channel];
-        return out;
+        // clear, set out samp for all outs
+        memset(out, 0, sizeof(SAMPLE) * outCount * nframes);
+        for (int i = 0; i < outCount; i++)
+        {
+            out[i] = in[0] * channel_matrix[i];
+        }
     }
+    
     // get parameter example
     t_CKINT getOrder() { return order; }
-    // recieve and set coefficients
 
-protected:
+    // recieve and set coefficients
+    void setCoordinates(Chuck_ArrayFloat* coordinates, CK_DL_API API)
+    {
+        Chuck_ArrayFloat* coordinates;
+        int size = (API->object->array_float_size(coordinates));
+        if (size >= outCount)
+        {
+            for (int i; i < outCount; i++)
+            {
+                channel_matrix[i] = API->object->array_float_get_idx(coordinates, i);
+            }
+        }
+    }
+
     // instance data
     t_CKFLOAT* channel_matrix;
     t_CKINT outCount = 0;
@@ -179,7 +195,7 @@ CK_DLL_QUERY( Encode )
     // register the destructor
     QUERY->add_dtor( QUERY, encode1_dtor );
     // for UGens only: add tick function
-    QUERY->add_ugen_func( QUERY, encode1_tickf, NULL, 1, 1 );
+    QUERY->add_ugen_funcf( QUERY, encode1_tickf, NULL, 1, 4 );
     // example of adding getter method
     QUERY->add_mfun(QUERY, encode1_getOrder, "float", "order");
     //===============================================================
@@ -189,9 +205,39 @@ CK_DLL_QUERY( Encode )
     // register the destructor
     QUERY->add_dtor(QUERY, encode2_dtor);
     // for UGens only: add tick function
-    QUERY->add_ugen_func(QUERY, encode2_tickf, NULL, 1, 1);
+    QUERY->add_ugen_funcf(QUERY, encode2_tickf, NULL, 1, 9);
     // example of adding getter method
     QUERY->add_mfun(QUERY, encode2_getOrder, "float", "order");
+    //===============================================================
+    // // register default constructor
+    QUERY->add_ctor(QUERY, encode3_ctor);
+    QUERY->add_arg(QUERY, "int", "order");
+    // register the destructor
+    QUERY->add_dtor(QUERY, encode3_dtor);
+    // for UGens only: add tick function
+    QUERY->add_ugen_funcf(QUERY, encode3_tickf, NULL, 1, 16);
+    // example of adding getter method
+    QUERY->add_mfun(QUERY, encode3_getOrder, "float", "order");
+    //===============================================================
+    // // register default constructor
+    QUERY->add_ctor(QUERY, encode4_ctor);
+    QUERY->add_arg(QUERY, "int", "order");
+    // register the destructor
+    QUERY->add_dtor(QUERY, encode4_dtor);
+    // for UGens only: add tick function
+    QUERY->add_ugen_funcf(QUERY, encode4_tickf, NULL, 1, 25);
+    // example of adding getter method
+    QUERY->add_mfun(QUERY, encode4_getOrder, "float", "order");
+    //===============================================================
+    // // register default constructor
+    QUERY->add_ctor(QUERY, encode5_ctor);
+    QUERY->add_arg(QUERY, "int", "order");
+    // register the destructor
+    QUERY->add_dtor(QUERY, encode5_dtor);
+    // for UGens only: add tick function
+    QUERY->add_ugen_funcf(QUERY, encode5_tickf, NULL, 1, 36);
+    // example of adding getter method
+    QUERY->add_mfun(QUERY, encode5_getOrder, "float", "order");
     //===============================================================
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
@@ -233,13 +279,13 @@ CK_DLL_DTOR(encode1_dtor)
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK(encode1_tickf)
+CK_DLL_TICKF(encode1_tickf)
 {
     // get our c++ class pointer
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // invoke our tick function; store in the magical out variable
-    if (e_obj) *out = e_obj->tickf(in, *out, 4);
+    if (e_obj) *out = e_obj->tickf(in, out, 4);
 
     // yes
     return TRUE;
@@ -282,13 +328,13 @@ CK_DLL_DTOR( encode2_dtor )
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK(encode2_tickf)
+CK_DLL_TICKF(encode2_tickf)
 {
     // get our c++ class pointer
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // invoke our tick function; store in the magical out variable
-    if (e_obj) *out = e_obj->tickf(in, *out, 9);
+    if (e_obj) *out = e_obj->tickf(in, out, 9);
 
     // yes
     return TRUE;
@@ -330,13 +376,13 @@ CK_DLL_DTOR(encode3_dtor)
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK(encode3_tickf)
+CK_DLL_TICKF(encode3_tickf)
 {
     // get our c++ class pointer
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // invoke our tick function; store in the magical out variable
-    if (e_obj) *out = e_obj->tickf(in, *out, 16);
+    if (e_obj) *out = e_obj->tickf(in, out, 16);
 
     // yes
     return TRUE;
@@ -378,13 +424,13 @@ CK_DLL_DTOR(encode4_dtor)
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK(encode4_tickf)
+CK_DLL_TICKF(encode4_tickf)
 {
     // get our c++ class pointer
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // invoke our tick function; store in the magical out variable
-    if (e_obj) *out = e_obj->tickf(in, *out, 25);
+    if (e_obj) *out = e_obj->tickf(in, out, 25);
 
     // yes
     return TRUE;
@@ -426,13 +472,13 @@ CK_DLL_DTOR(encode5_dtor)
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK(encode5_tickf)
+CK_DLL_TICKF(encode5_tickf)
 {
     // get our c++ class pointer
     EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // invoke our tick function; store in the magical out variable
-    if (e_obj) *out = e_obj->tickf(in, *out, 36);
+    if (e_obj) *out = e_obj->tickf(in, out, 36);
 
     // yes
     return TRUE;
