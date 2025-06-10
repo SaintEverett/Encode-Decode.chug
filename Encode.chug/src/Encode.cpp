@@ -67,8 +67,13 @@ t_CKINT encode_data_offset = 0;
 class EncodeN
 {
 public:
+    EncodeN(t_CKFLOAT fs, t_CKINT channels)
+    {
+        outCount = channels;
+        channel_matrix = new t_CKFLOAT[outCount];
+    }
     // for chugins extending UGen
-    SAMPLE tick( SAMPLE in, SAMPLE out, t_CKINT channel)
+    SAMPLE tickf( SAMPLE in, SAMPLE out, t_CKINT channel)
     {
         // default: this passes whatever input is patched into chugin
         out = in * channel_matrix[channel];
@@ -76,60 +81,57 @@ public:
     }
     // get parameter example
     t_CKINT getOrder() { return order; }
+    // recieve and set coefficients
 
+protected:
     // instance data
-    t_CKFLOAT * channel_matrix;
-    t_CKINT channelCount = 0;
-    t_CKINT order = 0;
+    t_CKFLOAT* channel_matrix;
+    t_CKINT outCount = 0;
+    t_CKINT order = 0; 
 };
 
 class Encode1 : public EncodeN
 {
 public:
-    Encode1(t_CKFLOAT fs)
+    Encode1(t_CKFLOAT fs) : EncodeN(fs,4)
     {
-        EncodeN::channelCount = 4;
-        channel_matrix = new t_CKFLOAT[channelCount];
+        ;
     }   
 };
 
 class Encode2 : public EncodeN
 {
 public:
-    Encode2(t_CKFLOAT fs)
+    Encode2(t_CKFLOAT fs) : EncodeN(fs,9)
     {
-        EncodeN::channelCount = 9;
-        channel_matrix = new t_CKFLOAT[channelCount];
+        ;
     }
 };
 
 class Encode3 : public EncodeN
 {
 public:
-    Encode3(t_CKFLOAT fs)
+    Encode3(t_CKFLOAT fs) : EncodeN(fs,16)
     {
-        EncodeN::channelCount = 16;
-        channel_matrix = new t_CKFLOAT[channelCount];
+        ;
     }
 };
 
 class Encode4 : public EncodeN
 {
 public:
-    Encode4(t_CKFLOAT fs)
+    Encode4(t_CKFLOAT fs) : EncodeN(fs,25)
     {
-        EncodeN::channelCount = 25;
-        channel_matrix = new t_CKFLOAT[channelCount];
+        ;
     }
 };
 
 class Encode5 : public EncodeN
 {
 public:
-    Encode5(t_CKFLOAT fs)
+    Encode5(t_CKFLOAT fs) : EncodeN(fs,36)
     {
-        EncodeN::channelCount = 36;
-        channel_matrix = new t_CKFLOAT[channelCount];
+        ;
     }
 };
 
@@ -169,32 +171,28 @@ CK_DLL_QUERY( Encode )
     // NOTE to create a non-UGen class, change the second argument
     // to extend a different ChucK class (e.g., "Object")
     QUERY->begin_class( QUERY, "Encode", "UGen" );
-    /*
-    // register default constructor
-    QUERY->add_ctor( QUERY, encode_ctor );
-    QUERY->add_arg(QUERY, "int", "order");
-    // NOTE constructors can be overloaded like any other functions,
-    // each overloaded constructor begins with `QUERY->add_ctor()`
-    // followed by a sequence of `QUERY->add_arg()`
-    */
-    // register the destructor (probably no need to change)
-    QUERY->add_dtor( QUERY, encode_dtor );
-
-    // for UGens only: add tick function
-    // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_func( QUERY, encode_tick, NULL, 1, 1 );
-    // NOTE: if this is to be a UGen with more than 1 channel,
-    // e.g., a multichannel UGen -- will need to use add_ugen_funcf()
-    // and declare a tickf function using CK_DLL_TICKF
-
-    // example of adding setter method
-    // QUERY->add_mfun( QUERY, encode_setOrder, "int", "param" );
-    // example of adding argument to the above method
-    // QUERY->add_arg( QUERY, "float", "arg" );
-
-    // example of adding getter method
-    QUERY->add_mfun( QUERY, encode_getOrder, "float", "order" );
     
+    //===============================================================    
+    // register default constructor
+    QUERY->add_ctor( QUERY, encode1_ctor );
+    QUERY->add_arg(QUERY, "int", "order");
+    // register the destructor
+    QUERY->add_dtor( QUERY, encode1_dtor );
+    // for UGens only: add tick function
+    QUERY->add_ugen_func( QUERY, encode1_tickf, NULL, 1, 1 );
+    // example of adding getter method
+    QUERY->add_mfun(QUERY, encode1_getOrder, "float", "order");
+    //===============================================================
+    // register default constructor
+    QUERY->add_ctor(QUERY, encode2_ctor);
+    QUERY->add_arg(QUERY, "int", "order");
+    // register the destructor
+    QUERY->add_dtor(QUERY, encode2_dtor);
+    // for UGens only: add tick function
+    QUERY->add_ugen_func(QUERY, encode2_tickf, NULL, 1, 1);
+    // example of adding getter method
+    QUERY->add_mfun(QUERY, encode2_getOrder, "float", "order");
+    //===============================================================
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode_data_offset = QUERY->add_mvar( QUERY, "int", "@e_data", false );
@@ -209,23 +207,71 @@ CK_DLL_QUERY( Encode )
     return TRUE;
 }
 
-
+//===============================================================
 // implementation for the default constructor
-CK_DLL_CTOR( encode_ctor )
+CK_DLL_CTOR( encode1_ctor )
 {
     // get the offset where we'll store our internal c++ class pointer
     OBJ_MEMBER_INT( SELF, encode_data_offset ) = 0;
     
     // instantiate our internal c++ class representation
-    EncodeN * e_obj = new EncodeN( API->vm->srate(VM) );
+    Encode1 * e_obj = new Encode1( API->vm->srate(VM) );
     
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT( SELF, encode_data_offset ) = (t_CKINT)e_obj;
 }
 
+// implementation for the destructor
+CK_DLL_DTOR(encode1_dtor)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(e_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICK(encode1_tickf)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (e_obj) *out = e_obj->tickf(in, *out, 4);
+
+    // yes
+    return TRUE;
+}
+
+// example implementation for getter
+CK_DLL_MFUN(encode1_getOrder)
+{
+    // get our c++ class pointer
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
+    // call getParam() and set the return value
+    RETURN->v_float = e_obj->getOrder();
+}
+
+//===============================================================
+// implementation for the default constructor
+CK_DLL_CTOR(encode2_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Encode2* e_obj = new Encode2(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, encode_data_offset) = (t_CKINT)e_obj;
+}
+
 
 // implementation for the destructor
-CK_DLL_DTOR( encode_dtor )
+CK_DLL_DTOR( encode2_dtor )
 {
     // get our c++ class pointer
     EncodeN * e_obj = (EncodeN*)OBJ_MEMBER_INT( SELF, encode_data_offset );
@@ -235,43 +281,26 @@ CK_DLL_DTOR( encode_dtor )
     OBJ_MEMBER_INT( SELF, encode_data_offset ) = 0;
 }
 
-
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK( encode_tick )
+CK_DLL_TICK(encode2_tickf)
 {
     // get our c++ class pointer
-    EncodeN * e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
- 
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
+
     // invoke our tick function; store in the magical out variable
-    if( e_obj ) *out = e_obj->tick( in );
+    if (e_obj) *out = e_obj->tickf(in, *out, 4);
 
     // yes
     return TRUE;
 }
 
-/*
-// example implementation for setter
-CK_DLL_MFUN( encode_setParam )
-{
-    // get our c++ class pointer
-    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT( SELF, encode_data_offset );
-
-    // get next argument
-    // NOTE argument type must match what is specified above in CK_DLL_QUERY
-    // NOTE this advances the ARGS pointer, so save in variable for re-use
-    t_CKFLOAT arg1 = GET_NEXT_FLOAT( ARGS );
-    
-    // call setParam() and set the return value
-    RETURN->v_float = e_obj->setParam( arg1 );
-}
-*/
-
 // example implementation for getter
-CK_DLL_MFUN(encode_getOrder)
+CK_DLL_MFUN(encode2_getOrder)
 {
     // get our c++ class pointer
-    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT( SELF, encode_data_offset );
+    EncodeN* e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
 
     // call getParam() and set the return value
     RETURN->v_float = e_obj->getOrder();
 }
+//===============================================================
