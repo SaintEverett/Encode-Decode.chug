@@ -243,7 +243,7 @@ CK_DLL_TICK( encode_tick )
     EncodeN * e_obj = (EncodeN*)OBJ_MEMBER_INT(SELF, encode_data_offset);
  
     // invoke our tick function; store in the magical out variable
-    if( e_obj ) *out = e_obj->tick( in );
+    if( e_obj ) *out = e_obj->tick( in, *out, 1 );
 
     // yes
     return TRUE;
