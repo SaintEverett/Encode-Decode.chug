@@ -63,7 +63,7 @@ public:
             out[i] = (in[0] * channel_matrix[i]);
         }
     }
-    void gains(Chuck_ArrayFloat *coord, CK_DL_API API)
+    void set_coefficients(Chuck_ArrayFloat *coord, CK_DL_API API)
     {
         int size = (API->object->array_float_size(coord));
         for (int i = 0;i < size;i++)
@@ -71,11 +71,12 @@ public:
             channel_matrix[i] = (API->object->array_float_get_idx(coord,i));
         }
     }
-    t_CKFLOAT geti(int index)
+    t_CKFLOAT get_i(int index)
     {
         if (index <= channel_count) { return channel_matrix[index]; }
         else NULL;
     }
+    t_CKUINT get_chans() { return channel_count; }
 protected:
     // instance data
     t_CKFLOAT *channel_matrix;
@@ -133,30 +134,40 @@ CK_DLL_CTOR(encode1_ctor);
 CK_DLL_DTOR(encode1_dtor);
 CK_DLL_TICKF(encode1_tickf);
 CK_DLL_MFUN(encode1_geti);
+CK_DLL_MFUN(encode1_coefficients);
+CK_DLL_MFUN(encode1_get_chans);
 t_CKINT encode1_data_offset = 0;
 // Encode2
 CK_DLL_CTOR(encode2_ctor);
 CK_DLL_DTOR(encode2_dtor);
 CK_DLL_TICKF(encode2_tickf);
 CK_DLL_MFUN(encode2_geti);
+CK_DLL_MFUN(encode2_coefficients);
+CK_DLL_MFUN(encode2_get_chans);
 t_CKINT encode2_data_offset = 0;
 // Encode3
 CK_DLL_CTOR(encode3_ctor);
 CK_DLL_DTOR(encode3_dtor);
 CK_DLL_TICKF(encode3_tickf);
 CK_DLL_MFUN(encode3_geti);
+CK_DLL_MFUN(encode3_coefficients);
+CK_DLL_MFUN(encode3_get_chans);
 t_CKINT encode3_data_offset = 0;
 // Encode4
 CK_DLL_CTOR(encode4_ctor);
 CK_DLL_DTOR(encode4_dtor);
 CK_DLL_TICKF(encode4_tickf);
 CK_DLL_MFUN(encode4_geti);
+CK_DLL_MFUN(encode4_coefficients);
+CK_DLL_MFUN(encode4_get_chans);
 t_CKINT encode4_data_offset = 0;
 // Encode5
 CK_DLL_CTOR(encode5_ctor);
 CK_DLL_DTOR(encode5_dtor);
 CK_DLL_TICKF(encode5_tickf);
 CK_DLL_MFUN(encode5_geti);
+CK_DLL_MFUN(encode5_coefficients);
+CK_DLL_MFUN(encode5_get_chans);
 t_CKINT encode5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
@@ -200,6 +211,10 @@ CK_DLL_QUERY( Encode )
     QUERY->add_dtor( QUERY, encode1_dtor );
     QUERY->add_ugen_funcf( QUERY, encode1_tickf, NULL, 1, 4 );  
     QUERY->add_mfun(QUERY, encode1_geti, "float", "geti");
+    QUERY->add_arg(QUERY, "int", "index");
+    QUERY->add_mfun(QUERY, encode1_coefficients, "void", "coeff");
+    QUERY->add_arg(QUERY, "float[]", "coordinates");
+    QUERY->add_mfun(QUERY, encode1_get_chans, "int", "chans");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode1_data_offset = QUERY->add_mvar( QUERY, "int", "@e_data", false );
@@ -217,6 +232,10 @@ CK_DLL_QUERY( Encode )
     QUERY->add_dtor(QUERY, encode2_dtor);
     QUERY->add_ugen_funcf(QUERY, encode2_tickf, NULL, 1, 9);
     QUERY->add_mfun(QUERY, encode2_geti, "float", "geti");
+    QUERY->add_arg(QUERY, "int", "index");
+    QUERY->add_mfun(QUERY, encode2_coefficients, "void", "coeff");
+    QUERY->add_arg(QUERY, "float[]", "coordinates");
+    QUERY->add_mfun(QUERY, encode2_get_chans, "int", "chans");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode2_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -234,6 +253,10 @@ CK_DLL_QUERY( Encode )
     QUERY->add_dtor(QUERY, encode3_dtor);
     QUERY->add_ugen_funcf(QUERY, encode3_tickf, NULL, 1, 16);
     QUERY->add_mfun(QUERY, encode3_geti, "float", "geti");
+    QUERY->add_arg(QUERY, "int", "index");
+    QUERY->add_mfun(QUERY, encode3_coefficients, "void", "coeff");
+    QUERY->add_arg(QUERY, "float[]", "coordinates");
+    QUERY->add_mfun(QUERY, encode3_get_chans, "int", "chans");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode3_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -251,6 +274,10 @@ CK_DLL_QUERY( Encode )
     QUERY->add_dtor(QUERY, encode4_dtor);
     QUERY->add_ugen_funcf(QUERY, encode4_tickf, NULL, 1, 25);
     QUERY->add_mfun(QUERY, encode4_geti, "float", "geti");
+    QUERY->add_arg(QUERY, "int", "index");
+    QUERY->add_mfun(QUERY, encode4_coefficients, "void", "coeff");
+    QUERY->add_arg(QUERY, "float[]", "coordinates");
+    QUERY->add_mfun(QUERY, encode4_get_chans, "int", "chans");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode4_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -268,6 +295,10 @@ CK_DLL_QUERY( Encode )
     QUERY->add_dtor(QUERY, encode5_dtor);
     QUERY->add_ugen_funcf(QUERY, encode5_tickf, NULL, 1, 36);
     QUERY->add_mfun(QUERY, encode5_geti, "float", "geti");
+    QUERY->add_arg(QUERY, "int", "index");
+    QUERY->add_mfun(QUERY, encode5_coefficients, "void", "coeff");
+    QUERY->add_arg(QUERY, "float[]", "coordinates");
+    QUERY->add_mfun(QUERY, encode5_get_chans, "int", "chans");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode5_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -318,7 +349,7 @@ CK_DLL_MFUN( encode1_geti )
     int index = GET_NEXT_INT(ARGS);
     // get our c++ class pointer
     Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
-    if (encode_obj) { RETURN->v_float = encode_obj->geti(index); }
+    if (encode_obj) { RETURN->v_float = encode_obj->get_i(index); }
 }
 
 // implementation for tick function (relevant only for UGens)
@@ -334,6 +365,21 @@ CK_DLL_TICKF( encode1_tickf )
     }
     // yes
     return TRUE;
+}
+
+CK_DLL_MFUN(encode1_coefficients)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    Chuck_ArrayFloat* coefficients = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    encode_obj->set_coefficients(coefficients, API);
+}
+
+CK_DLL_MFUN(encode1_get_chans)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    RETURN->v_int = encode_obj->get_chans();
 }
 
 //=================================================//
@@ -387,7 +433,22 @@ CK_DLL_MFUN(encode2_geti)
     int index = GET_NEXT_INT(ARGS);
     // get our c++ class pointer
     Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
-    if (encode_obj) { RETURN->v_float = encode_obj->geti(index); }
+    if (encode_obj) { RETURN->v_float = encode_obj->get_i(index); }
+}
+
+CK_DLL_MFUN(encode2_coefficients)
+{
+    // get our c++ class pointer
+    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+    Chuck_ArrayFloat* coefficients = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    encode_obj->set_coefficients(coefficients, API);
+}
+
+CK_DLL_MFUN(encode2_get_chans)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    RETURN->v_int = encode_obj->get_chans();
 }
 
 //=================================================//
@@ -441,7 +502,22 @@ CK_DLL_MFUN(encode3_geti)
     int index = GET_NEXT_INT(ARGS);
     // get our c++ class pointer
     Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
-    if (encode_obj) { RETURN->v_float = encode_obj->geti(index); }
+    if (encode_obj) { RETURN->v_float = encode_obj->get_i(index); }
+}
+
+CK_DLL_MFUN(encode3_coefficients)
+{
+    // get our c++ class pointer
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+    Chuck_ArrayFloat* coefficients = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    encode_obj->set_coefficients(coefficients, API);
+}
+
+CK_DLL_MFUN(encode3_get_chans)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    RETURN->v_int = encode_obj->get_chans();
 }
 
 //=================================================//
@@ -495,7 +571,22 @@ CK_DLL_MFUN(encode4_geti)
     int index = GET_NEXT_INT(ARGS);
     // get our c++ class pointer
     Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
-    if (encode_obj) { RETURN->v_float = encode_obj->geti(index); }
+    if (encode_obj) { RETURN->v_float = encode_obj->get_i(index); }
+}
+
+CK_DLL_MFUN(encode4_coefficients)
+{
+    // get our c++ class pointer
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+    Chuck_ArrayFloat* coefficients = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    encode_obj->set_coefficients(coefficients, API);
+}
+
+CK_DLL_MFUN(encode4_get_chans)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    RETURN->v_int = encode_obj->get_chans();
 }
 
 //=================================================//
@@ -549,7 +640,22 @@ CK_DLL_MFUN(encode5_geti)
     int index = GET_NEXT_INT(ARGS);
     // get our c++ class pointer
     Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
-    if (encode_obj) { RETURN->v_float = encode_obj->geti(index); }
+    if (encode_obj) { RETURN->v_float = encode_obj->get_i(index); }
+}
+
+CK_DLL_MFUN(encode5_coefficients)
+{
+    // get our c++ class pointer
+    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+    Chuck_ArrayFloat* coefficients = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    encode_obj->set_coefficients(coefficients, API);
+}
+
+CK_DLL_MFUN(encode5_get_chans)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    RETURN->v_int = encode_obj->get_chans();
 }
 
 //=================================================//
