@@ -15,3 +15,5 @@ for(int i; i < encode.chans(); i++) {
    
     osc => encode.chan(i) => sum[i] => dac.chan(i%1);
 }
+
+encode => dac;

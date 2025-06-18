@@ -300,7 +300,7 @@ CK_DLL_QUERY( Encode )
     QUERY->add_arg(QUERY, "float[]", "coordinates");
     QUERY->add_mfun(QUERY, encode5_get_chans, "int", "chans");
     // this reserves a variable in the ChucK internal class to store 
-    // referene to the c++ class we defined above
+    // reference to the c++ class we defined above
     encode5_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
     QUERY->end_class(QUERY);
 
@@ -447,7 +447,7 @@ CK_DLL_MFUN(encode2_coefficients)
 CK_DLL_MFUN(encode2_get_chans)
 {
     // get our c++ class pointer
-    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    Encode2* encode_obj = (Encode2)OBJ_MEMBER_INT(SELF, encode1_data_offset);
     RETURN->v_int = encode_obj->get_chans();
 }
 
@@ -516,7 +516,7 @@ CK_DLL_MFUN(encode3_coefficients)
 CK_DLL_MFUN(encode3_get_chans)
 {
     // get our c++ class pointer
-    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
     RETURN->v_int = encode_obj->get_chans();
 }
 
@@ -585,7 +585,7 @@ CK_DLL_MFUN(encode4_coefficients)
 CK_DLL_MFUN(encode4_get_chans)
 {
     // get our c++ class pointer
-    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
     RETURN->v_int = encode_obj->get_chans();
 }
 
@@ -654,7 +654,7 @@ CK_DLL_MFUN(encode5_coefficients)
 CK_DLL_MFUN(encode5_get_chans)
 {
     // get our c++ class pointer
-    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
     RETURN->v_int = encode_obj->get_chans();
 }
 
