@@ -40,7 +40,8 @@
 
 // general includes
 #include <iostream>
-
+#include <limits.h>
+#include <math.h>
 
 // declaration of chugin constructor
 CK_DLL_CTOR( decode_ctor );
@@ -52,7 +53,7 @@ CK_DLL_MFUN( decode_setParam );
 CK_DLL_MFUN( decode_getParam );
 
 // for chugins extending UGen, this is mono synthesis function for 1 sample
-CK_DLL_TICK( decode_tick );
+CK_DLL_TICK( decode_tickf );
 
 // this is a special offset reserved for chugin internal data
 t_CKINT decode_data_offset = 0;
@@ -62,17 +63,17 @@ t_CKINT decode_data_offset = 0;
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
 //-----------------------------------------------------------------------------
-class Decode
+class DecodeN 
 {
 public:
     // constructor
-    Decode( t_CKFLOAT fs )
+    DecodeN( t_CKFLOAT fs, t_CKUINT in_chans, t_CKUINT out_chans )
     {
         m_param = 0;
     }
 
     // for chugins extending UGen
-    SAMPLE tick( SAMPLE in )
+    SAMPLE tickf( SAMPLE* in, SAMPLE* out, int nframes )
     {
         // default: this passes whatever input is patched into chugin
         return in;
@@ -88,9 +89,11 @@ public:
     // get parameter example
     t_CKFLOAT getParam() { return m_param; }
     
-private:
+protected:
     // instance data
-    t_CKFLOAT m_param;
+    t_CKFLOAT* out_matrix;
+    t_CKUINT in_count = 0;
+    t_CKUINT out_count = 0;
 };
 
 
@@ -142,7 +145,7 @@ CK_DLL_QUERY( Decode )
 
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_func( QUERY, decode_tick, NULL, 1, 1 );
+    QUERY->add_ugen_func( QUERY, decode_tickf, NULL, 1, 1 );
     // NOTE: if this is to be a UGen with more than 1 channel,
     // e.g., a multichannel UGen -- will need to use add_ugen_funcf()
     // and declare a tickf function using CK_DLL_TICKF
@@ -197,13 +200,13 @@ CK_DLL_DTOR( decode_dtor )
 
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK( decode_tick )
+CK_DLL_TICKF( decode_tickf )
 {
     // get our c++ class pointer
     Decode * d_obj = (Decode *)OBJ_MEMBER_INT(SELF, decode_data_offset);
  
     // invoke our tick function; store in the magical out variable
-    if( d_obj ) *out = d_obj->tick( in );
+    if( d_obj ) *out = d_obj->tickf( in, out, nframes );
 
     // yes
     return TRUE;
