@@ -31,19 +31,41 @@
 #include <math.h>
 
 // declaration of chugin constructor
-CK_DLL_CTOR( decode_ctor );
-// declaration of chugin desctructor
-CK_DLL_DTOR( decode_dtor );
-
-// example of getter/setter
-CK_DLL_MFUN( decode_setParam );
-CK_DLL_MFUN( decode_getParam );
-
-// for chugins extending UGen, this is mono synthesis function for 1 sample
-CK_DLL_TICK( decode_tickf );
-
+CK_DLL_CTOR(decode1_ctor);
+CK_DLL_DTOR(decode1_dtor);
+CK_DLL_TICKF(decode1_tickf);
+CK_DLL_MFUN(decode1_set_coefficients);
 // this is a special offset reserved for chugin internal data
 t_CKINT decode1_data_offset = 0;
+
+CK_DLL_CTOR(decode2_ctor);
+CK_DLL_DTOR(decode2_dtor);
+CK_DLL_TICKF(decode2_tickf);
+CK_DLL_MFUN(decode2_set_coefficients);
+// this is a special offset reserved for chugin internal data
+t_CKINT decode2_data_offset = 0;
+
+CK_DLL_CTOR(decode3_ctor);
+CK_DLL_DTOR(decode3_dtor);
+CK_DLL_TICKF(decode3_tickf);
+CK_DLL_MFUN(decode3_set_coefficients);
+// this is a special offset reserved for chugin internal data
+t_CKINT decode3_data_offset = 0;
+
+CK_DLL_CTOR(decode4_ctor);
+CK_DLL_DTOR(decode4_dtor);
+CK_DLL_TICKF(decode4_tickf);
+CK_DLL_MFUN(decode4_set_coefficients);
+// this is a special offset reserved for chugin internal data
+t_CKINT decode4_data_offset = 0;
+
+CK_DLL_CTOR(decode5_ctor);
+CK_DLL_DTOR(decode5_dtor);
+CK_DLL_TICKF(decode5_tickf);
+CK_DLL_MFUN(decode5_set_coefficients);
+// this is a special offset reserved for chugin internal data
+t_CKINT decode5_data_offset = 0;
+
 
 
 //-----------------------------------------------------------------------------
@@ -54,10 +76,10 @@ class DecodeN
 {                                                                                         
 public:                                                                                   
     // constructor                                                                        
-    DecodeN( t_CKFLOAT fs, t_CKUINT in_chans, t_CKUINT out_chans ) :
-    in_count(in_chans), out_count(out_chans)
-    {                                                                                     
-        ;                                                                      
+    DecodeN(t_CKFLOAT fs, t_CKUINT num_in, t_CKUINT num_out) :
+    in_count(num_in), out_count(num_out)
+    {
+        ;
     }
 
     // for chugins extending UGen
@@ -72,10 +94,6 @@ public:
          ;
     }
 
-
-    // get parameter example
-    t_CKFLOAT getParam() { return m_param; }
-    
 protected:
     // instance data
     t_CKUINT in_count = 0;
@@ -86,12 +104,47 @@ protected:
 class Decode1 : public DecodeN
 {
 public:
-    Decode1(t_CKFLOAT fs, t_CKUINT num_out_chan) : DecodeN(fs, 4, num_out_chan)
+    Decode1(t_CKFLOAT fs) : DecodeN(fs, 4, 4)
     {
         ;
     }
 };
 
+class Decode2 : public DecodeN
+{
+public:
+    Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
+    {
+        ;
+    }
+};
+
+class Decode3 : public DecodeN
+{
+public:
+    Decode3(t_CKFLOAT fs) : DecodeN(fs, 16, 16)
+    {
+        ;
+    }
+};
+
+class Decode4 : public DecodeN
+{
+public:
+    Decode4(t_CKFLOAT fs) : DecodeN(fs, 25, 25)
+    {
+        ;
+    }
+};
+
+class Decode5 : public DecodeN
+{
+public:
+    Decode5(t_CKFLOAT fs) : DecodeN(fs, 36, 36)
+    {
+        ;
+    }
+};
 //-----------------------------------------------------------------------------
 // info function: ChucK calls this when loading/probing the chugin
 // NOTE: please customize these info fields below; they will be used for
@@ -121,84 +174,106 @@ CK_DLL_QUERY( Decode )
     // generally, don't change this...
     QUERY->setname( QUERY, "Decode" );
 
-    // ------------------------------------------------------------------------
-    // begin class definition(s); will be compiled, verified,
-    // and added to the chuck host type system for use
-    // ------------------------------------------------------------------------
-    // NOTE to create a non-UGen class, change the second argument
-    // to extend a different ChucK class (e.g., "Object")
-    QUERY->begin_class( QUERY, "Decode", "UGen" );
-
+    // decode1
+    QUERY->begin_class( QUERY, "Decode1", "UGen" );
     // register default constructor
-    QUERY->add_ctor( QUERY, decode_ctor );
-    // NOTE constructors can be overloaded like any other functions,
-    // each overloaded constructor begins with `QUERY->add_ctor()`
-    // followed by a sequence of `QUERY->add_arg()`
-
-    // register the destructor (probably no need to change)
-    QUERY->add_dtor( QUERY, decode_dtor );
-
+    QUERY->add_ctor( QUERY, decode1_ctor );
+    QUERY->add_dtor( QUERY, decode1_dtor );
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_func( QUERY, decode_tickf, NULL, 1, 1 );
-    // NOTE: if this is to be a UGen with more than 1 channel,
-    // e.g., a multichannel UGen -- will need to use add_ugen_funcf()
-    // and declare a tickf function using CK_DLL_TICKF
-
-    // example of adding setter method
-    QUERY->add_mfun( QUERY, decode_setParam, "float", "param" );
-    // example of adding argument to the above method
-    QUERY->add_arg( QUERY, "float", "arg" );
-
-    // example of adding getter method
-    QUERY->add_mfun( QUERY, decode_getParam, "float", "param" );
-    
+    QUERY->add_ugen_funcf( QUERY, decode1_tickf, NULL, 4, 1 );
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
-    decode_data_offset = QUERY->add_mvar( QUERY, "int", "@d_data", false );
-
-    // ------------------------------------------------------------------------
-    // end the class definition
-    // IMPORTANT: this MUST be called to each class definition!
-    // ------------------------------------------------------------------------
+    decode1_data_offset = QUERY->add_mvar( QUERY, "int", "@d_data", false );
     QUERY->end_class( QUERY );
+
+    // decode2
+    QUERY->begin_class(QUERY, "Decode2", "UGen");
+    // register default constructor
+    QUERY->add_ctor(QUERY, decode2_ctor);
+    QUERY->add_dtor(QUERY, decode2_dtor);
+    // for UGens only: add tick function
+    // NOTE a non-UGen class should remove or comment out this next line
+    QUERY->add_ugen_funcf(QUERY, decode2_tickf, NULL, 4, 1);
+    // this reserves a variable in the ChucK internal class to store 
+    // referene to the c++ class we defined above
+    decode2_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
+    QUERY->end_class(QUERY);
+
+    // decode3
+    QUERY->begin_class(QUERY, "Decode3", "UGen");
+    // register default constructor
+    QUERY->add_ctor(QUERY, decode3_ctor);
+    QUERY->add_dtor(QUERY, decode3_dtor);
+    // for UGens only: add tick function
+    // NOTE a non-UGen class should remove or comment out this next line
+    QUERY->add_ugen_funcf(QUERY, decode3_tickf, NULL, 4, 1);
+    // this reserves a variable in the ChucK internal class to store 
+    // referene to the c++ class we defined above
+    decode3_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
+    QUERY->end_class(QUERY);
+
+    // decode4
+    QUERY->begin_class(QUERY, "Decode4", "UGen");
+    // register default constructor
+    QUERY->add_ctor(QUERY, decode4_ctor);
+    QUERY->add_dtor(QUERY, decode4_dtor);
+    // for UGens only: add tick function
+    // NOTE a non-UGen class should remove or comment out this next line
+    QUERY->add_ugen_funcf(QUERY, decode4_tickf, NULL, 4, 1);
+    // this reserves a variable in the ChucK internal class to store 
+    // referene to the c++ class we defined above
+    decode4_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
+    QUERY->end_class(QUERY);
+
+    // decode5
+    QUERY->begin_class(QUERY, "Decode5", "UGen");
+    // register default constructor
+    QUERY->add_ctor(QUERY, decode5_ctor);
+    QUERY->add_dtor(QUERY, decode5_dtor);
+    // for UGens only: add tick function
+    // NOTE a non-UGen class should remove or comment out this next line
+    QUERY->add_ugen_funcf(QUERY, decode5_tickf, NULL, 4, 1);
+    // this reserves a variable in the ChucK internal class to store 
+    // referene to the c++ class we defined above
+    decode5_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
+    QUERY->end_class(QUERY);
+
 
     // wasn't that a breeze?
     return TRUE;
 }
 
-
+//===============================================================================
 // implementation for the default constructor
-CK_DLL_CTOR( decode_ctor )
+CK_DLL_CTOR( decode1_ctor )
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT( SELF, decode_data_offset ) = 0;
+    OBJ_MEMBER_INT( SELF, decode1_data_offset ) = 0;
     
     // instantiate our internal c++ class representation
-    Decode * d_obj = new Decode( API->vm->srate(VM) );
+    Decode1 * d_obj = new Decode1( API->vm->srate(VM) );
     
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT( SELF, decode_data_offset ) = (t_CKINT)d_obj;
+    OBJ_MEMBER_INT( SELF, decode1_data_offset ) = (t_CKINT)d_obj;
 }
 
-
 // implementation for the destructor
-CK_DLL_DTOR( decode_dtor )
+CK_DLL_DTOR( decode1_dtor )
 {
     // get our c++ class pointer
-    Decode * d_obj = (Decode *)OBJ_MEMBER_INT( SELF, decode_data_offset );
+    Decode1 * d_obj = (Decode1 *)OBJ_MEMBER_INT( SELF, decode1_data_offset );
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE( d_obj );
     // set the data field to 0
-    OBJ_MEMBER_INT( SELF, decode_data_offset ) = 0;
+    OBJ_MEMBER_INT( SELF, decode1_data_offset ) = 0;
 }
 
-
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICKF( decode_tickf )
+CK_DLL_TICKF( decode1_tickf )
 {
     // get our c++ class pointer
-    Decode * d_obj = (Decode *)OBJ_MEMBER_INT(SELF, decode_data_offset);
+    Decode1 * d_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
  
     // invoke our tick function; store in the magical out variable
     if( d_obj ) *out = d_obj->tickf( in, out, nframes );
@@ -207,10 +282,186 @@ CK_DLL_TICKF( decode_tickf )
     return TRUE;
 }
 
-
-CK_DLL_MFUN(set_coefficients)
+CK_DLL_MFUN(decode1_set_coefficients)
 {
     Decode1* decode_obj = (Decode1*)OBJ_MEMBER_UINT(SELF, decode1_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
     decode_obj->set_coefficients(API, *speak_coefficients);
 }
+//===============================================================================
+// implementation for the default constructor
+CK_DLL_CTOR(decode2_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, decode2_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Decode2* d_obj = new Decode2(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, decode2_data_offset) = (t_CKINT)d_obj;
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(decode2_dtor)
+{
+    // get our c++ class pointer
+    Decode2* d_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(d_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, decode2_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(decode2_tickf)
+{
+    // get our c++ class pointer
+    Decode2* d_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (d_obj) *out = d_obj->tickf(in, out, nframes);
+
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(decode2_set_coefficients)
+{
+    Decode2* decode_obj = (Decode2*)OBJ_MEMBER_UINT(SELF, decode2_data_offset);
+    Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
+    decode_obj->set_coefficients(API, *speak_coefficients);
+}
+//===============================================================================
+// implementation for the default constructor
+CK_DLL_CTOR(decode3_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, decode3_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Decode3* d_obj = new Decode3(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, decode3_data_offset) = (t_CKINT)d_obj;
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(decode3_dtor)
+{
+    // get our c++ class pointer
+    Decode3* d_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(d_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, decode3_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(decode3_tickf)
+{
+    // get our c++ class pointer
+    Decode3* d_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (d_obj) *out = d_obj->tickf(in, out, nframes);
+
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(decode3_set_coefficients)
+{
+    Decode3* decode_obj = (Decode3*)OBJ_MEMBER_UINT(SELF, decode3_data_offset);
+    Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
+    decode_obj->set_coefficients(API, *speak_coefficients);
+}
+//===============================================================================
+// implementation for the default constructor
+CK_DLL_CTOR(decode4_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, decode4_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Decode4* d_obj = new Decode4(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, decode4_data_offset) = (t_CKINT)d_obj;
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(decode4_dtor)
+{
+    // get our c++ class pointer
+    Decode4* d_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(d_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, decode4_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(decode4_tickf)
+{
+    // get our c++ class pointer
+    Decode4* d_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (d_obj) *out = d_obj->tickf(in, out, nframes);
+
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(decode4_set_coefficients)
+{
+    Decode4* decode_obj = (Decode4*)OBJ_MEMBER_UINT(SELF, decode4_data_offset);
+    Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
+    decode_obj->set_coefficients(API, *speak_coefficients);
+}
+//===============================================================================
+// implementation for the default constructor
+CK_DLL_CTOR(decode5_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, decode5_data_offset) = 0;
+
+    // instantiate our internal c++ class representation
+    Decode5* d_obj = new Decode5(API->vm->srate(VM));
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, decode5_data_offset) = (t_CKINT)d_obj;
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(decode5_dtor)
+{
+    // get our c++ class pointer
+    Decode5* d_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(d_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, decode5_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(decode5_tickf)
+{
+    // get our c++ class pointer
+    Decode5* d_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+
+    // invoke our tick function; store in the magical out variable
+    if (d_obj) *out = d_obj->tickf(in, out, nframes);
+
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(decode5_set_coefficients)
+{
+    Decode5* decode_obj = (Decode5*)OBJ_MEMBER_UINT(SELF, decode5_data_offset);
+    Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
+    decode_obj->set_coefficients(API, *speak_coefficients);
+}
+//===============================================================================
