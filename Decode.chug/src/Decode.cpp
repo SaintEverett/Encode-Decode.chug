@@ -10,33 +10,20 @@
 //      2. remove or commment out the line containing QUERY->add_ugen_func()
 //      3. that's it; the rest is no different for UGens/non-UGens
 //-----------------------------------------------------------------------------
-// NOTE once you have built this into a chugin (Decode.chug), here are a few
-//      helpful tools for testing / probing / verifying your new chugin!
-//
-// chuginate also generated a Decode-test.ck boilerplate ChucK program
-//      to help test your chugin (see Decode-test.ck for more instructions)
-//
-// run `chuck --chugin-probe` to probe what chugins would be loaded, and
-//      from where in the chugin search paths
-//
-// run `chuck -v3 --loop` to see what chugins are actually loaded at runtime,
-//      with more info and error reporting than with --chugin-probe
-//
-// other helpful chugin-related flags include:
-//      --chugin:<filename>
-//      --chugin-path:(path) / -G(path)
-//      --chugin-load:{on/off}
-//
-// for more information on command-line options:
-//      https://chuck.stanford.edu/doc/program/options.html
-// for more information on chugins:
-//      https://chuck.stanford.edu/extend/
+// 
+//    matrix multi
+// 
+//                                           [w_0, w_1, w_2, w_3]
+//                                           [y_0, y_1, y_2, y_3]
+//         [x_in, y_in, x_in, z_in]     *    [x_0, x_1, x_2, x_3]  =  [w_out, y_out, x_out, z_out]
+//                                           [z_0, z_1, z_2, z_3]
+// 
 //-----------------------------------------------------------------------------
 // happy chucking & chugging!
 //-----------------------------------------------------------------------------
 
 // include chugin header
-#include "chugin.h"
+#include "chugin.h"                             
 
 // general includes
 #include <iostream>
@@ -56,20 +43,21 @@ CK_DLL_MFUN( decode_getParam );
 CK_DLL_TICK( decode_tickf );
 
 // this is a special offset reserved for chugin internal data
-t_CKINT decode_data_offset = 0;
+t_CKINT decode1_data_offset = 0;
 
 
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
 //-----------------------------------------------------------------------------
-class DecodeN 
-{
-public:
-    // constructor
-    DecodeN( t_CKFLOAT fs, t_CKUINT in_chans, t_CKUINT out_chans )
-    {
-        m_param = 0;
+class DecodeN                                                                             
+{                                                                                         
+public:                                                                                   
+    // constructor                                                                        
+    DecodeN( t_CKFLOAT fs, t_CKUINT in_chans, t_CKUINT out_chans ) :
+    in_count(in_chans), out_count(out_chans)
+    {                                                                                     
+        ;                                                                      
     }
 
     // for chugins extending UGen
@@ -78,24 +66,31 @@ public:
         // default: this passes whatever input is patched into chugin
         return in;
     }
-
-    // set parameter example
-    t_CKFLOAT setParam( t_CKFLOAT p )
+    
+    void set_coefficients(CK_DL_API API, Chuck_ArrayInt& multi_coefficients)
     {
-        m_param = p;
-        return p;
+         ;
     }
+
 
     // get parameter example
     t_CKFLOAT getParam() { return m_param; }
     
 protected:
     // instance data
-    t_CKFLOAT* out_matrix;
     t_CKUINT in_count = 0;
     t_CKUINT out_count = 0;
 };
 
+
+class Decode1 : public DecodeN
+{
+public:
+    Decode1(t_CKFLOAT fs, t_CKUINT num_out_chan) : DecodeN(fs, 4, num_out_chan)
+    {
+        ;
+    }
+};
 
 //-----------------------------------------------------------------------------
 // info function: ChucK calls this when loading/probing the chugin
@@ -213,28 +208,9 @@ CK_DLL_TICKF( decode_tickf )
 }
 
 
-// example implementation for setter
-CK_DLL_MFUN( decode_setParam )
+CK_DLL_MFUN(set_coefficients)
 {
-    // get our c++ class pointer
-    Decode * d_obj = (Decode *)OBJ_MEMBER_INT( SELF, decode_data_offset );
-
-    // get next argument
-    // NOTE argument type must match what is specified above in CK_DLL_QUERY
-    // NOTE this advances the ARGS pointer, so save in variable for re-use
-    t_CKFLOAT arg1 = GET_NEXT_FLOAT( ARGS );
-    
-    // call setParam() and set the return value
-    RETURN->v_float = d_obj->setParam( arg1 );
-}
-
-
-// example implementation for getter
-CK_DLL_MFUN(decode_getParam)
-{
-    // get our c++ class pointer
-    Decode * d_obj = (Decode *)OBJ_MEMBER_INT( SELF, decode_data_offset );
-
-    // call getParam() and set the return value
-    RETURN->v_float = d_obj->getParam();
+    Decode1* decode_obj = (Decode1*)OBJ_MEMBER_UINT(SELF, decode1_data_offset);
+    Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
+    decode_obj->set_coefficients(API, *speak_coefficients);
 }
