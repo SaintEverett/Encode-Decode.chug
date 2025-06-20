@@ -15,7 +15,7 @@
 // 
 //                                           [w_0, w_1, w_2, w_3]
 //                                           [y_0, y_1, y_2, y_3]
-//         [x_in, y_in, x_in, z_in]     *    [x_0, x_1, x_2, x_3]  =  [w_out, y_out, x_out, z_out]
+//         [w_in, y_in, x_in, z_in]     *    [x_0, x_1, x_2, x_3]  =  [w_out, y_out, x_out, z_out]
 //                                           [z_0, z_1, z_2, z_3]
 // 
 //-----------------------------------------------------------------------------
@@ -79,14 +79,14 @@ public:
     DecodeN(t_CKFLOAT fs, t_CKUINT num_in, t_CKUINT num_out) :
     in_count(num_in), out_count(num_out)
     {
-        ;
+        coefficient_matrix = new double[num_in][num_out]; // ???
     }
 
     // for chugins extending UGen
     SAMPLE tickf( SAMPLE* in, SAMPLE* out, int nframes )
     {
         // default: this passes whatever input is patched into chugin
-        return in;
+        return in[0];
     }
     
     void set_coefficients(CK_DL_API API, Chuck_ArrayInt& multi_coefficients)
@@ -96,6 +96,7 @@ public:
 
 protected:
     // instance data
+    t_CKFLOAT * coefficient_matrix;
     t_CKUINT in_count = 0;
     t_CKUINT out_count = 0;
 };
@@ -181,7 +182,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_dtor( QUERY, decode1_dtor );
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_funcf( QUERY, decode1_tickf, NULL, 4, 1 );
+    QUERY->add_ugen_funcf( QUERY, decode1_tickf, NULL, 4, 4 );
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     decode1_data_offset = QUERY->add_mvar( QUERY, "int", "@d_data", false );
@@ -194,7 +195,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_dtor(QUERY, decode2_dtor);
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_funcf(QUERY, decode2_tickf, NULL, 4, 1);
+    QUERY->add_ugen_funcf(QUERY, decode2_tickf, NULL, 9, 9);
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     decode2_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
@@ -207,7 +208,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_dtor(QUERY, decode3_dtor);
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_funcf(QUERY, decode3_tickf, NULL, 4, 1);
+    QUERY->add_ugen_funcf(QUERY, decode3_tickf, NULL, 16, 16);
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     decode3_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
@@ -220,7 +221,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_dtor(QUERY, decode4_dtor);
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_funcf(QUERY, decode4_tickf, NULL, 4, 1);
+    QUERY->add_ugen_funcf(QUERY, decode4_tickf, NULL, 25, 25);
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     decode4_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
@@ -233,7 +234,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_dtor(QUERY, decode5_dtor);
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_funcf(QUERY, decode5_tickf, NULL, 4, 1);
+    QUERY->add_ugen_funcf(QUERY, decode5_tickf, NULL, 36, 36);
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     decode5_data_offset = QUERY->add_mvar(QUERY, "int", "@d_data", false);
