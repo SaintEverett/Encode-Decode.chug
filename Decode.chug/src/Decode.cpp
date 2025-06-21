@@ -96,7 +96,7 @@ public:
 
 protected:
     // instance data
-    t_CKFLOAT * coefficient_matrix;
+    t_CKFLOAT** coefficient_matrix[1][1];
     const t_CKUINT in_count = 0;
     const t_CKUINT out_count = 0;
 };
@@ -107,7 +107,7 @@ class Decode1 : public DecodeN
 public:
     Decode1(t_CKFLOAT fs) : DecodeN(fs, 4, 4)
     {
-        coefficient_matrix = new double[in_count][out_count];
+        t_CKFLOAT coefficient_matrix[4][4];
     }
 };
 
@@ -116,7 +116,7 @@ class Decode2 : public DecodeN
 public:
     Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
     {
-        ;
+        coefficient_matrix = new t_CKFLOAT[9][9];
     }
 };
 
