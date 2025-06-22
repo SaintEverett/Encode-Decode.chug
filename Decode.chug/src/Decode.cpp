@@ -27,6 +27,7 @@
 
 // general includes
 #include <iostream>
+#include <thread>
 #include <limits.h>
 #include <math.h>
 
@@ -66,8 +67,6 @@ CK_DLL_MFUN(decode5_set_coefficients);
 // this is a special offset reserved for chugin internal data
 t_CKINT decode5_data_offset = 0;
 
-
-
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
@@ -85,10 +84,19 @@ public:
     // for chugins extending UGen
     SAMPLE tickf( SAMPLE* in, SAMPLE* out, int nframes )
     {
+        std::thread signals[in_count];
         // default: this passes whatever input is patched into chugin
         return in[0];
     }
     
+    void multnsum(SAMPLE* in, SAMPLE* out, int id, int column)
+    {
+        for (int i = 0; i < in_count;i++)
+        {
+            out[id] += in[i] * coefficient_matrix[i][column];
+        }
+    }
+
     void set_coefficients(CK_DL_API API, Chuck_ArrayInt& multi_coefficients)
     {
          ;
@@ -96,9 +104,9 @@ public:
 
 protected:
     // instance data
-    t_CKFLOAT** coefficient_matrix[1][1];
-    const t_CKUINT in_count = 0;
-    const t_CKUINT out_count = 0;
+    t_CKFLOAT** coefficient_matrix;
+    t_CKUINT in_count = 0;
+    t_CKUINT out_count = 0;
 };
 
 
@@ -107,7 +115,7 @@ class Decode1 : public DecodeN
 public:
     Decode1(t_CKFLOAT fs) : DecodeN(fs, 4, 4)
     {
-        t_CKFLOAT coefficient_matrix[4][4];
+        t_CKFLOAT coefficient_matrix[4][4] = { 0 };
     }
 };
 
@@ -116,7 +124,7 @@ class Decode2 : public DecodeN
 public:
     Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
     {
-        coefficient_matrix = new t_CKFLOAT[9][9];
+        t_CKFLOAT coefficient_matrix[9][9] = { 0 };
     }
 };
 
@@ -125,7 +133,7 @@ class Decode3 : public DecodeN
 public:
     Decode3(t_CKFLOAT fs) : DecodeN(fs, 16, 16)
     {
-        ;
+        t_CKFLOAT coefficient_matrix[16][16] = { 0 };
     }
 };
 
@@ -134,7 +142,7 @@ class Decode4 : public DecodeN
 public:
     Decode4(t_CKFLOAT fs) : DecodeN(fs, 25, 25)
     {
-        ;
+        t_CKFLOAT coefficient_matrix[25][25] = { 0 };
     }
 };
 
@@ -143,7 +151,7 @@ class Decode5 : public DecodeN
 public:
     Decode5(t_CKFLOAT fs) : DecodeN(fs, 36, 36)
     {
-        ;
+        t_CKFLOAT coefficient_matrix[36][36] = { 0 };
     }
 };
 //-----------------------------------------------------------------------------
