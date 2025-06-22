@@ -67,6 +67,7 @@ CK_DLL_MFUN(decode5_set_coefficients);
 // this is a special offset reserved for chugin internal data
 t_CKINT decode5_data_offset = 0;
 
+
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
@@ -80,23 +81,16 @@ public:
     {
         ;
     }
-
-    // for chugins extending UGen
-    SAMPLE tickf( SAMPLE* in, SAMPLE* out, int nframes )
+    void multnsum(SAMPLE* in, SAMPLE* out)
     {
-        std::thread signals[in_count];
-        // default: this passes whatever input is patched into chugin
-        return in[0];
-    }
-    
-    void multnsum(SAMPLE* in, SAMPLE* out, int id, int column)
-    {
-        for (int i = 0; i < in_count;i++)
+        for (int j; j < in_count; j++)
         {
-            out[id] += in[i] * coefficient_matrix[i][column];
+            for (int i = 0; i < in_count;i++)
+            {
+                out[j] += in[i] * coefficient_matrix[i][j];
+            }
         }
     }
-
     void set_coefficients(CK_DL_API API, Chuck_ArrayInt& multi_coefficients)
     {
          ;
@@ -117,6 +111,14 @@ public:
     {
         t_CKFLOAT coefficient_matrix[4][4] = { 0 };
     }
+    
+    // for chugins extending UGen
+    SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
+    {
+        // default: this passes whatever input is patched into chugin
+        multnsum(in, out);
+        return in[0];
+    }
 };
 
 class Decode2 : public DecodeN
@@ -125,6 +127,13 @@ public:
     Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
     {
         t_CKFLOAT coefficient_matrix[9][9] = { 0 };
+    }
+    // for chugins extending UGen
+    SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
+    {
+        // default: this passes whatever input is patched into chugin
+        multnsum(in, out);
+        return in[0];
     }
 };
 
@@ -135,6 +144,13 @@ public:
     {
         t_CKFLOAT coefficient_matrix[16][16] = { 0 };
     }
+    // for chugins extending UGen
+    SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
+    {
+        // default: this passes whatever input is patched into chugin
+        multnsum(in, out);
+        return in[0];
+    }
 };
 
 class Decode4 : public DecodeN
@@ -144,6 +160,13 @@ public:
     {
         t_CKFLOAT coefficient_matrix[25][25] = { 0 };
     }
+    // for chugins extending UGen
+    SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
+    {
+        // default: this passes whatever input is patched into chugin
+        multnsum(in, out);
+        return in[0];
+    }
 };
 
 class Decode5 : public DecodeN
@@ -152,6 +175,13 @@ public:
     Decode5(t_CKFLOAT fs) : DecodeN(fs, 36, 36)
     {
         t_CKFLOAT coefficient_matrix[36][36] = { 0 };
+    }
+    // for chugins extending UGen
+    SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
+    {
+        // default: this passes whatever input is patched into chugin
+        multnsum(in, out);
+        return in[0];
     }
 };
 //-----------------------------------------------------------------------------
