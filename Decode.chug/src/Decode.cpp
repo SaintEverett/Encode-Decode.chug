@@ -91,9 +91,14 @@ public:
             }
         }
     }
-    void set_coefficients(CK_DL_API API, Chuck_ArrayInt& multi_coefficients)
+    void set_coefficients(CK_DL_API API, t_CKINT layer, Chuck_ArrayInt* coefficients)
     {
-         ;
+        Chuck_ArrayFloat* row = NULL;
+        int size = API->object->array_int_size(coefficients);
+        for (int i = 0;i < size;i++)
+        {
+            row
+        }
     }
 
 protected:
@@ -117,7 +122,6 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
-        return in[0];
     }
 };
 
@@ -133,7 +137,6 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
-        return in[0];
     }
 };
 
@@ -149,7 +152,6 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
-        return in[0];
     }
 };
 
@@ -165,7 +167,6 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
-        return in[0];
     }
 };
 
@@ -181,7 +182,6 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
-        return in[0];
     }
 };
 //-----------------------------------------------------------------------------
