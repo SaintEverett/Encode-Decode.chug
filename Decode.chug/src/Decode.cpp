@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 
 // include chugin header
-#include "chugin.h"                             
+#include "chugin.h"  
 
 // general includes
 #include <iostream>
@@ -77,13 +77,13 @@ class DecodeN
 public:                                                                                   
     // constructor                                                                        
     DecodeN(t_CKFLOAT fs, t_CKUINT num_in, t_CKUINT num_out) :
-    in_count(num_in), out_count(num_out)
+        in_count(num_in), out_count(num_out)
     {
-        ;
+        coefficient_matrix = 0;
     }
     void multnsum(SAMPLE* in, SAMPLE* out)
     {
-        for (int j; j < in_count; j++)
+        for (int j = 0; j < in_count; j++)
         {
             for (int i = 0; i < in_count;i++)
             {
@@ -91,13 +91,24 @@ public:
             }
         }
     }
-    void set_coefficients(CK_DL_API API, t_CKINT layer, Chuck_ArrayInt* coefficients)
+    void set_coefficients(CK_DL_API API, Chuck_ArrayInt* coefficients)
     {
-        Chuck_ArrayFloat* row = NULL;
-        int size = API->object->array_int_size(coefficients);
-        for (int i = 0;i < size;i++)
+        t_CKINT size_int = API->object->array_int_size(coefficients);
+        t_CKUINT m = API->object->array_int_get_idx(coefficients, 0);
+        Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)m;
+        t_CKINT size_float = API->object->array_float_size(row);
+        if( size_int >= in_count)
+        for (int i = 0; i < in_count; i++)
         {
-            row
+            m = API->object->array_int_get_idx(coefficients, i);
+            row = (Chuck_ArrayFloat*)m;
+            if (size_float >= in_count)
+            {
+                for (int j = 0; j < in_count; j++)
+                {
+                    API->object->array_float_get_idx(row, j);
+                }
+            }
         }
     }
 
@@ -122,6 +133,7 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
+        return TRUE;
     }
 };
 
@@ -137,6 +149,7 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
+        return TRUE;
     }
 };
 
@@ -152,6 +165,7 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
+        return TRUE;
     }
 };
 
@@ -167,6 +181,7 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
+        return TRUE;
     }
 };
 
@@ -182,6 +197,7 @@ public:
     {
         // default: this passes whatever input is patched into chugin
         multnsum(in, out);
+        return TRUE;
     }
 };
 //-----------------------------------------------------------------------------
@@ -216,8 +232,9 @@ CK_DLL_QUERY( Decode )
     // decode1
     QUERY->begin_class( QUERY, "Decode1", "UGen" );
     // register default constructor
-    QUERY->add_ctor( QUERY, decode1_ctor );
-    QUERY->add_dtor( QUERY, decode1_dtor );
+    QUERY->add_ctor(QUERY, decode1_ctor);
+    QUERY->add_dtor(QUERY, decode1_dtor);
+    QUERY->add_mfun(QUERY, decode1_set_coefficients, "void", "set");
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
     QUERY->add_ugen_funcf( QUERY, decode1_tickf, NULL, 4, 4 );
@@ -231,6 +248,7 @@ CK_DLL_QUERY( Decode )
     // register default constructor
     QUERY->add_ctor(QUERY, decode2_ctor);
     QUERY->add_dtor(QUERY, decode2_dtor);
+    QUERY->add_mfun(QUERY, decode2_set_coefficients, "void", "set");
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
     QUERY->add_ugen_funcf(QUERY, decode2_tickf, NULL, 9, 9);
@@ -244,6 +262,7 @@ CK_DLL_QUERY( Decode )
     // register default constructor
     QUERY->add_ctor(QUERY, decode3_ctor);
     QUERY->add_dtor(QUERY, decode3_dtor);
+    QUERY->add_mfun(QUERY, decode3_set_coefficients, "void", "set");
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
     QUERY->add_ugen_funcf(QUERY, decode3_tickf, NULL, 16, 16);
@@ -257,6 +276,7 @@ CK_DLL_QUERY( Decode )
     // register default constructor
     QUERY->add_ctor(QUERY, decode4_ctor);
     QUERY->add_dtor(QUERY, decode4_dtor);
+    QUERY->add_mfun(QUERY, decode4_set_coefficients, "void", "set");
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
     QUERY->add_ugen_funcf(QUERY, decode4_tickf, NULL, 25, 25);
@@ -270,6 +290,8 @@ CK_DLL_QUERY( Decode )
     // register default constructor
     QUERY->add_ctor(QUERY, decode5_ctor);
     QUERY->add_dtor(QUERY, decode5_dtor);
+    QUERY->add_mfun(QUERY, decode5_set_coefficients, "void", "set");
+    QUERY->add_arg(QUERY, "float[][]", "coordinates");
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
     QUERY->add_ugen_funcf(QUERY, decode5_tickf, NULL, 36, 36);
@@ -325,7 +347,7 @@ CK_DLL_MFUN(decode1_set_coefficients)
 {
     Decode1* decode_obj = (Decode1*)OBJ_MEMBER_UINT(SELF, decode1_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, *speak_coefficients);
+    decode_obj->set_coefficients(API, speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -369,7 +391,7 @@ CK_DLL_MFUN(decode2_set_coefficients)
 {
     Decode2* decode_obj = (Decode2*)OBJ_MEMBER_UINT(SELF, decode2_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, *speak_coefficients);
+    decode_obj->set_coefficients(API, speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -413,7 +435,7 @@ CK_DLL_MFUN(decode3_set_coefficients)
 {
     Decode3* decode_obj = (Decode3*)OBJ_MEMBER_UINT(SELF, decode3_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, *speak_coefficients);
+    decode_obj->set_coefficients(API, speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -457,7 +479,7 @@ CK_DLL_MFUN(decode4_set_coefficients)
 {
     Decode4* decode_obj = (Decode4*)OBJ_MEMBER_UINT(SELF, decode4_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, *speak_coefficients);
+    decode_obj->set_coefficients(API, speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -501,6 +523,6 @@ CK_DLL_MFUN(decode5_set_coefficients)
 {
     Decode5* decode_obj = (Decode5*)OBJ_MEMBER_UINT(SELF, decode5_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, *speak_coefficients);
+    decode_obj->set_coefficients(API, speak_coefficients);
 }
 //===============================================================================
