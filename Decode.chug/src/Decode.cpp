@@ -111,6 +111,20 @@ public:
             }
         }
     }
+    void seti(CK_DL_API API, Chuck_ArrayFloat *coordinates, t_CKUINT entry)
+    {
+        int size = (API->object->array_float_size(coordinates));
+        if (!entry > in_count) // if it isn't larger than in_count
+        {
+            if (!entry > size) // if it isn't larger than the given array
+            {
+                for (int i; i < size; i++)
+                {
+                    coefficient_matrix[i][entry] = API->object->array_float_get_idx(coordinates, i);
+                }
+            }
+        } 
+    }
 
 protected:
     // instance data
