@@ -58,6 +58,16 @@ public:
     // for chugins extending UGen
     void tick( SAMPLE* in, SAMPLE* out, int nframes)
     {
+        if (!in[0]) // if in[0] == 0
+        {  
+            if (channel_matrix[1] != temp_matrix[1] && channel_matrix[2] != temp_matrix[2] && channel_matrix[3] != temp_matrix[3]) // X,Y,Z aren't the same, the arrays are not equal
+            {
+                for (int i = 0; i < channel_count; i++)
+                {
+                    channel_matrix[i] = temp_matrix[i];
+                }
+            }
+        }
         for (int i = 0; i < channel_count; i++)
         {
             out[i] = (in[0] * channel_matrix[i]);
@@ -68,7 +78,7 @@ public:
         int size = (API->object->array_float_size(coord));
         for (int i = 0;i < size;i++)
         {
-            channel_matrix[i] = (API->object->array_float_get_idx(coord,i));
+            temp_matrix[i] = (API->object->array_float_get_idx(coord,i));
         }
     }
     t_CKFLOAT get_i(int index)
@@ -85,6 +95,7 @@ public:
 protected:
     // instance data
     t_CKFLOAT *channel_matrix;
+    t_CKFLOAT* temp_matrix;
     t_CKINT channel_count = 0;
 };
 
