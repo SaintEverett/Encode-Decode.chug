@@ -43,6 +43,8 @@
 #include <limits.h>
 #include <math.h>
 
+const t_CKFLOAT ZERO_THRESHOLD = 1e-9;
+
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
@@ -54,24 +56,48 @@ public:
         channel_count(chan)
     {
         channel_matrix = new t_CKFLOAT[channel_count];
+        temp_matrix = new t_CKFLOAT[channel_count];
+    }
+    ~EncodeN() 
+    {
+        delete[] channel_matrix;
+        delete[] temp_matrix;
     }
     // for chugins extending UGen
     void tick( SAMPLE* in, SAMPLE* out, int nframes)
     {
-        if (!in[0]) // if in[0] == 0
-        {  
-            if (channel_matrix[1] != temp_matrix[1] && channel_matrix[2] != temp_matrix[2] && channel_matrix[3] != temp_matrix[3]) // X,Y,Z aren't the same, the arrays are not equal
+        for (int f = 0; f < nframes; f++) 
+        {
+            if (std::abs(in[f]) < ZERO_THRESHOLD)
             {
-                for (int i = 0; i < channel_count; i++)
-                {
-                    channel_matrix[i] = temp_matrix[i];
-                }
+                zeroCrossing = TRUE;
+                break;
+            }
+            else
+            {
+                zeroCrossing = FALSE;
             }
         }
-        for (int i = 0; i < channel_count; i++)
+        
+        if (zeroCrossing && !arrayEqual) // zero crossing and matrices aren't the same?
         {
-            out[i] = (in[0] * channel_matrix[i]);
+            for (int i = 0; i < channel_count; i++) 
+            {
+                channel_matrix[i] = temp_matrix[i];
+            }
+            arrayEqual = TRUE;  // they are the same
         }
+
+        memset(out, 0, sizeof(SAMPLE) * channel_count * nframes);
+
+        for (int f = 0; f < nframes; f++)
+        {
+            for (int i = 0; i < channel_count; i++)
+            {   
+                out[f * channel_count + i] = (in[f] * channel_matrix[i]); // absolutely inspired (taken) from PanN.cpp (as are many things in this chugin)
+            }
+        }
+
     }
     void set_coefficients(Chuck_ArrayFloat *coord, CK_DL_API API)
     {
@@ -80,23 +106,30 @@ public:
         {
             temp_matrix[i] = (API->object->array_float_get_idx(coord,i));
         }
+        arrayEqual = FALSE; // new matrix automatically means it is not equal to the current
     }
     t_CKFLOAT get_i(int index)
     {
-        if (index <= channel_count) { return channel_matrix[index]; }
+        if (index < channel_count) { return channel_matrix[index]; }
         else return NULL;
     }
     void set_i(t_CKFLOAT value, t_CKUINT index)
     {
-        if (index <= channel_count) { channel_matrix[index] = value; }
+        if (index < channel_count) 
+        { 
+            temp_matrix[index] = value; 
+            arrayEqual = FALSE;
+        }
         else NULL;
     }
     t_CKUINT get_chans() { return channel_count; }
 protected:
     // instance data
     t_CKFLOAT *channel_matrix;
-    t_CKFLOAT* temp_matrix;
+    t_CKFLOAT *temp_matrix;
     t_CKINT channel_count = 0;
+    bool zeroCrossing = FALSE;
+    bool arrayEqual = TRUE; // if 1, temp matrix and current matrix are equal. if 0, temp needs to be copied to current
 };
 
 class Encode1 : public EncodeN

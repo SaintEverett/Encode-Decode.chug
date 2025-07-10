@@ -27,3 +27,22 @@
 * 
 -----------------------------------------------------------------------------*/
 #include "chugin.h"
+#include <limits.h>
+
+bool equalTest(double array1[], double array2[], int size1, int size2)
+{
+    int largest;
+    if (size1 != size2)
+    {
+        largest = std::min(size1, size2); // smaller one
+    }
+    else if (size1 == size2)
+    {
+        largest = size1;
+    }
+    for (int i = 0; i < largest; i++)
+    {
+        if (array1[i] != array2[i]) return FALSE;
+        else return TRUE;
+    }
+}
