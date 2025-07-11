@@ -43,7 +43,7 @@
 #include <limits.h>
 #include <math.h>
 
-const t_CKFLOAT ZERO_THRESHOLD = 1e-9;
+const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordinates, if the input sample is less than this, change coefficients
 
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
@@ -55,7 +55,7 @@ public:
     EncodeN(t_CKFLOAT fs, t_CKUINT chan) :
         channel_count(chan)
     {
-        channel_matrix = new t_CKFLOAT[channel_count];
+        channel_matrix = new t_CKFLOAT[channel_count]; // create arrays for these guys
         temp_matrix = new t_CKFLOAT[channel_count];
     }
     ~EncodeN() 
@@ -70,12 +70,12 @@ public:
         {
             if (std::abs(in[f]) < ZERO_THRESHOLD)
             {
-                zeroCrossing = TRUE;
+                zeroCrossing = TRUE; // if less than the threshold, we do infact have a zero crossing
                 break;
             }
             else
             {
-                zeroCrossing = FALSE;
+                zeroCrossing = FALSE; // it's ok if we don't have a zero crossing
             }
         }
         
@@ -83,12 +83,12 @@ public:
         {
             for (int i = 0; i < channel_count; i++) 
             {
-                channel_matrix[i] = temp_matrix[i];
+                channel_matrix[i] = temp_matrix[i]; // swap it out
             }
             arrayEqual = TRUE;  // they are the same
         }
 
-        memset(out, 0, sizeof(SAMPLE) * channel_count * nframes);
+        memset(out, 0, sizeof(SAMPLE) * channel_count * nframes); // clear
 
         for (int f = 0; f < nframes; f++)
         {
