@@ -22,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\chugin.h" />
+    <ClInclude Include="include\CrossoverFilter.h" />
     <ClInclude Include="include\Decode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
