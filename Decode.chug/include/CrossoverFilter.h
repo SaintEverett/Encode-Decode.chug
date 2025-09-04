@@ -29,22 +29,7 @@ public:
 		a = {1.f, ((2.f * (ks - 1.f)) / d), ((ks - (2.f * k) + 1.f) / d)};
 	}
 
-	CrossoverFilter(float cutoff, float fs)
-	{
-		srate = fs;
-		cross = cutoff;
-		k = tanf((cross * R_PI) / srate);
-		x = std::vector<float>(4, 0.f);
-		lf_y = std::vector<float>(4, 0.f);
-		hf_y = std::vector<float>(4, 0.f);
-		float ks = pow(k, 2);
-		float d = (ks + (2.f * k) + 1.f);
-		lf_b = { (ks / d), (2.f * (ks / d)), (ks / d) };
-		hf_b = { (1.f / d), (-2.f * (1.f / d)), (1.f / d) };
-		a = { 1.f, ((2.f * (ks - 1.f)) / d), ((ks - (2.f * k) + 1.f) / d) };
-	}
-
-	void tick(float* in, float* lf_out, float* hf_out)
+	void ftick(float* in, float* lf_out, float* hf_out)
 	{
 		shift(lf_y);
 		shift(hf_y);

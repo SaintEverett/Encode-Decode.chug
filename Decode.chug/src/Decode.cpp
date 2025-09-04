@@ -30,6 +30,7 @@
 #include <thread>
 #include <limits.h>
 #include <math.h>
+#include "CrossoverFilter.h"
 
 // declaration of chugin constructor
 CK_DLL_CTOR(decode1_ctor);
@@ -67,12 +68,13 @@ CK_DLL_MFUN(decode5_set_coefficients);
 // this is a special offset reserved for chugin internal data
 t_CKINT decode5_data_offset = 0;
 
+CK_DL_API m_API;
 
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
 //-----------------------------------------------------------------------------
-class DecodeN                                                                             
+class DecodeN                                                                     
 {                                                                                         
 public:                                                                                   
     // constructor                                                                        
@@ -131,32 +133,46 @@ protected:
     t_CKFLOAT** coefficient_matrix;
     t_CKUINT in_count = 0;
     t_CKUINT out_count = 0;
+    std::vector<CrossoverFilter> filt;
 };
 
 
-class Decode1 : public DecodeN
+class Decode1 : DecodeN
 {
 public:
     Decode1(t_CKFLOAT fs) : DecodeN(fs, 4, 4)
     {
         t_CKFLOAT coefficient_matrix[4][4] = { 0 };
+        filt.reserve(4);
+        for (int i = 0; i < 4; i++)
+        {
+            filt.push_back(CrossoverFilter(700.f, 48000));
+        }
     }
     
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
     {
         // default: this passes whatever input is patched into chugin
-        multnsum(in, out);
+        for (int f = 0; f < nframes; f++)
+        {
+            in[f
+        }
         return TRUE;
     }
 };
 
-class Decode2 : public DecodeN
+class Decode2 : DecodeN
 {
 public:
     Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
     {
         t_CKFLOAT coefficient_matrix[9][9] = { 0 };
+        filt.reserve(9);
+        for (int i = 0; i < 9; i++)
+        {
+            filt.push_back(CrossoverFilter(1200.f, 48000));
+        }
     }
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
@@ -167,7 +183,7 @@ public:
     }
 };
 
-class Decode3 : public DecodeN
+class Decode3 : DecodeN
 {
 public:
     Decode3(t_CKFLOAT fs) : DecodeN(fs, 16, 16)
@@ -183,7 +199,7 @@ public:
     }
 };
 
-class Decode4 : public DecodeN
+class Decode4 : DecodeN
 {
 public:
     Decode4(t_CKFLOAT fs) : DecodeN(fs, 25, 25)
@@ -199,7 +215,7 @@ public:
     }
 };
 
-class Decode5 : public DecodeN
+class Decode5 : DecodeN
 {
 public:
     Decode5(t_CKFLOAT fs) : DecodeN(fs, 36, 36)
