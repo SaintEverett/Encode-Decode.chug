@@ -34,6 +34,7 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
+#include "Decode.h"
 #include "CrossoverFilter.h"
 
 // declaration of chugin constructor
