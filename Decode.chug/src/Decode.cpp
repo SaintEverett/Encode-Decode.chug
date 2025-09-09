@@ -17,6 +17,11 @@
 //                                           [y_0, y_1, y_2, y_3]
 //         [w_in, y_in, x_in, z_in]     *    [x_0, x_1, x_2, x_3]  =  [w_out, y_out, x_out, z_out]
 //                                           [z_0, z_1, z_2, z_3]
+//    input options
+// 
+//          Decode2 decode;
+//          decode.set(speak_num, coeff)
+//          decode.set(speak_num, azimuth, zenith)
 // 
 //-----------------------------------------------------------------------------
 // happy chucking & chugging!
@@ -27,9 +32,8 @@
 
 // general includes
 #include <iostream>
-#include <thread>
-#include <limits.h>
-#include <math.h>
+#include <limits>
+#include <cmath>
 #include "CrossoverFilter.h"
 
 // declaration of chugin constructor
@@ -68,8 +72,6 @@ CK_DLL_MFUN(decode5_set_coefficients);
 // this is a special offset reserved for chugin internal data
 t_CKINT decode5_data_offset = 0;
 
-CK_DL_API m_API;
-
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
@@ -87,13 +89,13 @@ public:
     {
         for (int j = 0; j < in_count; j++)
         {
-            for (int i = 0; i < in_count;i++)
+            for (int i = 0; i < in_count; i++)
             {
                 out[j] += in[i] * coefficient_matrix[i][j];
             }
         }
     }
-    void set_coefficients(CK_DL_API API, Chuck_ArrayInt* coefficients)
+    void set_coefficients(Chuck_DL_Api::Object coefficients)
     {
         t_CKINT size_int = API->object->array_int_size(coefficients);
         t_CKUINT m = API->object->array_int_get_idx(coefficients, 0);
@@ -113,7 +115,7 @@ public:
             }
         }
     }
-    void seti(CK_DL_API API, Chuck_ArrayFloat *coordinates, t_CKUINT entry)
+    void seti(Chuck_ArrayFloat *coordinates, t_CKUINT entry)
     {
         int size = (API->object->array_float_size(coordinates));
         if (~entry > in_count) // if it isn't larger than in_count
@@ -130,6 +132,7 @@ public:
 
 protected:
     // instance data
+    CK_DL_API API;
     t_CKFLOAT** coefficient_matrix;
     t_CKUINT in_count = 0;
     t_CKUINT out_count = 0;
@@ -137,7 +140,7 @@ protected:
 };
 
 
-class Decode1 : DecodeN
+class Decode1 : public DecodeN
 {
 public:
     Decode1(t_CKFLOAT fs) : DecodeN(fs, 4, 4)
@@ -162,7 +165,7 @@ public:
     }
 };
 
-class Decode2 : DecodeN
+class Decode2 : public DecodeN
 {
 public:
     Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
@@ -183,7 +186,7 @@ public:
     }
 };
 
-class Decode3 : DecodeN
+class Decode3 : public DecodeN
 {
 public:
     Decode3(t_CKFLOAT fs) : DecodeN(fs, 16, 16)
@@ -199,7 +202,7 @@ public:
     }
 };
 
-class Decode4 : DecodeN
+class Decode4 : public DecodeN
 {
 public:
     Decode4(t_CKFLOAT fs) : DecodeN(fs, 25, 25)
@@ -215,7 +218,7 @@ public:
     }
 };
 
-class Decode5 : DecodeN
+class Decode5 : public DecodeN
 {
 public:
     Decode5(t_CKFLOAT fs) : DecodeN(fs, 36, 36)
@@ -377,7 +380,7 @@ CK_DLL_MFUN(decode1_set_coefficients)
 {
     Decode1* decode_obj = (Decode1*)OBJ_MEMBER_UINT(SELF, decode1_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, speak_coefficients);
+    decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -421,7 +424,7 @@ CK_DLL_MFUN(decode2_set_coefficients)
 {
     Decode2* decode_obj = (Decode2*)OBJ_MEMBER_UINT(SELF, decode2_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, speak_coefficients);
+    decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -465,7 +468,7 @@ CK_DLL_MFUN(decode3_set_coefficients)
 {
     Decode3* decode_obj = (Decode3*)OBJ_MEMBER_UINT(SELF, decode3_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, speak_coefficients);
+    decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -509,7 +512,7 @@ CK_DLL_MFUN(decode4_set_coefficients)
 {
     Decode4* decode_obj = (Decode4*)OBJ_MEMBER_UINT(SELF, decode4_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, speak_coefficients);
+    decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -553,6 +556,6 @@ CK_DLL_MFUN(decode5_set_coefficients)
 {
     Decode5* decode_obj = (Decode5*)OBJ_MEMBER_UINT(SELF, decode5_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(API, speak_coefficients);
+    decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
