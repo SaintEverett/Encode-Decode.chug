@@ -42,6 +42,7 @@ CK_DLL_CTOR(decode1_ctor);
 CK_DLL_DTOR(decode1_dtor);
 CK_DLL_TICKF(decode1_tickf);
 CK_DLL_MFUN(decode1_set_coefficients);
+CK_DLL_MFUN(decode1_get_coefficients);
 // this is a special offset reserved for chugin internal data
 t_CKINT decode1_data_offset = 0;
 
@@ -98,23 +99,21 @@ public:
     }
     void set_coefficients(Chuck_DL_Api::Object coefficients)
     {
-        t_CKINT size_int = API->object->array_int_size(coefficients);
-        t_CKUINT m = API->object->array_int_get_idx(coefficients, 0);
-        Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)m;
-        t_CKINT size_float = API->object->array_float_size(row);
-        if( size_int >= in_count)
-        for (int i = 0; i < in_count; i++)
+        Chuck_ArrayInt* idx = (Chuck_ArrayInt*)coefficients;
+        
+        for (int i = 0; i < API->object->array_int_size(idx); i++)
         {
-            m = API->object->array_int_get_idx(coefficients, i);
-            row = (Chuck_ArrayFloat*)m;
-            if (size_float >= in_count)
+            Chuck_ArrayFloat* row;
+            row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(idx, i);
+            for (int j = 0; j < API->object->array_float_size(row); j++)
             {
-                for (int j = 0; j < in_count; j++)
-                {
-                    API->object->array_float_get_idx(row, j);
-                }
+                coefficient_matrix[i][j] = API->object->array_float_get_idx(row, j);
             }
         }
+    }
+    float access_coefficients(int row, int idx)
+    {
+        return coefficient_matrix[row][idx];
     }
     void seti(Chuck_ArrayFloat *coordinates, t_CKUINT entry)
     {
@@ -123,7 +122,7 @@ public:
         {
             if (~entry > size) // if it isn't larger than the given array
             {
-                for (int i; i < size; i++)
+                for (int i = 0; i < size; i++)
                 {
                     coefficient_matrix[i][entry] = API->object->array_float_get_idx(coordinates, i);
                 }
@@ -137,6 +136,7 @@ protected:
     t_CKFLOAT** coefficient_matrix;
     t_CKUINT in_count = 0;
     t_CKUINT out_count = 0;
+    int order;
     std::vector<CrossoverFilter> filt;
 };
 
@@ -147,21 +147,13 @@ public:
     Decode1(t_CKFLOAT fs) : DecodeN(fs, 4, 4)
     {
         t_CKFLOAT coefficient_matrix[4][4] = { 0 };
-        filt.reserve(4);
-        for (int i = 0; i < 4; i++)
-        {
-            filt.push_back(CrossoverFilter(700.f, 48000));
-        }
+        int order = 1;
     }
     
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
     {
-        // default: this passes whatever input is patched into chugin
-        for (int f = 0; f < nframes; f++)
-        {
-            in[f
-        }
+        
         return TRUE;
     }
 };
@@ -172,11 +164,7 @@ public:
     Decode2(t_CKFLOAT fs) : DecodeN(fs, 9, 9)
     {
         t_CKFLOAT coefficient_matrix[9][9] = { 0 };
-        filt.reserve(9);
-        for (int i = 0; i < 9; i++)
-        {
-            filt.push_back(CrossoverFilter(1200.f, 48000));
-        }
+        int order = 2;
     }
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
@@ -193,6 +181,7 @@ public:
     Decode3(t_CKFLOAT fs) : DecodeN(fs, 16, 16)
     {
         t_CKFLOAT coefficient_matrix[16][16] = { 0 };
+        int order = 3;
     }
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
@@ -209,6 +198,7 @@ public:
     Decode4(t_CKFLOAT fs) : DecodeN(fs, 25, 25)
     {
         t_CKFLOAT coefficient_matrix[25][25] = { 0 };
+        int order = 4;
     }
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
@@ -225,6 +215,7 @@ public:
     Decode5(t_CKFLOAT fs) : DecodeN(fs, 36, 36)
     {
         t_CKFLOAT coefficient_matrix[36][36] = { 0 };
+        int order = 5;
     }
     // for chugins extending UGen
     SAMPLE tickf(SAMPLE* in, SAMPLE* out, int nframes)
@@ -269,6 +260,8 @@ CK_DLL_QUERY( Decode )
     QUERY->add_ctor(QUERY, decode1_ctor);
     QUERY->add_dtor(QUERY, decode1_dtor);
     QUERY->add_mfun(QUERY, decode1_set_coefficients, "void", "set");
+    QUERY->add_arg(QUERY, "float[][]", "coefficients");
+    QUERY->add_mfun(QUERY, decode1_get_coefficients, "float[][]", "get");
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
     QUERY->add_ugen_funcf( QUERY, decode1_tickf, NULL, 4, 4 );
@@ -376,11 +369,33 @@ CK_DLL_TICKF( decode1_tickf )
     // yes
     return TRUE;
 }
+CK_DLL_MFUN(decode1_get_coefficients)
+{
+    Decode1* d_obj = (Decode1*)OBJ_MEMBER_INT(SELF, decode1_data_offset);
+    Chuck_DL_Api::Object target2 = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
+    Chuck_ArrayInt* target_arr2 = (Chuck_ArrayInt*)target2; // cast to int array
+
+    for (int i = 0; i < 4; i++) 
+    {
+        Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
+        Chuck_ArrayFloat* target_arr_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+
+        for (int j = 0; j < 4; j++) 
+        {
+            API->object->array_float_push_back(target_arr_tmp, d_obj->access_coefficients(i,j));
+        }
+
+        API->object->array_int_push_back(target_arr2, (t_CKINT)target_arr_tmp); // push back the previously created float array 
+    }
+
+    // Need to cast back to object due to lost inheirtience structure
+    RETURN->v_object = (Chuck_Object*)target2;
+}
 
 CK_DLL_MFUN(decode1_set_coefficients)
 {
     Decode1* decode_obj = (Decode1*)OBJ_MEMBER_UINT(SELF, decode1_data_offset);
-    Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
+    Chuck_Object* speak_coefficients = (Chuck_Object*)GET_NEXT_OBJECT(ARGS);
     decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
@@ -425,7 +440,7 @@ CK_DLL_MFUN(decode2_set_coefficients)
 {
     Decode2* decode_obj = (Decode2*)OBJ_MEMBER_UINT(SELF, decode2_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(speak_coefficients);
+    //decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -469,7 +484,7 @@ CK_DLL_MFUN(decode3_set_coefficients)
 {
     Decode3* decode_obj = (Decode3*)OBJ_MEMBER_UINT(SELF, decode3_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(speak_coefficients);
+    //decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -513,7 +528,7 @@ CK_DLL_MFUN(decode4_set_coefficients)
 {
     Decode4* decode_obj = (Decode4*)OBJ_MEMBER_UINT(SELF, decode4_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(speak_coefficients);
+    //decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
 // implementation for the default constructor
@@ -557,6 +572,6 @@ CK_DLL_MFUN(decode5_set_coefficients)
 {
     Decode5* decode_obj = (Decode5*)OBJ_MEMBER_UINT(SELF, decode5_data_offset);
     Chuck_ArrayInt* speak_coefficients = (Chuck_ArrayInt*)GET_NEXT_OBJECT(ARGS);
-    decode_obj->set_coefficients(speak_coefficients);
+    //decode_obj->set_coefficients(speak_coefficients);
 }
 //===============================================================================
