@@ -38,15 +38,7 @@ public:
     {
         for (int f = 0; f < nframes; f++) 
         {
-            if (std::abs(in[f]) < ZERO_THRESHOLD)
-            {
-                zeroCrossing = TRUE; // if less than the threshold, we do infact have a zero crossing
-                break;
-            }
-            else
-            {
-                zeroCrossing = FALSE; // it's ok if we don't have a zero crossing
-            }
+            zeroCrossing = abs(in[f]) < ZERO_THRESHOLD ? TRUE : FALSE; //  less that threshold? zeroCrossing TRUE else FALSE
         }
         
         if (zeroCrossing && !arrayEqual) // zero crossing and matrices aren't the same?
@@ -69,14 +61,17 @@ public:
         }
 
     }
-    void set_coefficients(Chuck_ArrayFloat *coord, CK_DL_API API)
+    void set_coefficients(Chuck_ArrayFloat* coord, CK_DL_API API)
     {
         int size = (API->object->array_float_size(coord));
-        for (int i = 0;i < size;i++)
+        if (size >= channel_count)
         {
-            temp_matrix[i] = (API->object->array_float_get_idx(coord,i));
+            for (int i = 0; i < size;i++)
+            {
+                temp_matrix[i] = (API->object->array_float_get_idx(coord, i));
+            }
+            arrayEqual = FALSE; // new matrix automatically means it is not equal to the current
         }
-        arrayEqual = FALSE; // new matrix automatically means it is not equal to the current
     }
     t_CKFLOAT get_i(int index)
     {
@@ -95,9 +90,10 @@ public:
     t_CKUINT get_chans() { return channel_count; }
 protected:
     // instance data
+    t_CKUINT order = 0;
+    t_CKUINT channel_count = 0;
     t_CKFLOAT *channel_matrix;
     t_CKFLOAT *temp_matrix;
-    t_CKINT channel_count = 0;
     bool zeroCrossing = FALSE;
     bool arrayEqual = TRUE; // if 1, temp matrix and current matrix are equal. if 0, temp needs to be copied to current
 };
@@ -107,7 +103,8 @@ class Encode1 : public EncodeN
 public:
     Encode1(t_CKFLOAT fs) : EncodeN(fs, 4)
     {
-        ;
+        order = 1;
+        channel_count = 4;
     }   
 };
 
@@ -116,7 +113,8 @@ class Encode2 : public EncodeN
 public:
     Encode2(t_CKFLOAT fs) : EncodeN(fs, 9)
     {
-        ;
+        order = 2;
+        channel_count = 9;
     }
 };
 
@@ -125,7 +123,8 @@ class Encode3 : public EncodeN
 public:
     Encode3(t_CKFLOAT fs) : EncodeN(fs, 16)
     {
-        ;
+        order = 3;
+        channel_count = 16;
     }
 };
 
@@ -134,7 +133,8 @@ class Encode4 : public EncodeN
 public:
     Encode4(t_CKFLOAT fs) : EncodeN(fs, 25)
     {
-        ;
+        order = 4;
+        channel_count = 25;
     }
 };
 
@@ -143,7 +143,8 @@ class Encode5 : public EncodeN
 public:
     Encode5(t_CKFLOAT fs) : EncodeN(fs, 36)
     {
-        ;
+        order = 5;
+        channel_count = 36;
     }
 };
 
