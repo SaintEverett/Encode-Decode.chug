@@ -56,7 +56,7 @@ public:
         {
             for (int i = 0; i < channel_count; i++)
             {   
-                out[f * channel_count + i] = (in[f] * channel_matrix[i]); // absolutely inspired (taken) from PanN.cpp (as are many things in this chugin)
+                out[f * channel_count + i] = (in[f*channel_count] * channel_matrix[i]); //
             }
         }
 
