@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <math.h>
+#include "chuckSH.h"
 
 const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordinates, if the input sample is less than this, change coefficients
 
@@ -22,16 +23,12 @@ const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordina
 class EncodeN
 {
 public:
-    EncodeN(t_CKFLOAT fs, t_CKUINT chan) :
-        channel_count(chan)
+    EncodeN(t_CKFLOAT fs, unsigned chan, unsigned order_)
     {
-        channel_matrix = new t_CKFLOAT[channel_count]; // create arrays for these guys
-        temp_matrix = new t_CKFLOAT[channel_count];
-    }
-    ~EncodeN() 
-    {
-        delete[] channel_matrix;
-        delete[] temp_matrix;
+        channel_count = chan;
+        order = order_;
+        channel_matrix.resize(chan); // size these
+        temp_matrix.resize(chan); 
     }
     // for chugins extending UGen
     void tick( SAMPLE* in, SAMPLE* out, int nframes)
@@ -41,13 +38,12 @@ public:
             zeroCrossing = abs(in[f]) < ZERO_THRESHOLD ? TRUE : FALSE; //  less that threshold? zeroCrossing TRUE else FALSE
         }
         
-        if (zeroCrossing && !arrayEqual) // zero crossing and matrices aren't the same?
+        if (zeroCrossing && channel_matrix != temp_matrix) // zero crossing and matrices aren't the same?
         {
             for (int i = 0; i < channel_count; i++) 
             {
                 channel_matrix[i] = temp_matrix[i]; // swap it out
             }
-            arrayEqual = TRUE;  // they are the same
         }
 
         memset(out, 0, sizeof(SAMPLE) * channel_count * nframes); // clear
@@ -56,11 +52,12 @@ public:
         {
             for (int i = 0; i < channel_count; i++)
             {   
-                out[f * channel_count + i] = (in[f*channel_count] * channel_matrix[i]); //
+                out[f * channel_count + i] = (in[f] * channel_matrix[i]); //
             }
         }
 
     }
+
     void set_coefficients(Chuck_ArrayFloat* coord, CK_DL_API API)
     {
         int size = (API->object->array_float_size(coord));
@@ -70,81 +67,81 @@ public:
             {
                 temp_matrix[i] = (API->object->array_float_get_idx(coord, i));
             }
-            arrayEqual = FALSE; // new matrix automatically means it is not equal to the current
         }
     }
-    t_CKFLOAT get_i(int index)
+
+    t_CKFLOAT get_i(t_CKUINT index)
     {
         if (index < channel_count) { return channel_matrix[index]; }
         else return NULL;
     }
+
     void set_i(t_CKFLOAT value, t_CKUINT index)
     {
         if (index < channel_count) 
         { 
             temp_matrix[index] = value; 
-            arrayEqual = FALSE;
         }
         else NULL;
     }
-    t_CKUINT get_chans() { return channel_count; }
+
+    void position(t_CKFLOAT azimuth_, t_CKFLOAT zenith_)
+    {
+        temp_matrix = SH(order, azimuth_, zenith_, 0); // simply just calls the spherical harmonic calculator
+    }
+
 protected:
     // instance data
     t_CKUINT order = 0;
     t_CKUINT channel_count = 0;
-    t_CKFLOAT *channel_matrix;
-    t_CKFLOAT *temp_matrix;
-    bool zeroCrossing = FALSE;
-    bool arrayEqual = TRUE; // if 1, temp matrix and current matrix are equal. if 0, temp needs to be copied to current
+    std::vector<float> channel_matrix; // current gain coeffs
+    std::vector<float> temp_matrix; // temp coeffs to be shifted to current
+    std::vector<float> shStorage; // store spherical harmonics here rather than create a new vector each time
+    bool zeroCrossing = FALSE; // is there a zero crossing?
 };
 
 class Encode1 : public EncodeN
 {
 public:
-    Encode1(t_CKFLOAT fs) : EncodeN(fs, 4)
+    Encode1(t_CKFLOAT fs) : EncodeN(fs, 4, 1)
     {
-        order = 1;
-        channel_count = 4;
+        ;
     }   
 };
 
 class Encode2 : public EncodeN
 {
 public:
-    Encode2(t_CKFLOAT fs) : EncodeN(fs, 9)
+    Encode2(t_CKFLOAT fs) : EncodeN(fs, 9, 2)
     {
-        order = 2;
-        channel_count = 9;
+        ;
     }
 };
 
 class Encode3 : public EncodeN
 {
 public:
-    Encode3(t_CKFLOAT fs) : EncodeN(fs, 16)
+    Encode3(t_CKFLOAT fs) : EncodeN(fs, 16, 3)
     {
-        order = 3;
-        channel_count = 16;
+        ;
     }
 };
 
 class Encode4 : public EncodeN
 {
 public:
-    Encode4(t_CKFLOAT fs) : EncodeN(fs, 25)
+    Encode4(t_CKFLOAT fs) : EncodeN(fs, 25, 4)
     {
-        order = 4;
-        channel_count = 25;
+        ;
     }
 };
 
 class Encode5 : public EncodeN
 {
 public:
-    Encode5(t_CKFLOAT fs) : EncodeN(fs, 36)
+    Encode5(t_CKFLOAT fs) : EncodeN(fs, 36, 5)
     {
-        order = 5;
-        channel_count = 36;
+        ;
     }
 };
 
@@ -156,7 +153,7 @@ CK_DLL_TICKF(encode1_tickf);
 CK_DLL_MFUN(encode1_geti);
 CK_DLL_MFUN(encode1_seti);
 CK_DLL_MFUN(encode1_coefficients);
-CK_DLL_MFUN(encode1_get_chans);
+CK_DLL_MFUN(encode1_position);
 t_CKINT encode1_data_offset = 0;
 // Encode2
 CK_DLL_CTOR(encode2_ctor);
@@ -165,7 +162,7 @@ CK_DLL_TICKF(encode2_tickf);
 CK_DLL_MFUN(encode2_geti);
 CK_DLL_MFUN(encode2_seti);
 CK_DLL_MFUN(encode2_coefficients);
-CK_DLL_MFUN(encode2_get_chans);
+CK_DLL_MFUN(encode2_position);
 t_CKINT encode2_data_offset = 0;
 // Encode3
 CK_DLL_CTOR(encode3_ctor);
@@ -174,7 +171,7 @@ CK_DLL_TICKF(encode3_tickf);
 CK_DLL_MFUN(encode3_geti);
 CK_DLL_MFUN(encode3_seti);
 CK_DLL_MFUN(encode3_coefficients);
-CK_DLL_MFUN(encode3_get_chans);
+CK_DLL_MFUN(encode3_position);
 t_CKINT encode3_data_offset = 0;
 // Encode4
 CK_DLL_CTOR(encode4_ctor);
@@ -183,7 +180,7 @@ CK_DLL_TICKF(encode4_tickf);
 CK_DLL_MFUN(encode4_geti);
 CK_DLL_MFUN(encode4_seti);
 CK_DLL_MFUN(encode4_coefficients);
-CK_DLL_MFUN(encode4_get_chans);
+CK_DLL_MFUN(encode4_position);
 t_CKINT encode4_data_offset = 0;
 // Encode5
 CK_DLL_CTOR(encode5_ctor);
@@ -192,7 +189,7 @@ CK_DLL_TICKF(encode5_tickf);
 CK_DLL_MFUN(encode5_geti);
 CK_DLL_MFUN(encode5_seti);
 CK_DLL_MFUN(encode5_coefficients);
-CK_DLL_MFUN(encode5_get_chans);
+CK_DLL_MFUN(encode5_position);
 t_CKINT encode5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
@@ -203,7 +200,7 @@ t_CKINT encode5_data_offset = 0;
 CK_DLL_INFO( Encode )
 {
     // the version string of this chugin, e.g., "v1.2.1"
-    QUERY->setinfo( QUERY, CHUGIN_INFO_CHUGIN_VERSION, "" );
+    QUERY->setinfo( QUERY, CHUGIN_INFO_CHUGIN_VERSION, "v1.0.0" );
     // the author(s) of this chugin, e.g., "Alice Baker & Carl Donut"
     QUERY->setinfo( QUERY, CHUGIN_INFO_AUTHORS, "Everett M. Carpenter" );
     // text description of this chugin; what is it? what does it do? who is it for?
@@ -211,7 +208,7 @@ CK_DLL_INFO( Encode )
     // (optional) URL of the homepage for this chugin
     QUERY->setinfo( QUERY, CHUGIN_INFO_URL, "" );
     // (optional) contact email
-    QUERY->setinfo( QUERY, CHUGIN_INFO_EMAIL, "" );
+    QUERY->setinfo( QUERY, CHUGIN_INFO_EMAIL, "carpee2[@]rpi[dot]edu" );
 }
 
 
@@ -234,15 +231,21 @@ CK_DLL_QUERY( Encode )
     // register the destructor (probably no need to change)
     QUERY->add_ctor(QUERY, encode1_ctor);
     QUERY->add_dtor( QUERY, encode1_dtor );
-    QUERY->add_ugen_funcf( QUERY, encode1_tickf, NULL, 1, 4 );  
+    QUERY->add_ugen_funcf( QUERY, encode1_tickf, NULL, 1, 4 ); 
+    // get SH
     QUERY->add_mfun(QUERY, encode1_geti, "float", "geti");
     QUERY->add_arg(QUERY, "int", "index");
+    // set all SHs
     QUERY->add_mfun(QUERY, encode1_coefficients, "void", "coeff");
     QUERY->add_arg(QUERY, "float[]", "coordinates");
-    QUERY->add_mfun(QUERY, encode1_get_chans, "int", "chans");
+    // set SH 
     QUERY->add_mfun(QUERY, encode1_seti, "void", "seti");
     QUERY->add_arg(QUERY, "float", "value");
     QUERY->add_arg(QUERY, "int", "channel_index");
+    // position source within this chugin (easier)
+    QUERY->add_mfun(QUERY, encode1_position, "void", "pos");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_arg(QUERY, "float", "zenith");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode1_data_offset = QUERY->add_mvar( QUERY, "int", "@e_data", false );
@@ -263,10 +266,12 @@ CK_DLL_QUERY( Encode )
     QUERY->add_arg(QUERY, "int", "index");
     QUERY->add_mfun(QUERY, encode2_coefficients, "void", "coeff");
     QUERY->add_arg(QUERY, "float[]", "coordinates");
-    QUERY->add_mfun(QUERY, encode2_get_chans, "int", "chans");
     QUERY->add_mfun(QUERY, encode2_seti, "void", "seti");
     QUERY->add_arg(QUERY, "float", "value");
     QUERY->add_arg(QUERY, "int", "channel_index");
+    QUERY->add_mfun(QUERY, encode2_position, "void", "pos");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_arg(QUERY, "float", "zenith");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode2_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -287,10 +292,12 @@ CK_DLL_QUERY( Encode )
     QUERY->add_arg(QUERY, "int", "index");
     QUERY->add_mfun(QUERY, encode3_coefficients, "void", "coeff");
     QUERY->add_arg(QUERY, "float[]", "coordinates");
-    QUERY->add_mfun(QUERY, encode3_get_chans, "int", "chans");
     QUERY->add_mfun(QUERY, encode3_seti, "void", "seti");
     QUERY->add_arg(QUERY, "float", "value");
     QUERY->add_arg(QUERY, "int", "channel_index");
+    QUERY->add_mfun(QUERY, encode3_position, "void", "pos");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_arg(QUERY, "float", "zenith");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode3_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -311,10 +318,12 @@ CK_DLL_QUERY( Encode )
     QUERY->add_arg(QUERY, "int", "index");
     QUERY->add_mfun(QUERY, encode4_coefficients, "void", "coeff");
     QUERY->add_arg(QUERY, "float[]", "coordinates");
-    QUERY->add_mfun(QUERY, encode4_get_chans, "int", "chans");
     QUERY->add_mfun(QUERY, encode4_seti, "void", "seti");
     QUERY->add_arg(QUERY, "float", "value");
     QUERY->add_arg(QUERY, "int", "channel_index");
+    QUERY->add_mfun(QUERY, encode4_position, "void", "pos");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_arg(QUERY, "float", "zenith");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode4_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -335,10 +344,12 @@ CK_DLL_QUERY( Encode )
     QUERY->add_arg(QUERY, "int", "index");
     QUERY->add_mfun(QUERY, encode5_coefficients, "void", "coeff");
     QUERY->add_arg(QUERY, "float[]", "coordinates");
-    QUERY->add_mfun(QUERY, encode5_get_chans, "int", "chans");
     QUERY->add_mfun(QUERY, encode5_seti, "void", "seti");
     QUERY->add_arg(QUERY, "float", "value");
     QUERY->add_arg(QUERY, "int", "channel_index");
+    QUERY->add_mfun(QUERY, encode5_position, "void", "pos");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_arg(QUERY, "float", "zenith");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode5_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -399,10 +410,7 @@ CK_DLL_TICKF( encode1_tickf )
     Encode1 * encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
  
     // invoke our tick function; store in the magical out variable
-    if (encode_obj)
-    {
-        encode_obj->tick(in, out, nframes);
-    }
+    if (encode_obj) { encode_obj->tick(in, out, nframes); }
     // yes
     return TRUE;
 }
@@ -415,13 +423,6 @@ CK_DLL_MFUN(encode1_coefficients)
     encode_obj->set_coefficients(coefficients, API);
 }
 
-CK_DLL_MFUN(encode1_get_chans)
-{
-    // get our c++ class pointer
-    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
-    RETURN->v_int = encode_obj->get_chans();
-}
-
 CK_DLL_MFUN(encode1_seti)
 {
     float input_value = GET_NEXT_FLOAT(ARGS);
@@ -429,6 +430,15 @@ CK_DLL_MFUN(encode1_seti)
     // get our c++ class pointer
     Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
     if (encode_obj) { encode_obj->set_i(input_value, input_index); }
+}
+
+CK_DLL_MFUN(encode1_position)
+{
+	float azi = GET_NEXT_FLOAT(ARGS);
+	float zeni = GET_NEXT_FLOAT(ARGS);
+	// get c++ class pointer
+	Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
 //=================================================//
@@ -493,13 +503,6 @@ CK_DLL_MFUN(encode2_coefficients)
     encode_obj->set_coefficients(coefficients, API);
 }
 
-CK_DLL_MFUN(encode2_get_chans)
-{
-    // get our c++ class pointer
-    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
-    RETURN->v_int = encode_obj->get_chans();
-}
-
 CK_DLL_MFUN(encode2_seti)
 {
     float input_value = GET_NEXT_FLOAT(ARGS);
@@ -507,6 +510,15 @@ CK_DLL_MFUN(encode2_seti)
     // get our c++ class pointer
     Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
     if (encode_obj) { encode_obj->set_i(input_value, input_index); }
+}
+
+CK_DLL_MFUN(encode2_position)
+{
+	float azi = GET_NEXT_FLOAT(ARGS);
+	float zeni = GET_NEXT_FLOAT(ARGS);
+	// get c++ class pointer
+	Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
 //=================================================//
@@ -571,13 +583,6 @@ CK_DLL_MFUN(encode3_coefficients)
     encode_obj->set_coefficients(coefficients, API);
 }
 
-CK_DLL_MFUN(encode3_get_chans)
-{
-    // get our c++ class pointer
-    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
-    RETURN->v_int = encode_obj->get_chans();
-}
-
 CK_DLL_MFUN(encode3_seti)
 {
     float input_value = GET_NEXT_FLOAT(ARGS);
@@ -585,6 +590,15 @@ CK_DLL_MFUN(encode3_seti)
     // get our c++ class pointer
     Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
     if (encode_obj) { encode_obj->set_i(input_value, input_index); }
+}
+
+CK_DLL_MFUN(encode3_position)
+{
+	float azi = GET_NEXT_FLOAT(ARGS);
+	float zeni = GET_NEXT_FLOAT(ARGS);
+	// get c++ class pointer
+	Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
 //=================================================//
@@ -649,13 +663,6 @@ CK_DLL_MFUN(encode4_coefficients)
     encode_obj->set_coefficients(coefficients, API);
 }
 
-CK_DLL_MFUN(encode4_get_chans)
-{
-    // get our c++ class pointer
-    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
-    RETURN->v_int = encode_obj->get_chans();
-}
-
 CK_DLL_MFUN(encode4_seti)
 {
     float input_value = GET_NEXT_FLOAT(ARGS);
@@ -663,6 +670,15 @@ CK_DLL_MFUN(encode4_seti)
     // get our c++ class pointer
     Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
     if (encode_obj) { encode_obj->set_i(input_value, input_index); }
+}
+
+CK_DLL_MFUN(encode4_position)
+{
+	float azi = GET_NEXT_FLOAT(ARGS);
+	float zeni = GET_NEXT_FLOAT(ARGS);
+	// get c++ class pointer
+	Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
 //=================================================//
@@ -727,13 +743,6 @@ CK_DLL_MFUN(encode5_coefficients)
     encode_obj->set_coefficients(coefficients, API);
 }
 
-CK_DLL_MFUN(encode5_get_chans)
-{
-    // get our c++ class pointer
-    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
-    RETURN->v_int = encode_obj->get_chans();
-}
-
 CK_DLL_MFUN(encode5_seti)
 {
     float input_value = GET_NEXT_FLOAT(ARGS);
@@ -741,6 +750,15 @@ CK_DLL_MFUN(encode5_seti)
     // get our c++ class pointer
     Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
     if (encode_obj) { encode_obj->set_i(input_value, input_index); }
+}
+
+CK_DLL_MFUN(encode5_position)
+{
+	float azi = GET_NEXT_FLOAT(ARGS);
+	float zeni = GET_NEXT_FLOAT(ARGS);
+	// get c++ class pointer
+	Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
 //=================================================//
