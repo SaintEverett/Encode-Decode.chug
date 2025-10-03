@@ -2,6 +2,8 @@
 #ifndef SHCT_H
 #define SHCT_H
 
+#define E_PI 3.14159265358979323846264
+
 #include <array>
 #include <limits>
 
