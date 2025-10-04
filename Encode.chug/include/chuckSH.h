@@ -24,10 +24,8 @@ NLOUP<MAX_ORDER> norms; // create LOUP
 
 std::vector<float> SH(unsigned order_, const float azimuth_, const float zenith_, bool n3d) // SH calc
 {
-    float azimuth_shift = (azimuth_ - 90.f) * degree2rad;      // shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
-    float zenith_shift = (zenith_ - 90.f) * degree2rad;        // same here
-    azimuth_shift = rangeReduce(azimuth_shift, 0, 2 * E_PI);   // reduce to range of 0 < azi < 2pi
-    zenith_shift = rangeReduce(zenith_shift, 0, E_PI);         // reduce to range of 0 < zen < pi
+    float azimuth_shift = rangeReduce((azimuth_ - 90.f) * degree2rad, 0, 2 * E_PI);   // reduce to range of 0 < azi < 2pi & shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
+    float zenith_shift = rangeReduce((zenith_ - 90.f) * degree2rad, 0, E_PI);         // reduce to range of 0 < zen < pi
     float coszeni = cosf(zenith_shift);                        // pre calculate cos(zenith)
     int size = (order_ + 1) * (order_ + 1);                    // pre-compute size of vector to be returned
     std::vector<float> result = std::vector<float>(size, 0.f); // instantiate vector that is the size of the results that shall be returned
@@ -48,8 +46,8 @@ std::vector<float> SH(unsigned order_, const float azimuth_, const float zenith_
 
 void SH(unsigned order_, const float azimuth_, const float zenith_, std::vector<float> result, bool n3d) // SH calc
 {
-    float azimuth_shift = (azimuth_ - 90.f) * degree2rad; // shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
-    float zenith_shift = (zenith_ - 90.f) * degree2rad;   // same here
+    float azimuth_shift = rangeReduce((azimuth_ - 90.f) * degree2rad, 0, 2 * E_PI);   // reduce to range of 0 < azi < 2pi & shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
+    float zenith_shift = rangeReduce((zenith_ - 90.f) * degree2rad, 0, E_PI);         // reduce to range of 0 < zen < pi
     float coszeni = cosf(zenith_shift);                   // pre calculate cos(zenith)
     int size = (order_ + 1) * (order_ + 1) + 1;           // pre-compute size of vector to be returned
     if (result.capacity() != size)
