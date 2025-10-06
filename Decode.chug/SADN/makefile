@@ -1,10 +1,10 @@
 
 # chugin name
-CHUGIN_NAME=Decode
+CHUGIN_NAME=SADN
 
 # all of the c/cpp files that compose this chugin
 C_MODULES=
-CXX_MODULES=Decode.cpp
+CXX_MODULES=SADN.cpp
 
 # where to find chugin.h
 CK_SRC_PATH?=chuck/include

@@ -52,7 +52,7 @@ public:
         {
             for (int i = 0; i < channel_count; i++)
             {   
-                out[f * channel_count + i] = (in[f] * channel_matrix[i]); //
+                out[f * channel_count + i] = (in[f] * channel_matrix[i]); // in stream is mono so frame is channel 0
             }
         }
 
