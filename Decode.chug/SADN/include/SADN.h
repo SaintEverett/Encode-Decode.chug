@@ -11,12 +11,12 @@ public:
 		memset(out, 0, sizeof(SAMPLE) * n_channels * nframes); // clear
 		for (int f = 0; f < nframes; f++) // go through each frame
 		{
-			SAMPLE sumd = 0;
 			for (int c = 0; c < n_channels; c++) // go through each channel
 			{
+				SAMPLE sumd = 0;
 				for (int n = 0; n < n_channels; n++) // each channel of the incoming stream is a spherical harmonic
 				{
-					sumd += in[f * n_channels + n] * SpeakSH[n][c]; // matrix mult of speaker SHs and input stream I DON'T KNOW WHY IT'S [n][c] AND IT SCARES ME
+					sumd += (in[f * n_channels + n] * SpeakSH[n][c]); // matrix mult of speaker SHs and input stream I DON'T KNOW WHY IT'S [n][c] AND IT SCARES ME
 				}
 				out[f * n_channels + c] = sumd;
 			}

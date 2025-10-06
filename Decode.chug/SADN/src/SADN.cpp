@@ -73,7 +73,7 @@ public:
             if (size == 2)
             {
                 std::vector<float> temp = SH(1, API->object->array_float_get_idx(row, 0), API->object->array_float_get_idx(row, 1), 0);
-                for (int j = 0; j < temp.capacity(); j++)
+                for (int j = 0; j < temp.size(); j++)
                 {
                     SpeakSH[i][j] = temp[j];
                 }
