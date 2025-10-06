@@ -90,13 +90,23 @@ public:
         temp_matrix = SH(order, azimuth_, zenith_, 0); // simply just calls the spherical harmonic calculator
     }
 
+    std::vector<float> getSH()
+    {
+        std::vector<float> store;
+        store.resize(channel_count);
+        for (int i = 0; i < temp_matrix.size(); i++)
+        {
+            store[i] = temp_matrix[i];
+        }
+        return store;
+    }
+
 protected:
     // instance data
     t_CKUINT order = 0;
     t_CKUINT channel_count = 0;
     std::vector<float> channel_matrix; // current gain coeffs
     std::vector<float> temp_matrix; // temp coeffs to be shifted to current
-    std::vector<float> shStorage; // store spherical harmonics here rather than create a new vector each time
     bool zeroCrossing = FALSE; // is there a zero crossing?
 };
 
@@ -154,6 +164,7 @@ CK_DLL_MFUN(encode1_geti);
 CK_DLL_MFUN(encode1_seti);
 CK_DLL_MFUN(encode1_coefficients);
 CK_DLL_MFUN(encode1_position);
+CK_DLL_MFUN(encode1_getSH);
 t_CKINT encode1_data_offset = 0;
 // Encode2
 CK_DLL_CTOR(encode2_ctor);
@@ -163,6 +174,7 @@ CK_DLL_MFUN(encode2_geti);
 CK_DLL_MFUN(encode2_seti);
 CK_DLL_MFUN(encode2_coefficients);
 CK_DLL_MFUN(encode2_position);
+CK_DLL_MFUN(encode2_getSH);
 t_CKINT encode2_data_offset = 0;
 // Encode3
 CK_DLL_CTOR(encode3_ctor);
@@ -172,6 +184,7 @@ CK_DLL_MFUN(encode3_geti);
 CK_DLL_MFUN(encode3_seti);
 CK_DLL_MFUN(encode3_coefficients);
 CK_DLL_MFUN(encode3_position);
+CK_DLL_MFUN(encode3_getSH);
 t_CKINT encode3_data_offset = 0;
 // Encode4
 CK_DLL_CTOR(encode4_ctor);
@@ -181,6 +194,7 @@ CK_DLL_MFUN(encode4_geti);
 CK_DLL_MFUN(encode4_seti);
 CK_DLL_MFUN(encode4_coefficients);
 CK_DLL_MFUN(encode4_position);
+CK_DLL_MFUN(encode4_getSH);
 t_CKINT encode4_data_offset = 0;
 // Encode5
 CK_DLL_CTOR(encode5_ctor);
@@ -190,6 +204,7 @@ CK_DLL_MFUN(encode5_geti);
 CK_DLL_MFUN(encode5_seti);
 CK_DLL_MFUN(encode5_coefficients);
 CK_DLL_MFUN(encode5_position);
+CK_DLL_MFUN(encode5_getSH);
 t_CKINT encode5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
@@ -246,6 +261,8 @@ CK_DLL_QUERY( Encode )
     QUERY->add_mfun(QUERY, encode1_position, "void", "pos");
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
+    // retrieve SH
+    QUERY->add_mfun(QUERY, encode1_getSH, "float[]", "pos");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode1_data_offset = QUERY->add_mvar( QUERY, "int", "@e_data", false );
@@ -272,6 +289,7 @@ CK_DLL_QUERY( Encode )
     QUERY->add_mfun(QUERY, encode2_position, "void", "pos");
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
+    QUERY->add_mfun(QUERY, encode2_getSH, "float[]", "pos");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode2_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -298,6 +316,7 @@ CK_DLL_QUERY( Encode )
     QUERY->add_mfun(QUERY, encode3_position, "void", "pos");
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
+    QUERY->add_mfun(QUERY, encode3_getSH, "float[]", "pos");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode3_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -324,6 +343,7 @@ CK_DLL_QUERY( Encode )
     QUERY->add_mfun(QUERY, encode4_position, "void", "pos");
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
+    QUERY->add_mfun(QUERY, encode4_getSH, "float[]", "pos");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode4_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -350,6 +370,7 @@ CK_DLL_QUERY( Encode )
     QUERY->add_mfun(QUERY, encode5_position, "void", "pos");
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
+    QUERY->add_mfun(QUERY, encode5_getSH, "float[]", "pos");
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
     encode5_data_offset = QUERY->add_mvar(QUERY, "int", "@e_data", false);
@@ -441,6 +462,25 @@ CK_DLL_MFUN(encode1_position)
 	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
+
+CK_DLL_MFUN(encode1_getSH)
+{
+    // get our c++ class pointer
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+
+    std::vector<float> sphericals = encode_obj->getSH();
+
+    // Create a float[] array
+    Chuck_DL_Api::Object returnarray = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false);
+    Chuck_ArrayFloat* coordinatearray = (Chuck_ArrayFloat*)returnarray;
+    for (int i = 0; i < sphericals.size(); i++)
+    {
+        API->object->array_float_push_back(coordinatearray, sphericals[i]);
+    }
+
+    RETURN->v_object = (Chuck_Object*)coordinatearray;
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -519,6 +559,24 @@ CK_DLL_MFUN(encode2_position)
 	// get c++ class pointer
 	Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
 	if(encode_obj) { encode_obj->position(azi,zeni); }
+}
+
+CK_DLL_MFUN(encode2_getSH)
+{
+    // get our c++ class pointer
+    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+
+    std::vector<float> sphericals = encode_obj->getSH();
+
+    // Create a float[] array
+    Chuck_DL_Api::Object returnarray = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false);
+    Chuck_ArrayFloat* coordinatearray = (Chuck_ArrayFloat*)returnarray;
+    for (int i = 0; i < sphericals.size(); i++)
+    {
+        API->object->array_float_push_back(coordinatearray, sphericals[i]);
+    }
+
+    RETURN->v_object = (Chuck_Object*)coordinatearray;
 }
 
 //=================================================//
@@ -601,6 +659,24 @@ CK_DLL_MFUN(encode3_position)
 	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
+CK_DLL_MFUN(encode3_getSH)
+{
+    // get our c++ class pointer
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+
+    std::vector<float> sphericals = encode_obj->getSH();
+
+    // Create a float[] array
+    Chuck_DL_Api::Object returnarray = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false);
+    Chuck_ArrayFloat* coordinatearray = (Chuck_ArrayFloat*)returnarray;
+    for (int i = 0; i < sphericals.size(); i++)
+    {
+        API->object->array_float_push_back(coordinatearray, sphericals[i]);
+    }
+
+    RETURN->v_object = (Chuck_Object*)coordinatearray;
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -681,6 +757,24 @@ CK_DLL_MFUN(encode4_position)
 	if(encode_obj) { encode_obj->position(azi,zeni); }
 }
 
+CK_DLL_MFUN(encode4_getSH)
+{
+    // get our c++ class pointer
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+
+    std::vector<float> sphericals = encode_obj->getSH();
+
+    // Create a float[] array
+    Chuck_DL_Api::Object returnarray = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false);
+    Chuck_ArrayFloat* coordinatearray = (Chuck_ArrayFloat*)returnarray;
+    for (int i = 0; i < sphericals.size(); i++)
+    {
+        API->object->array_float_push_back(coordinatearray, sphericals[i]);
+    }
+
+    RETURN->v_object = (Chuck_Object*)coordinatearray;
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -759,6 +853,24 @@ CK_DLL_MFUN(encode5_position)
 	// get c++ class pointer
 	Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
 	if(encode_obj) { encode_obj->position(azi,zeni); }
+}
+
+CK_DLL_MFUN(encode5_getSH)
+{
+    // get our c++ class pointer
+    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+
+    std::vector<float> sphericals = encode_obj->getSH();
+
+    // Create a float[] array
+    Chuck_DL_Api::Object returnarray = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false);
+    Chuck_ArrayFloat* coordinatearray = (Chuck_ArrayFloat*)returnarray;
+    for (int i = 0; i < sphericals.size(); i++)
+    {
+        API->object->array_float_push_back(coordinatearray, sphericals[i]);
+    }
+
+    RETURN->v_object = (Chuck_Object*)coordinatearray;
 }
 
 //=================================================//
