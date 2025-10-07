@@ -234,7 +234,7 @@ CK_DLL_CTOR(sad1_2ctor)
     OBJ_MEMBER_INT(SELF, sad1_data_offset) = (t_CKINT)sad1_obj;
     if (sad1_obj)
     {
-        sad1_obj->setSpeakersAngles(multi_array, API);
+        sad1_obj->CKsetSpeakAngles(multi_array, API);
     }
 }
 
@@ -266,7 +266,7 @@ CK_DLL_MFUN(sad1_setSpeakers)
     SAD1* sad1_obj = (SAD1*)OBJ_MEMBER_INT(SELF, sad1_data_offset);
     if (sad1_obj) 
     { 
-        sad1_obj->setSpeakersAngles(multi_array, API); 
+        sad1_obj->CKsetSpeakAngles(multi_array, API); 
     }
 }
 
@@ -327,10 +327,7 @@ CK_DLL_CTOR(sad2_2ctor)
     SAD2* sad2_obj = new SAD2(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, sad2_data_offset) = (t_CKINT)sad2_obj;
-    if (sad2_obj)
-    {
-        sad2_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad2_obj) sad2_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 // implementation for the destructor
@@ -359,10 +356,7 @@ CK_DLL_MFUN(sad2_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
-    if (sad2_obj)
-    {
-        sad2_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad2_obj) sad2_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 CK_DLL_MFUN(sad2_getSpeakers)
@@ -422,10 +416,7 @@ CK_DLL_CTOR(sad3_2ctor)
     SAD3* sad3_obj = new SAD3(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, sad3_data_offset) = (t_CKINT)sad3_obj;
-    if (sad3_obj)
-    {
-        sad3_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad3_obj) sad3_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 // implementation for the destructor
@@ -454,10 +445,7 @@ CK_DLL_MFUN(sad3_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
-    if (sad3_obj)
-    {
-        sad3_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad3_obj) sad3_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 CK_DLL_MFUN(sad3_getSpeakers)
@@ -517,10 +505,7 @@ CK_DLL_CTOR(sad4_2ctor)
     SAD4* sad4_obj = new SAD4(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, sad4_data_offset) = (t_CKINT)sad4_obj;
-    if (sad4_obj)
-    {
-        sad4_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad4_obj) sad4_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 // implementation for the destructor
@@ -549,10 +534,7 @@ CK_DLL_MFUN(sad4_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
-    if (sad4_obj)
-    {
-        sad4_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad4_obj) sad4_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 CK_DLL_MFUN(sad4_getSpeakers)
@@ -614,7 +596,7 @@ CK_DLL_CTOR(sad5_2ctor)
     OBJ_MEMBER_INT(SELF, sad5_data_offset) = (t_CKINT)sad5_obj;
     if (sad5_obj)
     {
-        sad5_obj->setSpeakersAngles(multi_array, API);
+        sad5_obj->CKsetSpeakAngles(multi_array, API);
     }
 }
 
@@ -644,10 +626,7 @@ CK_DLL_MFUN(sad5_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
-    if (sad5_obj)
-    {
-        sad5_obj->setSpeakersAngles(multi_array, API);
-    }
+    if (sad5_obj) sad5_obj->CKsetSpeakAngles(multi_array, API);
 }
 
 CK_DLL_MFUN(sad5_getSpeakers)

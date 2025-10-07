@@ -1,12 +1,12 @@
-float speak[25][2];
+float speak[4][2];
 
 for(int i; i < speak.size(); i++)
 {
-    14.4*i => speak[i][0];
+    90*i => speak[i][0];
 }
 
-Encode4 enc;
-SAD4 sad(speak);
+Encode1 enc;
+SAD1 sad(speak);
 Impulse imp;
 WvOut SpeakFeed[sad.channels()];
 
