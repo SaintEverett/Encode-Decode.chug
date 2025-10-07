@@ -45,6 +45,7 @@
 
 // SAD1 function defs
 CK_DLL_CTOR( sad1_ctor );
+CK_DLL_CTOR( sad1_2ctor );
 CK_DLL_DTOR( sad1_dtor );
 CK_DLL_MFUN(sad1_setSpeakers);
 CK_DLL_MFUN(sad1_getSpeakers);
@@ -53,49 +54,49 @@ CK_DLL_TICKF( sad1_tickf );
 // this is a special offset reserved for chugin internal data
 t_CKINT sad1_data_offset = 0;
 
-//-----------------------------------------------------------------------------
-// class definition for internal chugin data
-// (NOTE this isn't strictly necessary, but is one example of a recommended approach)
-//-----------------------------------------------------------------------------
-class SAD1 : public SADN<1>
-{
-public:
+// SAD2 function defs
+CK_DLL_CTOR(sad2_ctor);
+CK_DLL_CTOR(sad2_2ctor);
+CK_DLL_DTOR(sad2_dtor);
+CK_DLL_MFUN(sad2_setSpeakers);
+CK_DLL_MFUN(sad2_getSpeakers);
+CK_DLL_TICKF(sad2_tickf);
 
-    SAD1(t_CKFLOAT fs) {};
+// this is a special offset reserved for chugin internal data
+t_CKINT sad2_data_offset = 0;
 
-    void setSpeakers(Chuck_Object* coord, CK_DL_API API)
-    {
-        Chuck_ArrayInt* column = (Chuck_ArrayInt*)coord;
-        for (t_CKINT i = 0; i < API->object->array_int_size(column); i++)
-        {
-            Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
-            t_CKUINT size = API->object->array_float_size(row);
-            if (size == 2)
-            {
-                std::vector<float> temp = SH(1, API->object->array_float_get_idx(row, 0), API->object->array_float_get_idx(row, 1), 0);
-                for (int j = 0; j < temp.size(); j++)
-                {
-                    SpeakSH[i][j] = temp[j];
-                }
-            }
-        }
-    }
+// SAD3 function defs
+CK_DLL_CTOR(sad3_ctor);
+CK_DLL_CTOR(sad3_2ctor);
+CK_DLL_DTOR(sad3_dtor);
+CK_DLL_MFUN(sad3_setSpeakers);
+CK_DLL_MFUN(sad3_getSpeakers);
+CK_DLL_TICKF(sad3_tickf);
 
-    // set parameter example
-    t_CKFLOAT setParam( t_CKFLOAT p )
-    {
-        m_param = p;
-        return p;
-    }
+// this is a special offset reserved for chugin internal data
+t_CKINT sad3_data_offset = 0;
 
-    // get parameter example
-    t_CKFLOAT getParam() { return m_param; }
-    
-private:
-    // instance data
-    t_CKFLOAT m_param = 0.f;
-};
+// SAD4 function defs
+CK_DLL_CTOR(sad4_ctor);
+CK_DLL_CTOR(sad4_2ctor);
+CK_DLL_DTOR(sad4_dtor);
+CK_DLL_MFUN(sad4_setSpeakers);
+CK_DLL_MFUN(sad4_getSpeakers);
+CK_DLL_TICKF(sad4_tickf);
 
+// this is a special offset reserved for chugin internal data
+t_CKINT sad4_data_offset = 0;
+
+// SAD5 function defs
+CK_DLL_CTOR(sad5_ctor);
+CK_DLL_CTOR(sad5_2ctor);
+CK_DLL_DTOR(sad5_dtor);
+CK_DLL_MFUN(sad5_setSpeakers);
+CK_DLL_MFUN(sad5_getSpeakers);
+CK_DLL_TICKF(sad5_tickf);
+
+// this is a special offset reserved for chugin internal data
+t_CKINT sad5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
 // info function: ChucK calls this when loading/probing the chugin
@@ -109,7 +110,7 @@ CK_DLL_INFO( SAD )
     // the author(s) of this chugin, e.g., "Alice Baker & Carl Donut"
     QUERY->setinfo( QUERY, CHUGIN_INFO_AUTHORS, "" );
     // text description of this chugin; what is it? what does it do? who is it for?
-    QUERY->setinfo( QUERY, CHUGIN_INFO_DESCRIPTION, "" );
+    QUERY->setinfo( QUERY, CHUGIN_INFO_DESCRIPTION, "A Sampling Ambisonic Decoder (SAD) for ChucK. In up to fifth order." );
     // (optional) URL of the homepage for this chugin
     QUERY->setinfo( QUERY, CHUGIN_INFO_URL, "" );
     // (optional) contact email
@@ -125,30 +126,78 @@ CK_DLL_QUERY( SAD )
 {
     // generally, don't change this...
     QUERY->setname( QUERY, "SAD" );
-
-    // ------------------------------------------------------------------------
-    // begin class definition(s); will be compiled, verified,
-    // and added to the chuck host type system for use
-    // ------------------------------------------------------------------------
-    // NOTE to create a non-UGen class, change the second argument
-    // to extend a different ChucK class (e.g., "Object")
     QUERY->begin_class( QUERY, "SAD1", "UGen" );
     QUERY->add_ctor( QUERY, sad1_ctor );
+    QUERY->add_ctor( QUERY, sad1_2ctor );
+    QUERY->add_arg(QUERY, "float[][]", "SAD1");
     QUERY->add_dtor( QUERY, sad1_dtor );
     QUERY->add_ugen_funcf( QUERY, sad1_tickf, NULL, 4, 4 );
     QUERY->add_mfun(QUERY, sad1_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
-    QUERY->add_mfun(QUERY, sad1_getSpeakers, "float[][]", "placement");
-        
+    QUERY->add_mfun(QUERY, sad1_getSpeakers, "float[][]", "placement");       
     // this reserves a variable in the ChucK internal class to store 
-    // referene to the c++ class we defined above
     sad1_data_offset = QUERY->add_mvar( QUERY, "int", "@sad1_data", false );
-
-    // ------------------------------------------------------------------------
-    // end the class definition
-    // IMPORTANT: this MUST be called to each class definition!
-    // ------------------------------------------------------------------------
     QUERY->end_class( QUERY );
+
+    // generally, don't change this...
+    QUERY->setname(QUERY, "SAD");
+    QUERY->begin_class(QUERY, "SAD2", "UGen");
+    QUERY->add_ctor(QUERY, sad2_ctor);
+    QUERY->add_ctor(QUERY, sad2_2ctor);
+    QUERY->add_arg(QUERY, "float[][]", "SAD2");
+    QUERY->add_dtor(QUERY, sad2_dtor);
+    QUERY->add_ugen_funcf(QUERY, sad2_tickf, NULL, 9, 9);
+    QUERY->add_mfun(QUERY, sad2_setSpeakers, "void", "placement");
+    QUERY->add_arg(QUERY, "float[][]", "");
+    QUERY->add_mfun(QUERY, sad2_getSpeakers, "float[][]", "placement");
+    // this reserves a variable in the ChucK internal class to store 
+    sad2_data_offset = QUERY->add_mvar(QUERY, "int", "@sad2_data", false);
+    QUERY->end_class(QUERY);
+
+    // generally, don't change this...
+    QUERY->setname(QUERY, "SAD");
+    QUERY->begin_class(QUERY, "SAD3", "UGen");
+    QUERY->add_ctor(QUERY, sad3_ctor);
+    QUERY->add_ctor(QUERY, sad3_2ctor);
+    QUERY->add_arg(QUERY, "float[][]", "SAD3");
+    QUERY->add_dtor(QUERY, sad3_dtor);
+    QUERY->add_ugen_funcf(QUERY, sad3_tickf, NULL, 16, 16);
+    QUERY->add_mfun(QUERY, sad3_setSpeakers, "void", "placement");
+    QUERY->add_arg(QUERY, "float[][]", "");
+    QUERY->add_mfun(QUERY, sad3_getSpeakers, "float[][]", "placement");
+    // this reserves a variable in the ChucK internal class to store 
+    sad3_data_offset = QUERY->add_mvar(QUERY, "int", "@sad3_data", false);
+    QUERY->end_class(QUERY);
+
+    // generally, don't change this...
+    QUERY->setname(QUERY, "SAD");
+    QUERY->begin_class(QUERY, "SAD4", "UGen");
+    QUERY->add_ctor(QUERY, sad4_ctor);
+    QUERY->add_ctor(QUERY, sad4_2ctor);
+    QUERY->add_arg(QUERY, "float[][]", "SAD4");
+    QUERY->add_dtor(QUERY, sad4_dtor);
+    QUERY->add_ugen_funcf(QUERY, sad4_tickf, NULL, 25, 25);
+    QUERY->add_mfun(QUERY, sad4_setSpeakers, "void", "placement");
+    QUERY->add_arg(QUERY, "float[][]", "");
+    QUERY->add_mfun(QUERY, sad4_getSpeakers, "float[][]", "placement");
+    // this reserves a variable in the ChucK internal class to store 
+    sad4_data_offset = QUERY->add_mvar(QUERY, "int", "@sad4_data", false);
+    QUERY->end_class(QUERY);
+
+    // generally, don't change this...
+    QUERY->setname(QUERY, "SAD");
+    QUERY->begin_class(QUERY, "SAD5", "UGen");
+    QUERY->add_ctor(QUERY, sad5_ctor);
+    QUERY->add_ctor(QUERY, sad5_2ctor);
+    QUERY->add_arg(QUERY, "float[][]", "SAD5");
+    QUERY->add_dtor(QUERY, sad5_dtor);
+    QUERY->add_ugen_funcf(QUERY, sad5_tickf, NULL, 36, 36);
+    QUERY->add_mfun(QUERY, sad5_setSpeakers, "void", "placement");
+    QUERY->add_arg(QUERY, "float[][]", "");
+    QUERY->add_mfun(QUERY, sad5_getSpeakers, "float[][]", "placement");
+    // this reserves a variable in the ChucK internal class to store 
+    sad5_data_offset = QUERY->add_mvar(QUERY, "int", "@sad5_data", false);
+    QUERY->end_class(QUERY);
 
     // wasn't that a breeze?
     return TRUE;
@@ -172,6 +221,21 @@ CK_DLL_CTOR(sad1_ctor)
     SAD1* sad1_obj = new SAD1(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, sad1_data_offset) = (t_CKINT)sad1_obj;
+}
+
+CK_DLL_CTOR(sad1_2ctor)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad1_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD1* sad1_obj = new SAD1(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad1_data_offset) = (t_CKINT)sad1_obj;
+    if (sad1_obj)
+    {
+        sad1_obj->setSpeakersAngles(multi_array, API);
+    }
 }
 
 // implementation for the destructor
@@ -202,7 +266,7 @@ CK_DLL_MFUN(sad1_setSpeakers)
     SAD1* sad1_obj = (SAD1*)OBJ_MEMBER_INT(SELF, sad1_data_offset);
     if (sad1_obj) 
     { 
-        sad1_obj->setSpeakers(multi_array, API); 
+        sad1_obj->setSpeakersAngles(multi_array, API); 
     }
 }
 
@@ -224,6 +288,386 @@ CK_DLL_MFUN(sad1_getSpeakers)
         Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
 
         for (int j = 0; j < sphericals.size(); j++) 
+        {
+            API->object->array_float_push_back(row_tmp, sphericals[i][j]);
+        }
+
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+    }
+
+    RETURN->v_object = (Chuck_Object*)final;
+}
+
+//=================================================//
+// ************************************************//
+//                                                 //   
+// SAD2 DLL definitions ; Everett M. Carpenter  //
+//                                                 //
+// ************************************************//
+//=================================================//
+// implementation for the default constructor
+
+// implementation for the default constructor
+CK_DLL_CTOR(sad2_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad2_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD2* sad2_obj = new SAD2(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad2_data_offset) = (t_CKINT)sad2_obj;
+}
+
+CK_DLL_CTOR(sad2_2ctor)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad2_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD2* sad2_obj = new SAD2(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad2_data_offset) = (t_CKINT)sad2_obj;
+    if (sad2_obj)
+    {
+        sad2_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(sad2_dtor)
+{
+    // get our c++ class pointer
+    SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(sad2_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, sad2_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(sad2_tickf)
+{
+    // get our c++ class pointer
+    SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
+    if (sad2_obj) sad2_obj->tick(in, out, nframes);
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(sad2_setSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
+    if (sad2_obj)
+    {
+        sad2_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+CK_DLL_MFUN(sad2_getSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
+
+    std::vector<std::vector<float>> sphericals = sad2_obj->getSpeakerSH();
+
+    // create [][]
+    Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
+    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+
+    for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
+    {
+        Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
+        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+
+        for (int j = 0; j < sphericals.size(); j++)
+        {
+            API->object->array_float_push_back(row_tmp, sphericals[i][j]);
+        }
+
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+    }
+
+    RETURN->v_object = (Chuck_Object*)final;
+}
+
+//=================================================//
+// ************************************************//
+//                                                 //   
+// SAD3 DLL definitions ; Everett M. Carpenter  //
+//                                                 //
+// ************************************************//
+//=================================================//
+// implementation for the default constructor
+
+// implementation for the default constructor
+CK_DLL_CTOR(sad3_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad3_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD3* sad3_obj = new SAD3(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad3_data_offset) = (t_CKINT)sad3_obj;
+}
+
+CK_DLL_CTOR(sad3_2ctor)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad3_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD3* sad3_obj = new SAD3(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad3_data_offset) = (t_CKINT)sad3_obj;
+    if (sad3_obj)
+    {
+        sad3_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(sad3_dtor)
+{
+    // get our c++ class pointer
+    SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(sad3_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, sad3_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(sad3_tickf)
+{
+    // get our c++ class pointer
+    SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
+    if (sad3_obj) sad3_obj->tick(in, out, nframes);
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(sad3_setSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
+    if (sad3_obj)
+    {
+        sad3_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+CK_DLL_MFUN(sad3_getSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
+
+    std::vector<std::vector<float>> sphericals = sad3_obj->getSpeakerSH();
+
+    // create [][]
+    Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
+    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+
+    for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
+    {
+        Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
+        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+
+        for (int j = 0; j < sphericals.size(); j++)
+        {
+            API->object->array_float_push_back(row_tmp, sphericals[i][j]);
+        }
+
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+    }
+
+    RETURN->v_object = (Chuck_Object*)final;
+}
+
+//=================================================//
+// ************************************************//
+//                                                 //   
+// SAD4 DLL definitions ; Everett M. Carpenter  //
+//                                                 //
+// ************************************************//
+//=================================================//
+// implementation for the default constructor
+
+// implementation for the default constructor
+CK_DLL_CTOR(sad4_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad4_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD4* sad4_obj = new SAD4(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad4_data_offset) = (t_CKINT)sad4_obj;
+}
+
+CK_DLL_CTOR(sad4_2ctor)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad4_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD4* sad4_obj = new SAD4(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad4_data_offset) = (t_CKINT)sad4_obj;
+    if (sad4_obj)
+    {
+        sad4_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(sad4_dtor)
+{
+    // get our c++ class pointer
+    SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(sad4_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, sad4_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(sad4_tickf)
+{
+    // get our c++ class pointer
+    SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
+    if (sad4_obj) sad4_obj->tick(in, out, nframes);
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(sad4_setSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
+    if (sad4_obj)
+    {
+        sad4_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+CK_DLL_MFUN(sad4_getSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
+
+    std::vector<std::vector<float>> sphericals = sad4_obj->getSpeakerSH();
+
+    // create [][]
+    Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
+    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+
+    for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
+    {
+        Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
+        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+
+        for (int j = 0; j < sphericals.size(); j++)
+        {
+            API->object->array_float_push_back(row_tmp, sphericals[i][j]);
+        }
+
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+    }
+
+    RETURN->v_object = (Chuck_Object*)final;
+}
+
+//=================================================//
+// ************************************************//
+//                                                 //   
+// SAD5 DLL definitions ; Everett M. Carpenter  //
+//                                                 //
+// ************************************************//
+//=================================================//
+// implementation for the default constructor
+
+// implementation for the default constructor
+CK_DLL_CTOR(sad5_ctor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad5_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD5* sad5_obj = new SAD5(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad5_data_offset) = (t_CKINT)sad5_obj;
+}
+
+CK_DLL_CTOR(sad5_2ctor)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, sad5_data_offset) = 0;
+    // instantiate our internal c++ class representation
+    SAD5* sad5_obj = new SAD5(API->vm->srate(VM));
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, sad5_data_offset) = (t_CKINT)sad5_obj;
+    if (sad5_obj)
+    {
+        sad5_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+// implementation for the destructor
+CK_DLL_DTOR(sad5_dtor)
+{
+    // get our c++ class pointer
+    SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
+    // clean up (this macro tests for NULL, deletes, and zeros out the variable)
+    CK_SAFE_DELETE(sad5_obj);
+    // set the data field to 0
+    OBJ_MEMBER_INT(SELF, sad5_data_offset) = 0;
+}
+
+// implementation for tick function (relevant only for UGens)
+CK_DLL_TICKF(sad5_tickf)
+{
+    // get our c++ class pointer
+    SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
+    if (sad5_obj) sad5_obj->tick(in, out, nframes);
+    // yes
+    return TRUE;
+}
+
+CK_DLL_MFUN(sad5_setSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
+    if (sad5_obj)
+    {
+        sad5_obj->setSpeakersAngles(multi_array, API);
+    }
+}
+
+CK_DLL_MFUN(sad5_getSpeakers)
+{
+    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
+
+    std::vector<std::vector<float>> sphericals = sad5_obj->getSpeakerSH();
+
+    // create [][]
+    Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
+    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+
+    for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
+    {
+        Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
+        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+
+        for (int j = 0; j < sphericals.size(); j++)
         {
             API->object->array_float_push_back(row_tmp, sphericals[i][j]);
         }

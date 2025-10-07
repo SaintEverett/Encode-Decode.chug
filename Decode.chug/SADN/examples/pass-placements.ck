@@ -1,21 +1,17 @@
-Encode1 enc;
-SAD1 sad;
-Impulse imp;
-
-SinOsc sin(452.0);
-imp.gain(0.5);
-enc.gain(1.0);
-WvOut SpeakFeed[sad.channels()];
-
-float speak[4][2];
+float speak[25][2];
 
 for(int i; i < speak.size(); i++)
 {
-    90*i => speak[i][0];
+    14.4*i => speak[i][0];
 }
 
-sad.placement(speak);
-enc.pos(90.0,0.0);
+Encode4 enc;
+SAD4 sad(speak);
+Impulse imp;
+WvOut SpeakFeed[sad.channels()];
+
+imp.gain(1.0);
+enc.gain(1.0);
 
 float place[][];
 float encplace[];
@@ -65,13 +61,11 @@ while(true)
     float azi;
     for(int i; i < 360; i++)
     {
-    	/*
         while(i >= azi)
         {
             azi+0.1 => azi;
             enc.pos(azi, 0);
         }
-        */
         //enc.pos(90,0);
         10::ms => now;
     }
