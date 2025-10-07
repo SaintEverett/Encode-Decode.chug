@@ -13,146 +13,38 @@
 #include <limits.h>
 #include <math.h>
 #include "chuckSH.h"
+#include "Encode.h"
 
 const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordinates, if the input sample is less than this, change coefficients
 
-//-----------------------------------------------------------------------------
-// class definition for internal chugin data
-// (NOTE this isn't strictly necessary, but is one example of a recommended approach)
-//-----------------------------------------------------------------------------
-class EncodeN
+class Encode1 : public Encoder<1>
 {
 public:
-    EncodeN(t_CKFLOAT fs, unsigned chan, unsigned order_)
-    {
-        channel_count = chan;
-        order = order_;
-        channel_matrix.resize(chan); // size these
-        temp_matrix.resize(chan); 
-    }
-    // for chugins extending UGen
-    void tick( SAMPLE* in, SAMPLE* out, int nframes)
-    {
-        for (int f = 0; f < nframes; f++) 
-        {
-            zeroCrossing = abs(in[f]) < ZERO_THRESHOLD ? TRUE : FALSE; //  less that threshold? zeroCrossing TRUE else FALSE
-        }
-        
-        if (zeroCrossing && channel_matrix != temp_matrix) // zero crossing and matrices aren't the same?
-        {
-            for (int i = 0; i < channel_count; i++) 
-            {
-                channel_matrix[i] = temp_matrix[i]; // swap it out
-            }
-        }
-
-        memset(out, 0, sizeof(SAMPLE) * channel_count * nframes); // clear
-
-        for (int f = 0; f < nframes; f++)
-        {
-            for (int i = 0; i < channel_count; i++)
-            {   
-                out[f * channel_count + i] = (in[f] * channel_matrix[i]); // in stream is mono so frame is channel 0
-            }
-        }
-
-    }
-
-    void set_coefficients(Chuck_ArrayFloat* coord, CK_DL_API API)
-    {
-        int size = (API->object->array_float_size(coord));
-        if (size >= channel_count)
-        {
-            for (int i = 0; i < size;i++)
-            {
-                temp_matrix[i] = (API->object->array_float_get_idx(coord, i));
-            }
-        }
-    }
-
-    t_CKFLOAT get_i(t_CKUINT index)
-    {
-        if (index < channel_count) { return channel_matrix[index]; }
-        else return NULL;
-    }
-
-    void set_i(t_CKFLOAT value, t_CKUINT index)
-    {
-        if (index < channel_count) 
-        { 
-            temp_matrix[index] = value; 
-        }
-        else NULL;
-    }
-
-    void position(t_CKFLOAT azimuth_, t_CKFLOAT zenith_)
-    {
-        temp_matrix = SH(order, azimuth_, zenith_, 0); // simply just calls the spherical harmonic calculator
-    }
-
-    std::vector<float> getSH()
-    {
-        std::vector<float> store;
-        store.resize(channel_count);
-        for (int i = 0; i < temp_matrix.size(); i++)
-        {
-            store[i] = temp_matrix[i];
-        }
-        return store;
-    }
-
-protected:
-    // instance data
-    t_CKUINT order = 0;
-    t_CKUINT channel_count = 0;
-    std::vector<float> channel_matrix; // current gain coeffs
-    std::vector<float> temp_matrix; // temp coeffs to be shifted to current
-    bool zeroCrossing = FALSE; // is there a zero crossing?
+    Encode1(t_CKFLOAT fs) {};
 };
 
-class Encode1 : public EncodeN
+class Encode2 : public Encoder<2>
 {
 public:
-    Encode1(t_CKFLOAT fs) : EncodeN(fs, 4, 1)
-    {
-        ;
-    }   
+    Encode2(t_CKFLOAT fs) {};
 };
 
-class Encode2 : public EncodeN
+class Encode3 : public Encoder<3>
 {
 public:
-    Encode2(t_CKFLOAT fs) : EncodeN(fs, 9, 2)
-    {
-        ;
-    }
+    Encode3(t_CKFLOAT fs) {};
 };
 
-class Encode3 : public EncodeN
+class Encode4 : public Encoder<4>
 {
 public:
-    Encode3(t_CKFLOAT fs) : EncodeN(fs, 16, 3)
-    {
-        ;
-    }
+    Encode4(t_CKFLOAT fs) {};
 };
 
-class Encode4 : public EncodeN
+class Encode5 : public Encoder<5>
 {
 public:
-    Encode4(t_CKFLOAT fs) : EncodeN(fs, 25, 4)
-    {
-        ;
-    }
-};
-
-class Encode5 : public EncodeN
-{
-public:
-    Encode5(t_CKFLOAT fs) : EncodeN(fs, 36, 5)
-    {
-        ;
-    }
+    Encode5(t_CKFLOAT fs) {};
 };
 
 // declaration of chugin constructor

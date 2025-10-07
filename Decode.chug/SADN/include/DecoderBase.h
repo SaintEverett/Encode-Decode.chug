@@ -1,4 +1,10 @@
 // Decoder base class for inheritance 
+// ==========================================================
+// All decoders ever will be of some order N and have some number of channels which is directly related to the order N
+// All decoders ever will store and reference a set of spherical harmonics attributed to each channel of the decoder
+// All decoders ever will be able to retrieve 
+//
+
 #ifndef DECODE_BASE_H
 #define DECODE_BASE_H
 
@@ -8,7 +14,9 @@ template<const unsigned order_>
 class Decoder
 {
 public:
-	void setSpeakerSH(std::vector<std::vector<float>> n_SpeakSH)
+	virtual void tick(SAMPLE* in, SAMPLE* out, unsigned nframes) = 0;
+
+	void setSpeakerSH(std::vector<std::vector<float>> n_SpeakSH) // set SH given all speaker SHs
 	{
 		for (int i = 0; i < n_channels; i++)
 		{
@@ -19,15 +27,15 @@ public:
 		}
 	}
 
-	void setSpeakerSH(std::vector<float> n_SpeakSH, unsigned which)
+	void setSpeakerSH(std::vector<float> n_SpeakSH, unsigned o) // set SH given a certain speaker
 	{
 		for (int i = 0; i < n_SpeakSH.size(); i++)
 		{
-			SpeakSH[which][i] = n_SpeakSH[i];
+			SpeakSH[o][i] = n_SpeakSH[i];
 		}
 	}
 
-	std::vector<std::vector<float>> getSpeakerSH()
+	std::vector<std::vector<float>> getSpeakerSH() // retrieve all speaker SHs
 	{
 		std::vector<std::vector<float>> store;
 		store.resize(n_channels);
@@ -42,12 +50,27 @@ public:
 		return store;
 	}
 
-	void CKsetSpeakAngles(Chuck_Object* coord, CK_DL_API API)
+	std::vector<float> getSpeakerSH(unsigned o) // retrieve a speaker's SHs
+	{
+		std::vector<float> store;
+		store.resize(n_channels);
+		if (o < (n_channels - 1))
+		{
+			for (int i = 0; i < SpeakSH[o].size(); i++)
+			{
+				store[i] = SpeakSH[o][i];
+			}
+			return store;
+		}
+		else return 0;
+	}
+
+	void CKsetSpeakAngles(Chuck_Object* coord, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
 	{
 		Chuck_ArrayInt* column = (Chuck_ArrayInt*)coord;
-		if (API->object->array_int_size(column) == n_channels)
+		if (API->object->array_int_size(column) >= n_channels)
 		{
-			for (t_CKINT i = 0; i < API->object->array_int_size(column); i++)
+			for (t_CKINT i = 0; i < n_channels; i++)
 			{
 				Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
 				t_CKUINT size = API->object->array_float_size(row);
@@ -66,4 +89,4 @@ protected:
 	std::array<std::array<float, n_channels>, n_channels> SpeakSH{};
 };
 
-#endif /* DECODE_BASEH */
+#endif /* DECODE_BASE_H */
