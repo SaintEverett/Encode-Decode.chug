@@ -30,9 +30,9 @@ public:
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
 //-----------------------------------------------------------------------------
-class SAD1 : public SADN<1>
+class SAD1 : public SADN<1> // wrapper for SADN to chuck
 {
-public:
+public: 
 
 	SAD1(t_CKFLOAT fs) {};
 };

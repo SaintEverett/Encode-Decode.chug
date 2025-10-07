@@ -17,7 +17,7 @@
 
 const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordinates, if the input sample is less than this, change coefficients
 
-class Encode1 : public Encoder<1>
+class Encode1 : public Encoder<1> // these simply just act as wrappers of Encoder to chuck
 {
 public:
     Encode1(t_CKFLOAT fs) {};
