@@ -3,7 +3,7 @@
 // All decoders ever will be of some order N and have some number of channels which is directly related to the order N
 // All decoders ever will store and reference a set of spherical harmonics attributed to each channel of the decoder
 // All decoders ever will be able to retrieve 
-//
+// All decoders ever will store weights and apply them to their spherical harmonics when received 
 
 #ifndef DECODE_BASE_H
 #define DECODE_BASE_H
@@ -83,10 +83,28 @@ public:
 		}
 	}
 
+	void CKsetWeights(Chuck_ArrayFloat* m_weights, CK_DL_API API)
+	{
+		unsigned size = API->object->array_float_size(m_weights);
+		for (int i = 0; i < size; i++)
+		{
+			if (i < n_channels)
+			{
+				weights[i] = API->object->array_float_get_idx(m_weights, i);
+				for (int j = 0; j < n_channels; j++)
+				{
+					SpeakSH[j][i] = SpeakSH[j][i] * weights[i];
+				}
+			}
+		}
+	}
+
 protected:
 	static constexpr unsigned order = order_; // order
 	static constexpr unsigned n_channels = (order_ + 1) * (order_ + 1); // how many channels
-	std::array<std::array<float, n_channels>, n_channels> SpeakSH{};
+	std::array<std::array<float, n_channels>, n_channels> SpeakSH{}; // spherical harmonics
+	std::array<float, n_channels> weights{}; // weights
+	constexpr static unsigned channelBalance = 1.f / n_channels;
 };
 
 #endif /* DECODE_BASE_H */

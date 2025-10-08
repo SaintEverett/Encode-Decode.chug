@@ -18,7 +18,7 @@ public:
 				SAMPLE sumd = 0;
 				for (int n = 0; n < n_channels; n++) // each channel of the incoming stream is a spherical harmonic
 				{
-					sumd += ((1.f / n_channels) * in[f * n_channels + n] * SpeakSH[c][n]); // matrix mult of speaker SHs and input stream
+					sumd += (channelBalance * in[f * n_channels + n] * SpeakSH[c][n]); // matrix mult of speaker SHs and input stream
 				}
 				out[f * n_channels + c] = sumd;
 			}

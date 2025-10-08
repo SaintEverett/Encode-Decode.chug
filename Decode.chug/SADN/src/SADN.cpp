@@ -50,6 +50,7 @@ CK_DLL_DTOR( sad1_dtor );
 CK_DLL_MFUN(sad1_setSpeakers);
 CK_DLL_MFUN(sad1_getSpeakers);
 CK_DLL_TICKF( sad1_tickf );
+CK_DLL_MFUN(sad1_setWeights);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad1_data_offset = 0;
@@ -61,6 +62,7 @@ CK_DLL_DTOR(sad2_dtor);
 CK_DLL_MFUN(sad2_setSpeakers);
 CK_DLL_MFUN(sad2_getSpeakers);
 CK_DLL_TICKF(sad2_tickf);
+CK_DLL_MFUN(sad2_setWeights);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad2_data_offset = 0;
@@ -72,6 +74,7 @@ CK_DLL_DTOR(sad3_dtor);
 CK_DLL_MFUN(sad3_setSpeakers);
 CK_DLL_MFUN(sad3_getSpeakers);
 CK_DLL_TICKF(sad3_tickf);
+CK_DLL_MFUN(sad3_setWeights);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad3_data_offset = 0;
@@ -83,6 +86,7 @@ CK_DLL_DTOR(sad4_dtor);
 CK_DLL_MFUN(sad4_setSpeakers);
 CK_DLL_MFUN(sad4_getSpeakers);
 CK_DLL_TICKF(sad4_tickf);
+CK_DLL_MFUN(sad4_setWeights);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad4_data_offset = 0;
@@ -94,6 +98,7 @@ CK_DLL_DTOR(sad5_dtor);
 CK_DLL_MFUN(sad5_setSpeakers);
 CK_DLL_MFUN(sad5_getSpeakers);
 CK_DLL_TICKF(sad5_tickf);
+CK_DLL_MFUN(sad5_setWeights);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad5_data_offset = 0;
@@ -134,7 +139,9 @@ CK_DLL_QUERY( SAD )
     QUERY->add_ugen_funcf( QUERY, sad1_tickf, NULL, 4, 4 );
     QUERY->add_mfun(QUERY, sad1_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
-    QUERY->add_mfun(QUERY, sad1_getSpeakers, "float[][]", "placement");       
+    QUERY->add_mfun(QUERY, sad1_getSpeakers, "float[][]", "placement");    
+    QUERY->add_mfun(QUERY, sad1_setWeights, "void", "weights");
+    QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
     sad1_data_offset = QUERY->add_mvar( QUERY, "int", "@sad1_data", false );
     QUERY->end_class( QUERY );
@@ -150,6 +157,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad2_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
     QUERY->add_mfun(QUERY, sad2_getSpeakers, "float[][]", "placement");
+    QUERY->add_mfun(QUERY, sad2_setWeights, "void", "weights");
+    QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
     sad2_data_offset = QUERY->add_mvar(QUERY, "int", "@sad2_data", false);
     QUERY->end_class(QUERY);
@@ -165,6 +174,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad3_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
     QUERY->add_mfun(QUERY, sad3_getSpeakers, "float[][]", "placement");
+    QUERY->add_mfun(QUERY, sad3_setWeights, "void", "weights");
+    QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
     sad3_data_offset = QUERY->add_mvar(QUERY, "int", "@sad3_data", false);
     QUERY->end_class(QUERY);
@@ -180,6 +191,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad4_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
     QUERY->add_mfun(QUERY, sad4_getSpeakers, "float[][]", "placement");
+    QUERY->add_mfun(QUERY, sad4_setWeights, "void", "weights");
+    QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
     sad4_data_offset = QUERY->add_mvar(QUERY, "int", "@sad4_data", false);
     QUERY->end_class(QUERY);
@@ -195,6 +208,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad5_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
     QUERY->add_mfun(QUERY, sad5_getSpeakers, "float[][]", "placement");
+    QUERY->add_mfun(QUERY, sad5_setWeights, "void", "weights");
+    QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
     sad5_data_offset = QUERY->add_mvar(QUERY, "int", "@sad5_data", false);
     QUERY->end_class(QUERY);
@@ -298,6 +313,14 @@ CK_DLL_MFUN(sad1_getSpeakers)
     RETURN->v_object = (Chuck_Object*)final;
 }
 
+CK_DLL_MFUN(sad1_setWeights)
+{
+    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD1* sad1_obj = (SAD1*)OBJ_MEMBER_INT(SELF, sad1_data_offset);
+    if (sad1_obj) sad1_obj->CKsetWeights(weights, API);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -385,6 +408,14 @@ CK_DLL_MFUN(sad2_getSpeakers)
     }
 
     RETURN->v_object = (Chuck_Object*)final;
+}
+
+CK_DLL_MFUN(sad2_setWeights)
+{
+    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
+    if (sad2_obj) sad2_obj->CKsetWeights(weights, API);
 }
 
 //=================================================//
@@ -476,6 +507,14 @@ CK_DLL_MFUN(sad3_getSpeakers)
     RETURN->v_object = (Chuck_Object*)final;
 }
 
+CK_DLL_MFUN(sad3_setWeights)
+{
+    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
+    if (sad3_obj) sad3_obj->CKsetWeights(weights, API);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -563,6 +602,14 @@ CK_DLL_MFUN(sad4_getSpeakers)
     }
 
     RETURN->v_object = (Chuck_Object*)final;
+}
+
+CK_DLL_MFUN(sad4_setWeights)
+{
+    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
+    if (sad4_obj) sad4_obj->CKsetWeights(weights, API);
 }
 
 //=================================================//
@@ -655,4 +702,12 @@ CK_DLL_MFUN(sad5_getSpeakers)
     }
 
     RETURN->v_object = (Chuck_Object*)final;
+}
+
+CK_DLL_MFUN(sad5_setWeights)
+{
+    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    // get our c++ class pointer
+    SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
+    if (sad5_obj) sad5_obj->CKsetWeights(weights, API);
 }
