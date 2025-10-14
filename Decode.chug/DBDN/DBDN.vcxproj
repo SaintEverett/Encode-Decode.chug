@@ -138,9 +138,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\LinkwitzRiley.h" />
     <ClInclude Include="include\chuckSH.h" />
     <ClInclude Include="include\chugin.h" />
-    <ClInclude Include="include\CrossoverFilter.h" />
     <ClInclude Include="include\DecoderBase.h" />
     <ClInclude Include="include\SHCT.h" />
   </ItemGroup>

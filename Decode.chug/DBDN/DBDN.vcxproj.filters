@@ -13,7 +13,7 @@
     <ClInclude Include="include\SHCT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CrossoverFilter.h">
+    <ClInclude Include="include\LinkwitzRiley.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
