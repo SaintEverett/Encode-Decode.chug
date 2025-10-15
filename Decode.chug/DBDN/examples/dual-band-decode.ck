@@ -52,7 +52,7 @@ for(int i; i < sad.channels(); i++)
 {
     SpeakFeed[i].wavFilename("SAD_TEST_SPEAKER_"+(i+1));
     sad.chan(i) => SpeakFeed[i] => blackhole;
-    SpeakFeed[i].record();
+    SpeakFeed[i].record(1);
     if(dac.channels() >= sad.channels())
     {
     	sad.chan(i) => dac.chan(i);
@@ -74,5 +74,12 @@ while(true)
     //enc.pos(90,0);
     stop++;
     wait => now;
-    if(stop == 500) me.exit();
+    if(stop == 500) 
+    {
+        for(int i; i < SpeakFeed.size(); i++)
+        {
+            SpeakFeed[i].closeFile();
+        }
+        me.exit();
+    }
 }

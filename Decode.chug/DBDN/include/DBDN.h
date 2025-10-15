@@ -8,27 +8,27 @@ public:
 	DBDN(float fs) : LinkwitzRiley(1500.f, fs) {};
 	void tick(SAMPLE* in, SAMPLE* out, unsigned nframes)
 	{
-		float* h_filtin = nullptr;
-		float* l_filtin = nullptr;
 		memset(out, 0, sizeof(SAMPLE) * n_channels * nframes); // clear
 		for (int f = 0; f < nframes; f++) // go through each frame
 		{
-			memset(h_filtin, 0, sizeof(SAMPLE) * n_channels); // only need to filter the input once per frame
-			memset(l_filtin, 0, sizeof(SAMPLE) * n_channels); 
+			float highblock[n_channels] = { 0.f };
+			float lowblock[n_channels] = { 0.f };
 			for (int j = 0; j < n_channels; j++)
 			{
-				h_filtin[j] = htick(in[f * n_channels + j]);
-				l_filtin[j] = ltick(in[f * n_channels + j]);
+				highblock[j] = htick(in[f * n_channels + j]);
+				lowblock[j] = ltick(in[f * n_channels + j]);
 			}
-			for (int c = 0; c < n_channels; c++) // go through each channel
+			for(int c = 0; c < n_channels; c++) // go through each output channel
 			{
-				SAMPLE sumd = 0;
-				for (int n = 0; n < n_channels; n++)
+				SAMPLE sum_high = 0;
+				SAMPLE sum_low = 0;
+				for (int n = 0; n < n_channels; n++) // sum over input channels
 				{
-					sumd += h_filtin[n] * 0.86602540f * SpeakSH[c][n];
-					sumd += l_filtin[n] * SpeakSH[c][n];
+					sum_high += highblock[n] * SpeakSH[c][n];
+					sum_low += lowblock[n] * SpeakSH[c][n];
 				}
-				out[f * n_channels + c] = channelBalance * sumd;
+				// Combine with the 0.866 scaling factor for high frequencies
+				out[f * n_channels + c] = channelBalance * (0.86602540f * sum_high + sum_low);
 			}
 		}
 	}
