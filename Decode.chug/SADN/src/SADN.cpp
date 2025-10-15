@@ -131,6 +131,7 @@ CK_DLL_QUERY( SAD )
 {
     // generally, don't change this...
     QUERY->setname( QUERY, "SAD" );
+
     QUERY->begin_class( QUERY, "SAD1", "UGen" );
     QUERY->add_ctor( QUERY, sad1_ctor );
     QUERY->add_ctor( QUERY, sad1_2ctor );
@@ -143,11 +144,9 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad1_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
-    sad1_data_offset = QUERY->add_mvar( QUERY, "int", "@sad1_data", false );
+    sad1_data_offset = QUERY->add_mvar( QUERY, "int", "@sad_data", false );
     QUERY->end_class( QUERY );
 
-    // generally, don't change this...
-    QUERY->setname(QUERY, "SAD");
     QUERY->begin_class(QUERY, "SAD2", "UGen");
     QUERY->add_ctor(QUERY, sad2_ctor);
     QUERY->add_ctor(QUERY, sad2_2ctor);
@@ -160,11 +159,9 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad2_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
-    sad2_data_offset = QUERY->add_mvar(QUERY, "int", "@sad2_data", false);
+    sad2_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
 
-    // generally, don't change this...
-    QUERY->setname(QUERY, "SAD");
     QUERY->begin_class(QUERY, "SAD3", "UGen");
     QUERY->add_ctor(QUERY, sad3_ctor);
     QUERY->add_ctor(QUERY, sad3_2ctor);
@@ -177,11 +174,9 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad3_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
-    sad3_data_offset = QUERY->add_mvar(QUERY, "int", "@sad3_data", false);
+    sad3_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
 
-    // generally, don't change this...
-    QUERY->setname(QUERY, "SAD");
     QUERY->begin_class(QUERY, "SAD4", "UGen");
     QUERY->add_ctor(QUERY, sad4_ctor);
     QUERY->add_ctor(QUERY, sad4_2ctor);
@@ -194,11 +189,9 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad4_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
-    sad4_data_offset = QUERY->add_mvar(QUERY, "int", "@sad4_data", false);
+    sad4_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
 
-    // generally, don't change this...
-    QUERY->setname(QUERY, "SAD");
     QUERY->begin_class(QUERY, "SAD5", "UGen");
     QUERY->add_ctor(QUERY, sad5_ctor);
     QUERY->add_ctor(QUERY, sad5_2ctor);
@@ -211,7 +204,7 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad5_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     // this reserves a variable in the ChucK internal class to store 
-    sad5_data_offset = QUERY->add_mvar(QUERY, "int", "@sad5_data", false);
+    sad5_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
 
     // wasn't that a breeze?

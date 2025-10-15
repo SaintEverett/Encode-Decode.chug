@@ -6,9 +6,8 @@
 template<const unsigned order_>
 class SADN : public Decoder<order_>
 {
-public:
-	
-	constexpr void tick(SAMPLE* in, SAMPLE* out, unsigned nframes) override
+public:	
+	void tick(SAMPLE* in, SAMPLE* out, unsigned nframes) override
 	{
 		memset(out, 0, sizeof(SAMPLE) * n_channels * nframes); // clear
 		for (int f = 0; f < nframes; f++) // go through each frame
