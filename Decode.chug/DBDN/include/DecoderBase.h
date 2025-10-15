@@ -9,12 +9,16 @@
 #define DECODE_BASE_H
 
 #include "chugin.h"
-#include "chuckSH.h"
 
 template<const unsigned order_>
 class Decoder
 {
 public:
+	Decoder()
+	{
+		weights.fill(1.0f);
+	}
+
 	virtual void tick(SAMPLE* in, SAMPLE* out, unsigned nframes) = 0;
 
 	void setSpeakerSH(std::vector<std::vector<float>> n_SpeakSH) // set SH given all speaker SHs
@@ -63,7 +67,7 @@ public:
 			}
 			return store;
 		}
-		else return 0;
+		else return store;
 	}
 
 	void CKsetSpeakAngles(Chuck_Object* coord, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
@@ -102,10 +106,10 @@ public:
 
 protected:
 	static constexpr unsigned order = order_; // order
-	static constexpr unsigned n_channels = (order_ + 1) * (order_ + 1); // how many channels
+	static constexpr unsigned n_channels = (order + 1) * (order + 1); // how many channels
 	std::array<std::array<float, n_channels>, n_channels> SpeakSH{}; // spherical harmonics
 	std::array<float, n_channels> weights{}; // weights
-	constexpr static unsigned channelBalance = 1.f / n_channels;
+	static constexpr float channelBalance = (1.f / n_channels);
 };
 
 #endif /* DECODE_BASE_H */
