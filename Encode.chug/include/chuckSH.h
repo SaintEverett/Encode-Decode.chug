@@ -24,8 +24,8 @@ NLOUP<MAX_ORDER> norms; // create LOUP
 
 std::vector<float> SH(unsigned order_, const float azimuth_, const float zenith_, bool n3d) // SH calc
 {
-    float azimuth_shift = rangeReduce((azimuth_)*degree2rad, 0, 2 * E_PI);   // reduce to range of 0 < azi < 2pi & shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
-    float zenith_shift = rangeReduce((90.f - zenith_) * degree2rad, 0, E_PI);  // reduce to range of 0 < zen < pi
+    float azimuth_shift = rangeReduce((azimuth_)*degree2rad, 0.f, 2.f * E_PI);   // reduce to range of 0 < azi < 2pi & shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
+    float zenith_shift = rangeReduce((90.f - zenith_) * degree2rad, 0.f, E_PI);  // reduce to range of 0 < zen < pi
     float coszeni = cosf(zenith_shift);                        // pre calculate cos(zenith)
     int size = (order_ + 1) * (order_ + 1);                    // pre-compute size of vector to be returned
     std::vector<float> result = std::vector<float>(size, 0.f); // instantiate vector that is the size of the results that shall be returned
@@ -37,7 +37,7 @@ std::vector<float> SH(unsigned order_, const float azimuth_, const float zenith_
         {
             float n = n3d ? norms.N3D(order, degree) : norms.SN3D(order, degree);                          // normalization term if n3d bool = TRUE, return N3D else SN3D
             float p = (std::assoc_legendref(order, abs(degree), coszeni));                                 // legendre NOTE: degree of legendre is current ambisonic order & order of legendre is current ambisonic degree (very frustrating)
-            float r = (degree < 0) ? sinf(abs(degree) * (azimuth_shift)) : cosf(degree * (azimuth_shift)); // degree positive? Re(exp(i*azimuth*degree)) degree negative? Im(exp(i*azimuth*degree))
+            float r = (degree <= 0) ? sinf(abs(degree) * (azimuth_shift)) : cosf(degree * (azimuth_shift)); // degree positive? Re(exp(i*azimuth*degree)) degree negative? Im(exp(i*azimuth*degree))
             result[(order * order) + order + degree] = n * p * r;                                          // place inside vector so it is ordered as Y^0_0, Y^1_-1, Y^1_0, Y^1_1
         }
     }
@@ -46,8 +46,8 @@ std::vector<float> SH(unsigned order_, const float azimuth_, const float zenith_
 
 void SH(unsigned order_, const float azimuth_, const float zenith_, std::vector<float> result, bool n3d) // SH calc
 {
-    float azimuth_shift = rangeReduce((azimuth_)*degree2rad, 0, 2 * E_PI);   // reduce to range of 0 < azi < 2pi & shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
-    float zenith_shift = rangeReduce((90.f - zenith_) * degree2rad, 0, E_PI);  // reduce to range of 0 < zen < pi
+    float azimuth_shift = rangeReduce((azimuth_)*degree2rad, 0.f, 2.f * E_PI);   // reduce to range of 0 < azi < 2pi & shift "perspective" so that azi = 0 and zeni = 0 is a unity vector facing outwards from the listener (vector pointing from roughly the nose forward)
+    float zenith_shift = rangeReduce((90.f - zenith_) * degree2rad, 0.f, E_PI);  // reduce to range of 0 < zen < pi
     float coszeni = cosf(zenith_shift);                   // pre calculate cos(zenith)
     int size = (order_ + 1) * (order_ + 1) + 1;           // pre-compute size of vector to be returned
     if (result.capacity() != size)
@@ -60,7 +60,7 @@ void SH(unsigned order_, const float azimuth_, const float zenith_, std::vector<
         {
             float n = n3d ? norms.N3D(order, degree) : norms.SN3D(order, degree);                          // normalization term if n3d bool = TRUE, return N3D else SN3D
             float p = (std::assoc_legendref(order, abs(degree), coszeni));                                 // legendre NOTE: degree of legendre is current ambisonic order & order of legendre is current ambisonic degree (very frustrating)
-            float r = (degree < 0) ? sinf(abs(degree) * (azimuth_shift)) : cosf(degree * (azimuth_shift)); // degree positive? Re(exp(i*azimuth*degree)) degree negative? Im(exp(i*azimuth*degree))
+            float r = (degree <= 0) ? sinf(abs(degree) * (azimuth_shift)) : cosf(degree * (azimuth_shift)); // degree positive? Re(exp(i*azimuth*degree)) degree negative? Im(exp(i*azimuth*degree))
             result[(order * order) + order + degree] = n * p * r;                                          // place inside vector so it is ordered as Y^0_0, Y^1_-1, Y^1_0, Y^1_1
         }
     }

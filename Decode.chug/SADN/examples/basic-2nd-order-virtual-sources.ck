@@ -19,7 +19,7 @@ fun void randomPlacement(Encode2 p)
     Math.random2f(0.0, 360.0) => float randomAzi;
     while(true)
     {
-        randomAzi+Math.random2f(0.1,4.5) => randomAzi;
+        randomAzi+Math.random2f(-4.5,4.5) => randomAzi;
         p.pos(randomAzi,0);
         // <<< randomAzi >>>;
         10::ms => now;
@@ -37,11 +37,15 @@ fun void randomPitch(SinOsc s)
         for(int i; i < 6; i++)
         {
             s.freq()*2 => s.freq;
-            100::ms => now;
+            Math.random2f(4.5,450)::ms => now;
+            //100::ms => now;
             s.gain(0.0);
             100::ms => now;
             s.gain(1.0);
-            random*3 => s.freq;
+            (s.freq()/random)*3 => s.freq;
+            Math.random2f(4.5,450)::ms => now;
+            //100::ms => now;
+            s.freq()/8.5 => s.freq;
         }
         5000::ms => now;
     }
