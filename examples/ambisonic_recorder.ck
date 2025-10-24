@@ -34,7 +34,26 @@ input[1] => enc[1];
 // control direction w/ constant elevation
 float direction[2];
 0.0 => float elevation;
-  
+float weighting[9];
+for(int i; i < weighting.size(); i++)
+{
+    //0.0 => weighting[i];
+    //Math.pow((1/Math.floor(Math.sqrt(i+1))),2) => weighting[i];
+    (1/Math.floor(Math.sqrt(i+1))) => weighting[(weighting.size()-1)-i];
+    cherr <= weighting[i] <= " ";
+}
+cherr <= IO.newline();
+
+enc[0].weights(weighting);
+enc[1].weights(weighting);
+
+enc[0].weights() @=> float temp[];
+
+for(int i; i < temp.size(); i++)
+{
+    <<<temp[i]>>>;
+}
+
 fun void varImpulse(Impulse a, dur speed)
 {
     while(true)

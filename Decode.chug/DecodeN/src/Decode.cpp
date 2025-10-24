@@ -250,7 +250,7 @@ CK_DLL_MFUN(decode1_setSpeakers)
     Decode1* decode1_obj = (Decode1*)OBJ_MEMBER_INT(SELF, decode1_data_offset);
     if (decode1_obj) 
     { 
-        decode1_obj->setSpeakerSH(multi_array, API);
+        decode1_obj->CKsetSpeakSH(multi_array, API);
     }
 }
 
@@ -336,7 +336,7 @@ CK_DLL_MFUN(decode2_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     Decode2* decode2_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
-    if (decode2_obj) decode2_obj->setSpeakerSH(multi_array, API);
+    if (decode2_obj) decode2_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode2_getSpeakers)
@@ -421,7 +421,7 @@ CK_DLL_MFUN(decode3_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     Decode3* decode3_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
-    if (decode3_obj) decode3_obj->setSpeakerSH(multi_array, API);
+    if (decode3_obj) decode3_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode3_getSpeakers)
@@ -506,7 +506,7 @@ CK_DLL_MFUN(decode4_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     Decode4* decode4_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
-    if (decode4_obj) decode4_obj->setSpeakerSH(multi_array, API);
+    if (decode4_obj) decode4_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode4_getSpeakers)
@@ -591,7 +591,7 @@ CK_DLL_MFUN(decode5_setSpeakers)
     Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
     Decode5* decode5_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
-    if (decode5_obj) decode5_obj->setSpeakerSH(multi_array, API);
+    if (decode5_obj) decode5_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode5_getSpeakers)

@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------------*/
 #include "chugin.h"
 #include <limits.h>
+#include <array>
 //-----------------------------------------------------------------------------
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
@@ -40,6 +41,7 @@ public:
     {   
         channel_matrix.resize(channel_count);
         temp_matrix.resize(channel_count);
+        weights.resize(channel_count);
     };
     // for chugins extending UGen
     void tick(SAMPLE* in, SAMPLE* out, int nframes)
@@ -63,7 +65,7 @@ public:
         {
             for (int i = 0; i < channel_count; i++)
             {
-                out[f * channel_count + i] = (in[f] * channel_matrix[i]); // in stream is mono so frame is channel 0
+                out[f * channel_count + i] = (in[f] * (channel_matrix[i] * weights[i])); // in stream is mono so frame is channel 0
             }
         }
 
@@ -96,6 +98,29 @@ public:
         else NULL;
     }
 
+    void CKsetWeights(Chuck_ArrayFloat* m_weights, CK_DL_API API)
+    {
+        unsigned size = API->object->array_float_size(m_weights);
+        for (int i = 0; i < size; i++)
+        {
+            if (i < channel_count)
+            {
+                weights[i] = API->object->array_float_get_idx(m_weights, i);             
+            }
+        }
+    }
+
+    std::vector<float> getWeights()
+    {
+        std::vector<float> store;
+        store.resize(channel_count);
+        for (int i = 0; i < weights.size(); i++)
+        {
+            store[i] = weights[i];
+        }
+        return store;
+    }
+
     void position(t_CKFLOAT azimuth_, t_CKFLOAT zenith_)
     {
         temp_matrix = SH(order, azimuth_, zenith_, 0); // simply just calls the spherical harmonic calculator
@@ -118,5 +143,6 @@ public:
     constexpr static unsigned channel_count = (n_order + 1) * (n_order + 1);
     std::vector<float> channel_matrix; // current gain coeffs
     std::vector<float> temp_matrix; // temp coeffs to be shifted to current
+    std::vector<float> weights;
     bool zeroCrossing = FALSE; // is there a zero crossing?
 };

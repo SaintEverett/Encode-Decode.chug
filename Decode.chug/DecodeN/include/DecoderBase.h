@@ -9,6 +9,8 @@
 #define DECODE_BASE_H
 
 #include "chugin.h"
+#include "chuckSH.h"
+#include <array>
 
 template<const unsigned order_>
 class Decoder
@@ -83,6 +85,23 @@ public:
 				{
 					std::vector<float> temp = SH(order, API->object->array_float_get_idx(row, 0), API->object->array_float_get_idx(row, 1), 0);
 					setSpeakerSH(temp, i);
+				}
+			}
+		}
+	}
+
+	void CKsetSpeakSH(Chuck_Object* sh, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
+	{
+		Chuck_ArrayInt* column = (Chuck_ArrayInt*)sh;
+		if (API->object->array_int_size(column) >= n_channels)
+		{
+			for (t_CKINT i = 0; i < n_channels; i++)
+			{
+				Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
+				t_CKUINT size = API->object->array_float_size(row);
+				for(int j = 0; i < size; j++)
+				{
+					SpeakSH[i][j] = API->object->array_float_get_idx(row, i);
 				}
 			}
 		}
