@@ -42,6 +42,10 @@ public:
         channel_matrix.resize(channel_count);
         temp_matrix.resize(channel_count);
         weights.resize(channel_count);
+        for (int i = 0; i < weights.size(); i++)
+        {
+            weights[i] = 1.f;
+        }
     };
     // for chugins extending UGen
     void tick(SAMPLE* in, SAMPLE* out, int nframes)
