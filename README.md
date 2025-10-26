@@ -1,6 +1,16 @@
 # Encode-Decode.chug
 Ambisonic encoding and decoding chugins for ChucK
 
-Encode Chugin functioning. See chuck_test_scripts for an explanation on how to use Encode.
+Currently functional:
 
-DECODE NOT FUNCTIONING AS OF 06/17/2025 DEVELOPMENT WILL START SOON
+      EncodeN // virtual source encoder & ambisonic panner
+      SADN // sampling ambisonic decoder designed to receive speaker array angles
+      DecodeN // sampling ambisonic decoder designed to receive speaker spherical harmonics
+      BFormatN // gain UGen for BFormat signals (multi channel gain factor)
+
+Coming soon:
+
+      DBDN // dual band ambisonic decoding
+      MMADN // mode matching ambisonic decoding
+
+All UGens are capable of up to 5th order ambisonics, but can be compiled to 12th order if desired.
