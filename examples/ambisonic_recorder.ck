@@ -34,25 +34,6 @@ input[1] => enc[1];
 // control direction w/ constant elevation
 float direction[2];
 0.0 => float elevation;
-float weighting[9];
-for(int i; i < weighting.size(); i++)
-{
-    //0.0 => weighting[i];
-    //Math.pow((1/Math.floor(Math.sqrt(i+1))),2) => weighting[i];
-    (1/Math.floor(Math.sqrt(i+1))) => weighting[(weighting.size()-1)-i];
-    cherr <= weighting[i] <= " ";
-}
-cherr <= IO.newline();
-
-enc[0].weights(weighting);
-enc[1].weights(weighting);
-
-enc[0].weights() @=> float temp[];
-
-for(int i; i < temp.size(); i++)
-{
-    <<<temp[i]>>>;
-}
 
 fun void varImpulse(Impulse a, dur speed)
 {
@@ -63,21 +44,21 @@ fun void varImpulse(Impulse a, dur speed)
     } 
 }
 
-spork ~ varImpulse(imp[0], 48::ms);
+spork ~ varImpulse(imp[0], 48::ms); // rapid rate impulse
 spork ~ varImpulse(imp[1], 36::ms);
 
 for(int tick; tick < 360; tick++)
 {
-    tick => direction[0];
-    360-tick => direction[1];
-    reso[0].freq(Math.random2f(456.0, 457.9999));
+    tick => direction[0]; // rotate
+    360-tick => direction[1]; // rotate opposite direction
+    reso[0].freq(Math.random2f(456.0, 457.9999)); // random reson are nice
     reso[1].freq(Math.random2f(742.0, 744.9999));
-    enc[0].pos(direction[0],elevation);
+    enc[0].pos(direction[0],elevation); // move!
     enc[1].pos(direction[1], elevation);
     10::ms => now;
 }
 
 for(int i; i < record.size(); i++)
 {
-    record[i].closeFile();
+    record[i].closeFile(); // safely exit
 }

@@ -51,6 +51,7 @@ CK_DLL_MFUN(sad1_setSpeakers);
 CK_DLL_MFUN(sad1_getSpeakers);
 CK_DLL_TICKF( sad1_tickf );
 CK_DLL_MFUN(sad1_setWeights);
+CK_DLL_MFUN(sad1_setDimension);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad1_data_offset = 0;
@@ -63,6 +64,7 @@ CK_DLL_MFUN(sad2_setSpeakers);
 CK_DLL_MFUN(sad2_getSpeakers);
 CK_DLL_TICKF(sad2_tickf);
 CK_DLL_MFUN(sad2_setWeights);
+CK_DLL_MFUN(sad2_setDimension);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad2_data_offset = 0;
@@ -75,6 +77,7 @@ CK_DLL_MFUN(sad3_setSpeakers);
 CK_DLL_MFUN(sad3_getSpeakers);
 CK_DLL_TICKF(sad3_tickf);
 CK_DLL_MFUN(sad3_setWeights);
+CK_DLL_MFUN(sad3_setDimension);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad3_data_offset = 0;
@@ -87,6 +90,7 @@ CK_DLL_MFUN(sad4_setSpeakers);
 CK_DLL_MFUN(sad4_getSpeakers);
 CK_DLL_TICKF(sad4_tickf);
 CK_DLL_MFUN(sad4_setWeights);
+CK_DLL_MFUN(sad4_setDimension);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad4_data_offset = 0;
@@ -99,6 +103,7 @@ CK_DLL_MFUN(sad5_setSpeakers);
 CK_DLL_MFUN(sad5_getSpeakers);
 CK_DLL_TICKF(sad5_tickf);
 CK_DLL_MFUN(sad5_setWeights);
+CK_DLL_MFUN(sad5_setDimension);
 
 // this is a special offset reserved for chugin internal data
 t_CKINT sad5_data_offset = 0;
@@ -143,6 +148,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad1_getSpeakers, "float[][]", "placement");    
     QUERY->add_mfun(QUERY, sad1_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
+    QUERY->add_mfun(QUERY, sad1_setDimension, "void", "dim");
+    QUERY->add_arg(QUERY, "int", "dimension");
     // this reserves a variable in the ChucK internal class to store 
     sad1_data_offset = QUERY->add_mvar( QUERY, "int", "@sad_data", false );
     QUERY->end_class( QUERY );
@@ -158,6 +165,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad2_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, sad2_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
+    QUERY->add_mfun(QUERY, sad2_setDimension, "void", "dim");
+    QUERY->add_arg(QUERY, "int", "dimension");
     // this reserves a variable in the ChucK internal class to store 
     sad2_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
@@ -173,6 +182,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad3_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, sad3_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
+    QUERY->add_mfun(QUERY, sad3_setDimension, "void", "dim");
+    QUERY->add_arg(QUERY, "int", "dimension");
     // this reserves a variable in the ChucK internal class to store 
     sad3_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
@@ -188,6 +199,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad4_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, sad4_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
+    QUERY->add_mfun(QUERY, sad4_setDimension, "void", "dim");
+    QUERY->add_arg(QUERY, "int", "dimension");
     // this reserves a variable in the ChucK internal class to store 
     sad4_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
@@ -203,6 +216,8 @@ CK_DLL_QUERY( SAD )
     QUERY->add_mfun(QUERY, sad5_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, sad5_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
+    QUERY->add_mfun(QUERY, sad5_setDimension, "void", "dim");
+    QUERY->add_arg(QUERY, "int", "dimension");
     // this reserves a variable in the ChucK internal class to store 
     sad5_data_offset = QUERY->add_mvar(QUERY, "int", "@sad_data", false);
     QUERY->end_class(QUERY);
@@ -314,6 +329,14 @@ CK_DLL_MFUN(sad1_setWeights)
     if (sad1_obj) sad1_obj->CKsetWeights(weights, API);
 }
 
+CK_DLL_MFUN(sad1_setDimension)
+{
+    SAD1* sad1_obj = (SAD1*)OBJ_MEMBER_INT(SELF, sad1_data_offset);
+    int dim = GET_NEXT_INT(ARGS);
+    bool is3d = (dim == 3) ? 1 : 0;
+    if (sad1_obj) sad1_obj->setPreservation(is3d);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -409,6 +432,14 @@ CK_DLL_MFUN(sad2_setWeights)
     // get our c++ class pointer
     SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
     if (sad2_obj) sad2_obj->CKsetWeights(weights, API);
+}
+
+CK_DLL_MFUN(sad2_setDimension)
+{
+    SAD2* sad2_obj = (SAD2*)OBJ_MEMBER_INT(SELF, sad2_data_offset);
+    int dim = GET_NEXT_INT(ARGS);
+    bool is3d = (dim == 3) ? 1 : 0;
+    if (sad2_obj) sad2_obj->setPreservation(is3d);
 }
 
 //=================================================//
@@ -508,6 +539,14 @@ CK_DLL_MFUN(sad3_setWeights)
     if (sad3_obj) sad3_obj->CKsetWeights(weights, API);
 }
 
+CK_DLL_MFUN(sad3_setDimension)
+{
+    SAD3* sad3_obj = (SAD3*)OBJ_MEMBER_INT(SELF, sad3_data_offset);
+    int dim = GET_NEXT_INT(ARGS);
+    bool is3d = (dim == 3) ? 1 : 0;
+    if (sad3_obj) sad3_obj->setPreservation(is3d);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //   
@@ -603,6 +642,14 @@ CK_DLL_MFUN(sad4_setWeights)
     // get our c++ class pointer
     SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
     if (sad4_obj) sad4_obj->CKsetWeights(weights, API);
+}
+
+CK_DLL_MFUN(sad4_setDimension)
+{
+    SAD4* sad4_obj = (SAD4*)OBJ_MEMBER_INT(SELF, sad4_data_offset);
+    int dim = GET_NEXT_INT(ARGS);
+    bool is3d = (dim == 3) ? 1 : 0;
+    if (sad4_obj) sad4_obj->setPreservation(is3d);
 }
 
 //=================================================//
@@ -703,4 +750,12 @@ CK_DLL_MFUN(sad5_setWeights)
     // get our c++ class pointer
     SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
     if (sad5_obj) sad5_obj->CKsetWeights(weights, API);
+}
+
+CK_DLL_MFUN(sad5_setDimension)
+{
+    SAD5* sad5_obj = (SAD5*)OBJ_MEMBER_INT(SELF, sad5_data_offset);
+    int dim = GET_NEXT_INT(ARGS);
+    bool is3d = (dim == 3) ? 1 : 0;
+    if (sad5_obj) sad5_obj->setPreservation(is3d);
 }

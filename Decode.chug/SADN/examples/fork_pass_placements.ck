@@ -10,6 +10,8 @@ SAD2 sad(speak);
 Impulse imp;
 WvOut SpeakFeed[sad.channels()];
 
+sad.dim(3);
+
 imp.gain(1.0);
 enc.gain(1.0);
 

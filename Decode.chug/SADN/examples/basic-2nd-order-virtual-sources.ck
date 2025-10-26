@@ -12,7 +12,6 @@ Encode2 enc[n];
 NRev rev[n];
 SinOsc obj[n];
 SAD2 deco(speaks); // constructor!
-//Gain bsum(1.0/n)[9]; // sum all encoders
 
 fun void randomPlacement(Encode2 p)
 {

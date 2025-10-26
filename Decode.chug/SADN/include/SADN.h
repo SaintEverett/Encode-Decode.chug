@@ -17,12 +17,29 @@ public:
 				SAMPLE sumd = 0;
 				for (int n = 0; n < n_channels; n++) // each channel of the incoming stream is a spherical harmonic
 				{
-					sumd += (channelBalance * in[f * n_channels + n] * SpeakSH[c][n]); // matrix mult of speaker SHs and input stream
+					sumd += (efactor * channelBalance * in[f * n_channels + n] * SpeakSH[c][n]); // matrix mult of speaker SHs and input stream
 				}
 				out[f * n_channels + c] = sumd;
 			}
 		}
 	}
+
+	void setPreservation(bool is3d)
+	{
+		if (is3d)
+		{
+			efactor = 4.f * 3.14159265;
+			efactor = sqrtf((efactor / (float)n_channels));
+		}
+		else
+		{
+			efactor = 2.f * 3.14159265;
+			efactor = sqrtf((efactor / (float)n_channels));
+		}
+	}
+
+public:
+	float efactor = 1.f;
 };
 
 //-----------------------------------------------------------------------------
