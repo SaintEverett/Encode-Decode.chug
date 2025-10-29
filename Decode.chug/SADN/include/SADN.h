@@ -7,6 +7,11 @@ template<const unsigned order_>
 class SADN : public Decoder<order_>
 {
 public:	
+	SADN()
+	{
+		efactor = efactor = 2.f * 3.14159265;
+		efactor = sqrtf((efactor / (float)n_channels));
+	}
 	void tick(SAMPLE* in, SAMPLE* out, unsigned nframes) override
 	{
 		memset(out, 0, sizeof(SAMPLE) * n_channels * nframes); // clear
@@ -39,7 +44,7 @@ public:
 	}
 
 public:
-	float efactor = 1.f;
+	float efactor = 0.f;
 };
 
 //-----------------------------------------------------------------------------

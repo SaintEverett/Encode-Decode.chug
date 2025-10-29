@@ -7,14 +7,14 @@ template <unsigned int order_>
 class BFormat
 {
 public:
-	void tick(SAMPLE* in, SAMPLE* out, unsigned nframes)
+	void tick(SAMPLE *in, SAMPLE *out, unsigned nframes)
 	{
 		memset(out, 0, sizeof(SAMPLE) * channel_count * nframes); // clear
 		for (int f = 0; f < nframes; f++)
 		{
 			for (int i = 0; i < channel_count; i++)
 			{
-				out[f * channel_count + i] = (in[f * channel_count + i] * gain); // just add a gain factor to it 
+				out[f * channel_count + i] = (in[f * channel_count + i] * gain); // just add a gain factor to it
 			}
 		}
 	}
@@ -27,7 +27,7 @@ public:
 	float getGain() { return gain; }
 
 public:
-	float gain = 0.0;
+	float gain = 1.0;
 	constexpr static unsigned order = order_;
 	constexpr static unsigned channel_count = (order_ + 1) * (order_ + 1);
 };

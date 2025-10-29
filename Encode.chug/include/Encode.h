@@ -42,10 +42,6 @@ public:
         channel_matrix.resize(channel_count);
         temp_matrix.resize(channel_count);
         weights.resize(channel_count);
-        for (int i = 0; i < weights.size(); i++)
-        {
-            weights[i] = 1.f;
-        }
     };
     // for chugins extending UGen
     void tick(SAMPLE* in, SAMPLE* out, int nframes)
@@ -67,9 +63,9 @@ public:
 
         for (int f = 0; f < nframes; f++)
         {
-            for (int i = 0; i < channel_count; i++)
+            for (int i = 0; i < channel_count; i++) // as of 28/10/2025 weights are removed from tick function (need to justify their use)
             {
-                out[f * channel_count + i] = (in[f] * (channel_matrix[i] * weights[i])); // in stream is mono so frame is channel 0
+                out[f * channel_count + i] = (in[f] * channel_matrix[i]); // in stream is mono so frame is channel 0
             }
         }
 
