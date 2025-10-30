@@ -4,10 +4,10 @@ CHUGIN_NAME=DBDN
 
 # all of the c/cpp files that compose this chugin
 C_MODULES=
-CXX_MODULES=DBDN.cpp
+CXX_MODULES=src/DBDN.cpp
 
 # where to find chugin.h
-CK_SRC_PATH?=chuck/include
+CK_SRC_PATH?=include/
 
 # where to install chugin
 CHUGIN_PATH?=/usr/local/lib/chuck
