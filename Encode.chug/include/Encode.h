@@ -33,6 +33,7 @@
 // class definition for internal chugin data
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
 //-----------------------------------------------------------------------------
+const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordinates, if the input sample is less than this, change coefficients
 template<unsigned n_order>
 class Encoder
 {
