@@ -6,15 +6,21 @@ CHUGIN_NAME=DBDN
 C_MODULES=
 CXX_MODULES=src/DBDN.cpp
 
+# Automatic dependency generation - FIXED PATHS
+DEPDIR = .deps
+# Create dependency files with full path structure
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
+DEPS = $(CXX_MODULES:%.cpp=$(DEPDIR)/%.d)
+$(shell mkdir -p $(dir $(DEPS)))
+
 INC_DIR = include/
-CXXFLAGS=-c -Wall -I$(INC_DIR)/..
+CXXFLAGS=-c -Wall -I$(INC_DIR)
 
 # where to find chugin.h
 CK_SRC_PATH?=include/
 
 # where to install chugin
 CHUGIN_PATH?=/usr/local/lib/chuck
-
 
 # ---------------------------------------------------------------------------- #
 # you won't generally need to change anything below this line for a new chugin #
@@ -107,17 +113,12 @@ endif
 $(C_OBJECTS): %.o: %.c
 	$(CC) $(FLAGS) -c -o $@ $<
 
-$(CXX_OBJECTS): %.o: %.cpp $(CK_SRC_PATH)/chugin.h
-	$(CXX) $(FLAGS) -c -o $@ $<
+# FIXED dependency rule
+$(CXX_OBJECTS): %.o: %.cpp | $(DEPDIR)
+	$(CXX) $(FLAGS) $(DEPFLAGS) -c -o $@ $<
+	@mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
-# build as webchugin
-web:
-	emcc -O3 -s SIDE_MODULE=1 -s DISABLE_EXCEPTION_CATCHING=0 -fPIC -Wformat=0 	-I $(CK_SRC_PATH) $(CXX_MODULES) $(C_MODULES) -o $(WEBCHUG)
-
-install: $(CHUG)
-	mkdir -p $(CHUGIN_PATH)
-	cp $^ $(CHUGIN_PATH)
-	chmod 755 $(CHUGIN_PATH)/$(CHUG)
+-include $(DEPS)
 
 clean: 
-	rm -rf $(C_OBJECTS) $(CXX_OBJECTS) $(CHUG) $(WEBCHUG) Release Debug
+	rm -rf $(C_OBJECTS) $(CXX_OBJECTS) $(CHUG) $(WEBCHUG) Release Debug $(DEPDIR)
