@@ -22,9 +22,9 @@
   U.S.A.
 -----------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------
-* 
+*
 * Encode.chug header file
-* 
+*
 -----------------------------------------------------------------------------*/
 #include "chugin.h"
 #include <limits.h>
@@ -34,18 +34,18 @@
 // (NOTE this isn't strictly necessary, but is one example of a recommended approach)
 //-----------------------------------------------------------------------------
 const t_CKFLOAT ZERO_THRESHOLD = 1e-3; // this is the threshold to swap coordinates, if the input sample is less than this, change coefficients
-template<unsigned n_order>
+template <unsigned n_order>
 class Encoder
 {
 public:
-    Encoder() 
-    {   
+    Encoder()
+    {
         channel_matrix.resize(channel_count);
         temp_matrix.resize(channel_count);
         weights.resize(channel_count);
     };
     // for chugins extending UGen
-    void tick(SAMPLE* in, SAMPLE* out, int nframes)
+    void tick(SAMPLE *in, SAMPLE *out, int nframes)
     {
         for (int f = 0; f < nframes; f++)
         {
@@ -69,15 +69,14 @@ public:
                 out[f * channel_count + i] = (in[f] * channel_matrix[i]); // in stream is mono so frame is channel 0
             }
         }
-
     }
 
-    void set_coefficients(Chuck_ArrayFloat* coord, CK_DL_API API)
+    void set_coefficients(Chuck_ArrayFloat *coord, CK_DL_API API)
     {
         int size = (API->object->array_float_size(coord));
         if (size >= channel_count)
         {
-            for (int i = 0; i < size;i++)
+            for (int i = 0; i < size; i++)
             {
                 temp_matrix[i] = (API->object->array_float_get_idx(coord, i));
             }
@@ -86,8 +85,12 @@ public:
 
     t_CKFLOAT get_i(t_CKUINT index)
     {
-        if (index < channel_count) { return channel_matrix[index]; }
-        else return NULL;
+        if (index < channel_count)
+        {
+            return channel_matrix[index];
+        }
+        else
+            return 0.0;
     }
 
     void set_i(t_CKFLOAT value, t_CKUINT index)
@@ -96,17 +99,18 @@ public:
         {
             temp_matrix[index] = value;
         }
-        else NULL;
+        else
+            NULL;
     }
 
-    void CKsetWeights(Chuck_ArrayFloat* m_weights, CK_DL_API API)
+    void CKsetWeights(Chuck_ArrayFloat *m_weights, CK_DL_API API)
     {
         unsigned size = API->object->array_float_size(m_weights);
         for (int i = 0; i < size; i++)
         {
             if (i < channel_count)
             {
-                weights[i] = API->object->array_float_get_idx(m_weights, i);             
+                weights[i] = API->object->array_float_get_idx(m_weights, i);
             }
         }
     }
@@ -143,7 +147,7 @@ public:
     constexpr static unsigned order = n_order;
     constexpr static unsigned channel_count = (n_order + 1) * (n_order + 1);
     std::vector<float> channel_matrix; // current gain coeffs
-    std::vector<float> temp_matrix; // temp coeffs to be shifted to current
+    std::vector<float> temp_matrix;    // temp coeffs to be shifted to current
     std::vector<float> weights;
     bool zeroCrossing = FALSE; // is there a zero crossing?
 };
