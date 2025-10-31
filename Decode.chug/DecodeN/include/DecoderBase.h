@@ -1,9 +1,9 @@
-// Decoder base class for inheritance 
+// Decoder base class for inheritance
 // ==========================================================
 // All decoders ever will be of some order N and have some number of channels which is directly related to the order N
 // All decoders ever will store and reference a set of spherical harmonics attributed to each channel of the decoder
-// All decoders ever will be able to retrieve 
-// All decoders ever will store weights and apply them to their spherical harmonics when received 
+// All decoders ever will be able to retrieve
+// All decoders ever will store weights and apply them to their spherical harmonics when received
 
 #ifndef DECODE_BASE_H
 #define DECODE_BASE_H
@@ -12,7 +12,7 @@
 #include "chuckSH.h"
 #include <array>
 
-template<const unsigned order_>
+template <const unsigned order_>
 class Decoder
 {
 public:
@@ -21,7 +21,7 @@ public:
 		weights.fill(1.0f);
 	}
 
-	virtual void tick(SAMPLE* in, SAMPLE* out, unsigned nframes) = 0;
+	virtual void tick(SAMPLE *in, SAMPLE *out, unsigned nframes) = 0;
 
 	void setSpeakerSH(std::vector<std::vector<float>> n_SpeakSH) // set SH given all speaker SHs
 	{
@@ -69,17 +69,18 @@ public:
 			}
 			return store;
 		}
-		else return store;
+		else
+			return store;
 	}
 
-	void CKsetSpeakAngles(Chuck_Object* coord, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
+	void CKsetSpeakAngles(Chuck_Object *coord, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
 	{
-		Chuck_ArrayInt* column = (Chuck_ArrayInt*)coord;
+		Chuck_ArrayInt *column = (Chuck_ArrayInt *)coord;
 		if (API->object->array_int_size(column) >= n_channels)
 		{
 			for (t_CKINT i = 0; i < n_channels; i++)
 			{
-				Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
+				Chuck_ArrayFloat *row = (Chuck_ArrayFloat *)API->object->array_int_get_idx(column, i);
 				t_CKUINT size = API->object->array_float_size(row);
 				if (size == 2)
 				{
@@ -90,16 +91,16 @@ public:
 		}
 	}
 
-	void CKsetSpeakSH(Chuck_Object* sh, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
+	void CKsetSpeakSH(Chuck_Object *sh, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
 	{
-		Chuck_ArrayInt* column = (Chuck_ArrayInt*)sh;
+		Chuck_ArrayInt *column = (Chuck_ArrayInt *)sh;
 		if (API->object->array_int_size(column) >= n_channels)
 		{
 			for (t_CKINT i = 0; i < n_channels; i++)
 			{
-				Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
+				Chuck_ArrayFloat *row = (Chuck_ArrayFloat *)API->object->array_int_get_idx(column, i);
 				t_CKUINT size = API->object->array_float_size(row);
-				for(int j = 0; i < size; j++)
+				for (int j = 0; i < size; j++)
 				{
 					SpeakSH[i][j] = API->object->array_float_get_idx(row, i);
 				}
@@ -107,7 +108,7 @@ public:
 		}
 	}
 
-	void CKsetWeights(Chuck_ArrayFloat* m_weights, CK_DL_API API)
+	void CKsetWeights(Chuck_ArrayFloat *m_weights, CK_DL_API API)
 	{
 		unsigned size = API->object->array_float_size(m_weights);
 		for (int i = 0; i < size; i++)
@@ -124,10 +125,10 @@ public:
 	}
 
 protected:
-	static constexpr unsigned order = order_; // order
+	static constexpr unsigned order = order_;						  // order
 	static constexpr unsigned n_channels = (order + 1) * (order + 1); // how many channels
-	std::array<std::array<float, n_channels>, n_channels> SpeakSH{}; // spherical harmonics
-	std::array<float, n_channels> weights{}; // weights
+	std::array<std::array<float, n_channels>, n_channels> SpeakSH{};  // spherical harmonics
+	std::array<float, n_channels> weights{};						  // weights
 	static constexpr float channelBalance = (1.f / n_channels);
 };
 

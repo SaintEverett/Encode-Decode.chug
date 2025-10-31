@@ -9,17 +9,17 @@ class Decode : public Decoder<order_> // seems redundant, but essentially takes 
 public:
 	constexpr void tick(SAMPLE *in, SAMPLE *out, unsigned nframes) override
 	{
-		memset(out, 0, sizeof(SAMPLE) * n_channels * nframes); // clear
-		for (int f = 0; f < nframes; f++)					   // go through each frame
+		memset(out, 0, sizeof(SAMPLE) * this->n_channels * nframes); // clear
+		for (int f = 0; f < nframes; f++)							 // go through each frame
 		{
-			for (int c = 0; c < n_channels; c++) // go through each channel
+			for (int c = 0; c < this->n_channels; c++) // go through each channel
 			{
 				SAMPLE sumd = 0;
-				for (int n = 0; n < n_channels; n++) // each channel of the incoming stream is a spherical harmonic
+				for (int n = 0; n < this->n_channels; n++) // each channel of the incoming stream is a spherical harmonic
 				{
-					sumd += (channelBalance * in[f * n_channels + n] * SpeakSH[c][n]); // matrix mult of speaker SHs and input stream
+					sumd += (this->channelBalance * in[f * this->n_channels + n] * this->SpeakSH[c][n]); // matrix mult of speaker SHs and input stream
 				}
-				out[f * n_channels + c] = sumd;
+				out[f * this->n_channels + c] = sumd;
 			}
 		}
 	}

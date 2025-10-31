@@ -43,11 +43,11 @@
 #include <iostream>
 
 // DECODE1 function defs
-CK_DLL_CTOR( decode1_ctor );
-CK_DLL_DTOR( decode1_dtor );
+CK_DLL_CTOR(decode1_ctor);
+CK_DLL_DTOR(decode1_dtor);
 CK_DLL_MFUN(decode1_setSpeakers);
 CK_DLL_MFUN(decode1_getSpeakers);
-CK_DLL_TICKF( decode1_tickf );
+CK_DLL_TICKF(decode1_tickf);
 CK_DLL_MFUN(decode1_setWeights);
 
 // this is a special offset reserved for chugin internal data
@@ -101,41 +101,40 @@ t_CKINT decode5_data_offset = 0;
 // NOTE: please customize these info fields below; they will be used for
 // chugins loading, probing, and package management and documentation
 //-----------------------------------------------------------------------------
-CK_DLL_INFO( Decode )
+CK_DLL_INFO(Decode)
 {
     // the version string of this chugin, e.g., "v1.2.1"
-    QUERY->setinfo( QUERY, CHUGIN_INFO_CHUGIN_VERSION, "" );
+    QUERY->setinfo(QUERY, CHUGIN_INFO_CHUGIN_VERSION, "");
     // the author(s) of this chugin, e.g., "Alice Baker & Carl Donut"
-    QUERY->setinfo( QUERY, CHUGIN_INFO_AUTHORS, "" );
+    QUERY->setinfo(QUERY, CHUGIN_INFO_AUTHORS, "");
     // text description of this chugin; what is it? what does it do? who is it for?
-    QUERY->setinfo( QUERY, CHUGIN_INFO_DESCRIPTION, "" );
+    QUERY->setinfo(QUERY, CHUGIN_INFO_DESCRIPTION, "");
     // (optional) URL of the homepage for this chugin
-    QUERY->setinfo( QUERY, CHUGIN_INFO_URL, "" );
+    QUERY->setinfo(QUERY, CHUGIN_INFO_URL, "");
     // (optional) contact email
-    QUERY->setinfo( QUERY, CHUGIN_INFO_EMAIL, "" );
+    QUERY->setinfo(QUERY, CHUGIN_INFO_EMAIL, "");
 }
-
 
 //-----------------------------------------------------------------------------
 // query function: ChucK calls this when loading the chugin
 // modify this function to define this chugin's API and language extensions
 //-----------------------------------------------------------------------------
-CK_DLL_QUERY( Decode )
+CK_DLL_QUERY(Decode)
 {
     // generally, don't change this...
-    QUERY->setname( QUERY, "DECODE" );
-    QUERY->begin_class( QUERY, "DECODE1", "UGen" );
-    QUERY->add_ctor( QUERY, decode1_ctor );
-    QUERY->add_dtor( QUERY, decode1_dtor );
-    QUERY->add_ugen_funcf( QUERY, decode1_tickf, NULL, 4, 4 );
+    QUERY->setname(QUERY, "DECODE");
+    QUERY->begin_class(QUERY, "DECODE1", "UGen");
+    QUERY->add_ctor(QUERY, decode1_ctor);
+    QUERY->add_dtor(QUERY, decode1_dtor);
+    QUERY->add_ugen_funcf(QUERY, decode1_tickf, NULL, 4, 4);
     QUERY->add_mfun(QUERY, decode1_setSpeakers, "void", "placement");
     QUERY->add_arg(QUERY, "float[][]", "");
-    QUERY->add_mfun(QUERY, decode1_getSpeakers, "float[][]", "placement");    
+    QUERY->add_mfun(QUERY, decode1_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, decode1_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
-    // this reserves a variable in the ChucK internal class to store 
-    decode1_data_offset = QUERY->add_mvar( QUERY, "int", "@decode1_data", false );
-    QUERY->end_class( QUERY );
+    // this reserves a variable in the ChucK internal class to store
+    decode1_data_offset = QUERY->add_mvar(QUERY, "int", "@decode1_data", false);
+    QUERY->end_class(QUERY);
 
     // generally, don't change this...
     QUERY->setname(QUERY, "DECODE");
@@ -148,7 +147,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_mfun(QUERY, decode2_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, decode2_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
-    // this reserves a variable in the ChucK internal class to store 
+    // this reserves a variable in the ChucK internal class to store
     decode2_data_offset = QUERY->add_mvar(QUERY, "int", "@decode2_data", false);
     QUERY->end_class(QUERY);
 
@@ -163,7 +162,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_mfun(QUERY, decode3_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, decode3_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
-    // this reserves a variable in the ChucK internal class to store 
+    // this reserves a variable in the ChucK internal class to store
     decode3_data_offset = QUERY->add_mvar(QUERY, "int", "@decode3_data", false);
     QUERY->end_class(QUERY);
 
@@ -178,7 +177,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_mfun(QUERY, decode4_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, decode4_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
-    // this reserves a variable in the ChucK internal class to store 
+    // this reserves a variable in the ChucK internal class to store
     decode4_data_offset = QUERY->add_mvar(QUERY, "int", "@decode4_data", false);
     QUERY->end_class(QUERY);
 
@@ -193,7 +192,7 @@ CK_DLL_QUERY( Decode )
     QUERY->add_mfun(QUERY, decode5_getSpeakers, "float[][]", "placement");
     QUERY->add_mfun(QUERY, decode5_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
-    // this reserves a variable in the ChucK internal class to store 
+    // this reserves a variable in the ChucK internal class to store
     decode5_data_offset = QUERY->add_mvar(QUERY, "int", "@decode5_data", false);
     QUERY->end_class(QUERY);
 
@@ -201,10 +200,9 @@ CK_DLL_QUERY( Decode )
     return TRUE;
 }
 
-
 //=================================================//
 // ************************************************//
-//                                                 //   
+//                                                 //
 // Decode1 DLL definitions ; Everett M. Carpenter  //
 //                                                 //
 // ************************************************//
@@ -217,82 +215,84 @@ CK_DLL_CTOR(decode1_ctor)
     // get the offset where we'll store our internal c++ class pointer
     OBJ_MEMBER_INT(SELF, decode1_data_offset) = 0;
     // instantiate our internal c++ class representation
-    Decode1* decode1_obj = new Decode1(API->vm->srate(VM));
+    Decode1 *decode1_obj = new Decode1(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, decode1_data_offset) = (t_CKINT)decode1_obj;
 }
 
 // implementation for the destructor
-CK_DLL_DTOR( decode1_dtor )
+CK_DLL_DTOR(decode1_dtor)
 {
     // get our c++ class pointer
-    Decode1 * decode1_obj = (Decode1 *)OBJ_MEMBER_INT( SELF, decode1_data_offset );
+    Decode1 *decode1_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
-    CK_SAFE_DELETE( decode1_obj );
+    CK_SAFE_DELETE(decode1_obj);
     // set the data field to 0
-    OBJ_MEMBER_INT( SELF, decode1_data_offset ) = 0;
+    OBJ_MEMBER_INT(SELF, decode1_data_offset) = 0;
 }
 
 // implementation for tick function (relevant only for UGens)
 CK_DLL_TICKF(decode1_tickf)
 {
     // get our c++ class pointer
-    Decode1 * decode1_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
-    if( decode1_obj ) decode1_obj->tick(in, out, nframes);
+    Decode1 *decode1_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
+    if (decode1_obj)
+        decode1_obj->tick(in, out, nframes);
     // yes
     return TRUE;
 }
 
 CK_DLL_MFUN(decode1_setSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode1* decode1_obj = (Decode1*)OBJ_MEMBER_INT(SELF, decode1_data_offset);
-    if (decode1_obj) 
-    { 
+    Decode1 *decode1_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
+    if (decode1_obj)
+    {
         decode1_obj->CKsetSpeakSH(multi_array, API);
     }
 }
 
 CK_DLL_MFUN(decode1_getSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode1* decode1_obj = (Decode1*)OBJ_MEMBER_INT(SELF, decode1_data_offset);
+    Decode1 *decode1_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
 
     std::vector<std::vector<float>> sphericals = decode1_obj->getSpeakerSH();
 
     // create [][]
     Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
-    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+    Chuck_ArrayInt *column = (Chuck_ArrayInt *) final;                                                  // cast to int array
 
     for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
     {
         Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
-        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+        Chuck_ArrayFloat *row_tmp = (Chuck_ArrayFloat *)target_tmp;                                            // cast to float array
 
-        for (int j = 0; j < sphericals.size(); j++) 
+        for (int j = 0; j < sphericals.size(); j++)
         {
             API->object->array_float_push_back(row_tmp, sphericals[i][j]);
         }
 
-        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array
     }
 
-    RETURN->v_object = (Chuck_Object*)final;
+    RETURN->v_object = (Chuck_Object *) final;
 }
 
 CK_DLL_MFUN(decode1_setWeights)
 {
-    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    Chuck_ArrayFloat *weights = (Chuck_ArrayFloat *)GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode1* decode1_obj = (Decode1*)OBJ_MEMBER_INT(SELF, decode1_data_offset);
-    if (decode1_obj) decode1_obj->CKsetWeights(weights, API);
+    Decode1 *decode1_obj = (Decode1 *)OBJ_MEMBER_INT(SELF, decode1_data_offset);
+    if (decode1_obj)
+        decode1_obj->CKsetWeights(weights, API);
 }
 
 //=================================================//
 // ************************************************//
-//                                                 //   
+//                                                 //
 // Decode2 DLL definitions ; Everett M. Carpenter  //
 //                                                 //
 // ************************************************//
@@ -305,7 +305,7 @@ CK_DLL_CTOR(decode2_ctor)
     // get the offset where we'll store our internal c++ class pointer
     OBJ_MEMBER_INT(SELF, decode2_data_offset) = 0;
     // instantiate our internal c++ class representation
-    Decode2* decode2_obj = new Decode2(API->vm->srate(VM));
+    Decode2 *decode2_obj = new Decode2(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, decode2_data_offset) = (t_CKINT)decode2_obj;
 }
@@ -314,7 +314,7 @@ CK_DLL_CTOR(decode2_ctor)
 CK_DLL_DTOR(decode2_dtor)
 {
     // get our c++ class pointer
-    Decode2* decode2_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+    Decode2 *decode2_obj = (Decode2 *)OBJ_MEMBER_INT(SELF, decode2_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(decode2_obj);
     // set the data field to 0
@@ -325,59 +325,62 @@ CK_DLL_DTOR(decode2_dtor)
 CK_DLL_TICKF(decode2_tickf)
 {
     // get our c++ class pointer
-    Decode2* decode2_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
-    if (decode2_obj) decode2_obj->tick(in, out, nframes);
+    Decode2 *decode2_obj = (Decode2 *)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+    if (decode2_obj)
+        decode2_obj->tick(in, out, nframes);
     // yes
     return TRUE;
 }
 
 CK_DLL_MFUN(decode2_setSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode2* decode2_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
-    if (decode2_obj) decode2_obj->CKsetSpeakSH(multi_array, API);
+    Decode2 *decode2_obj = (Decode2 *)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+    if (decode2_obj)
+        decode2_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode2_getSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode2* decode2_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+    Decode2 *decode2_obj = (Decode2 *)OBJ_MEMBER_INT(SELF, decode2_data_offset);
 
     std::vector<std::vector<float>> sphericals = decode2_obj->getSpeakerSH();
 
     // create [][]
     Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
-    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+    Chuck_ArrayInt *column = (Chuck_ArrayInt *) final;                                                  // cast to int array
 
     for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
     {
         Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
-        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+        Chuck_ArrayFloat *row_tmp = (Chuck_ArrayFloat *)target_tmp;                                            // cast to float array
 
         for (int j = 0; j < sphericals.size(); j++)
         {
             API->object->array_float_push_back(row_tmp, sphericals[i][j]);
         }
 
-        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array
     }
 
-    RETURN->v_object = (Chuck_Object*)final;
+    RETURN->v_object = (Chuck_Object *) final;
 }
 
 CK_DLL_MFUN(decode2_setWeights)
 {
-    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    Chuck_ArrayFloat *weights = (Chuck_ArrayFloat *)GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode2* decode2_obj = (Decode2*)OBJ_MEMBER_INT(SELF, decode2_data_offset);
-    if (decode2_obj) decode2_obj->CKsetWeights(weights, API);
+    Decode2 *decode2_obj = (Decode2 *)OBJ_MEMBER_INT(SELF, decode2_data_offset);
+    if (decode2_obj)
+        decode2_obj->CKsetWeights(weights, API);
 }
 
 //=================================================//
 // ************************************************//
-//                                                 //   
+//                                                 //
 // Decode3 DLL definitions ; Everett M. Carpenter  //
 //                                                 //
 // ************************************************//
@@ -390,7 +393,7 @@ CK_DLL_CTOR(decode3_ctor)
     // get the offset where we'll store our internal c++ class pointer
     OBJ_MEMBER_INT(SELF, decode3_data_offset) = 0;
     // instantiate our internal c++ class representation
-    Decode3* decode3_obj = new Decode3(API->vm->srate(VM));
+    Decode3 *decode3_obj = new Decode3(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, decode3_data_offset) = (t_CKINT)decode3_obj;
 }
@@ -399,7 +402,7 @@ CK_DLL_CTOR(decode3_ctor)
 CK_DLL_DTOR(decode3_dtor)
 {
     // get our c++ class pointer
-    Decode3* decode3_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+    Decode3 *decode3_obj = (Decode3 *)OBJ_MEMBER_INT(SELF, decode3_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(decode3_obj);
     // set the data field to 0
@@ -410,59 +413,62 @@ CK_DLL_DTOR(decode3_dtor)
 CK_DLL_TICKF(decode3_tickf)
 {
     // get our c++ class pointer
-    Decode3* decode3_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
-    if (decode3_obj) decode3_obj->tick(in, out, nframes);
+    Decode3 *decode3_obj = (Decode3 *)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+    if (decode3_obj)
+        decode3_obj->tick(in, out, nframes);
     // yes
     return TRUE;
 }
 
 CK_DLL_MFUN(decode3_setSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode3* decode3_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
-    if (decode3_obj) decode3_obj->CKsetSpeakSH(multi_array, API);
+    Decode3 *decode3_obj = (Decode3 *)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+    if (decode3_obj)
+        decode3_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode3_getSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode3* decode3_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+    Decode3 *decode3_obj = (Decode3 *)OBJ_MEMBER_INT(SELF, decode3_data_offset);
 
     std::vector<std::vector<float>> sphericals = decode3_obj->getSpeakerSH();
 
     // create [][]
     Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
-    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+    Chuck_ArrayInt *column = (Chuck_ArrayInt *) final;                                                  // cast to int array
 
     for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
     {
         Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
-        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+        Chuck_ArrayFloat *row_tmp = (Chuck_ArrayFloat *)target_tmp;                                            // cast to float array
 
         for (int j = 0; j < sphericals.size(); j++)
         {
             API->object->array_float_push_back(row_tmp, sphericals[i][j]);
         }
 
-        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array
     }
 
-    RETURN->v_object = (Chuck_Object*)final;
+    RETURN->v_object = (Chuck_Object *) final;
 }
 
 CK_DLL_MFUN(decode3_setWeights)
 {
-    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    Chuck_ArrayFloat *weights = (Chuck_ArrayFloat *)GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode3* decode3_obj = (Decode3*)OBJ_MEMBER_INT(SELF, decode3_data_offset);
-    if (decode3_obj) decode3_obj->CKsetWeights(weights, API);
+    Decode3 *decode3_obj = (Decode3 *)OBJ_MEMBER_INT(SELF, decode3_data_offset);
+    if (decode3_obj)
+        decode3_obj->CKsetWeights(weights, API);
 }
 
 //=================================================//
 // ************************************************//
-//                                                 //   
+//                                                 //
 // Decode4 DLL definitions ; Everett M. Carpenter  //
 //                                                 //
 // ************************************************//
@@ -475,7 +481,7 @@ CK_DLL_CTOR(decode4_ctor)
     // get the offset where we'll store our internal c++ class pointer
     OBJ_MEMBER_INT(SELF, decode4_data_offset) = 0;
     // instantiate our internal c++ class representation
-    Decode4* decode4_obj = new Decode4(API->vm->srate(VM));
+    Decode4 *decode4_obj = new Decode4(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, decode4_data_offset) = (t_CKINT)decode4_obj;
 }
@@ -484,7 +490,7 @@ CK_DLL_CTOR(decode4_ctor)
 CK_DLL_DTOR(decode4_dtor)
 {
     // get our c++ class pointer
-    Decode4* decode4_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+    Decode4 *decode4_obj = (Decode4 *)OBJ_MEMBER_INT(SELF, decode4_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(decode4_obj);
     // set the data field to 0
@@ -495,59 +501,62 @@ CK_DLL_DTOR(decode4_dtor)
 CK_DLL_TICKF(decode4_tickf)
 {
     // get our c++ class pointer
-    Decode4* decode4_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
-    if (decode4_obj) decode4_obj->tick(in, out, nframes);
+    Decode4 *decode4_obj = (Decode4 *)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+    if (decode4_obj)
+        decode4_obj->tick(in, out, nframes);
     // yes
     return TRUE;
 }
 
 CK_DLL_MFUN(decode4_setSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode4* decode4_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
-    if (decode4_obj) decode4_obj->CKsetSpeakSH(multi_array, API);
+    Decode4 *decode4_obj = (Decode4 *)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+    if (decode4_obj)
+        decode4_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode4_getSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode4* decode4_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+    Decode4 *decode4_obj = (Decode4 *)OBJ_MEMBER_INT(SELF, decode4_data_offset);
 
     std::vector<std::vector<float>> sphericals = decode4_obj->getSpeakerSH();
 
     // create [][]
     Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
-    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+    Chuck_ArrayInt *column = (Chuck_ArrayInt *) final;                                                  // cast to int array
 
     for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
     {
         Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
-        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+        Chuck_ArrayFloat *row_tmp = (Chuck_ArrayFloat *)target_tmp;                                            // cast to float array
 
         for (int j = 0; j < sphericals.size(); j++)
         {
             API->object->array_float_push_back(row_tmp, sphericals[i][j]);
         }
 
-        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array
     }
 
-    RETURN->v_object = (Chuck_Object*)final;
+    RETURN->v_object = (Chuck_Object *) final;
 }
 
 CK_DLL_MFUN(decode4_setWeights)
 {
-    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    Chuck_ArrayFloat *weights = (Chuck_ArrayFloat *)GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode4* decode4_obj = (Decode4*)OBJ_MEMBER_INT(SELF, decode4_data_offset);
-    if (decode4_obj) decode4_obj->CKsetWeights(weights, API);
+    Decode4 *decode4_obj = (Decode4 *)OBJ_MEMBER_INT(SELF, decode4_data_offset);
+    if (decode4_obj)
+        decode4_obj->CKsetWeights(weights, API);
 }
 
 //=================================================//
 // ************************************************//
-//                                                 //   
+//                                                 //
 // Decode5 DLL definitions ; Everett M. Carpenter  //
 //                                                 //
 // ************************************************//
@@ -560,7 +569,7 @@ CK_DLL_CTOR(decode5_ctor)
     // get the offset where we'll store our internal c++ class pointer
     OBJ_MEMBER_INT(SELF, decode5_data_offset) = 0;
     // instantiate our internal c++ class representation
-    Decode5* decode5_obj = new Decode5(API->vm->srate(VM));
+    Decode5 *decode5_obj = new Decode5(API->vm->srate(VM));
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT(SELF, decode5_data_offset) = (t_CKINT)decode5_obj;
 }
@@ -569,7 +578,7 @@ CK_DLL_CTOR(decode5_ctor)
 CK_DLL_DTOR(decode5_dtor)
 {
     // get our c++ class pointer
-    Decode5* decode5_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+    Decode5 *decode5_obj = (Decode5 *)OBJ_MEMBER_INT(SELF, decode5_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(decode5_obj);
     // set the data field to 0
@@ -580,52 +589,55 @@ CK_DLL_DTOR(decode5_dtor)
 CK_DLL_TICKF(decode5_tickf)
 {
     // get our c++ class pointer
-    Decode5* decode5_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
-    if (decode5_obj) decode5_obj->tick(in, out, nframes);
+    Decode5 *decode5_obj = (Decode5 *)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+    if (decode5_obj)
+        decode5_obj->tick(in, out, nframes);
     // yes
     return TRUE;
 }
 
 CK_DLL_MFUN(decode5_setSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode5* decode5_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
-    if (decode5_obj) decode5_obj->CKsetSpeakSH(multi_array, API);
+    Decode5 *decode5_obj = (Decode5 *)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+    if (decode5_obj)
+        decode5_obj->CKsetSpeakSH(multi_array, API);
 }
 
 CK_DLL_MFUN(decode5_getSpeakers)
 {
-    Chuck_Object* multi_array = GET_NEXT_OBJECT(ARGS);
+    Chuck_Object *multi_array = GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode5* decode5_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+    Decode5 *decode5_obj = (Decode5 *)OBJ_MEMBER_INT(SELF, decode5_data_offset);
 
     std::vector<std::vector<float>> sphericals = decode5_obj->getSpeakerSH();
 
     // create [][]
     Chuck_DL_Api::Object final = API->object->create(SHRED, API->type->lookup(VM, "float[][]"), false); // create idea of float[][]
-    Chuck_ArrayInt* column = (Chuck_ArrayInt*)final; // cast to int array
+    Chuck_ArrayInt *column = (Chuck_ArrayInt *) final;                                                  // cast to int array
 
     for (int i = 0; i < sphericals.capacity(); i++) // snatched from Line
     {
         Chuck_DL_Api::Object target_tmp = API->object->create(SHRED, API->type->lookup(VM, "float[]"), false); // create idea of float[]
-        Chuck_ArrayFloat* row_tmp = (Chuck_ArrayFloat*)target_tmp; // cast to float array
+        Chuck_ArrayFloat *row_tmp = (Chuck_ArrayFloat *)target_tmp;                                            // cast to float array
 
         for (int j = 0; j < sphericals.size(); j++)
         {
             API->object->array_float_push_back(row_tmp, sphericals[i][j]);
         }
 
-        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array 
+        API->object->array_int_push_back(column, (t_CKINT)row_tmp); // push back the previously created float array
     }
 
-    RETURN->v_object = (Chuck_Object*)final;
+    RETURN->v_object = (Chuck_Object *) final;
 }
 
 CK_DLL_MFUN(decode5_setWeights)
 {
-    Chuck_ArrayFloat* weights = (Chuck_ArrayFloat*)GET_NEXT_OBJECT(ARGS);
+    Chuck_ArrayFloat *weights = (Chuck_ArrayFloat *)GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Decode5* decode5_obj = (Decode5*)OBJ_MEMBER_INT(SELF, decode5_data_offset);
-    if (decode5_obj) decode5_obj->CKsetWeights(weights, API);
+    Decode5 *decode5_obj = (Decode5 *)OBJ_MEMBER_INT(SELF, decode5_data_offset);
+    if (decode5_obj)
+        decode5_obj->CKsetWeights(weights, API);
 }
