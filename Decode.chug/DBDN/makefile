@@ -6,6 +6,9 @@ CHUGIN_NAME=DBDN
 C_MODULES=
 CXX_MODULES=src/DBDN.cpp
 
+INC_DIR = include/
+CXXFLAGS=-c -Wall -I$(INC_DIR)/..
+
 # where to find chugin.h
 CK_SRC_PATH?=include/
 
