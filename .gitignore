@@ -12,6 +12,8 @@
 *.userosscache
 *.sln.docstates
 
+*.chug
+
 # make
 *.o
 
