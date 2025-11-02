@@ -149,5 +149,37 @@ public:
     std::vector<float> channel_matrix; // current gain coeffs
     std::vector<float> temp_matrix;    // temp coeffs to be shifted to current
     std::vector<float> weights;
+    float last_azimuth = 0.f;
+    float last_zenith = 0.f;
     bool zeroCrossing = FALSE; // is there a zero crossing?
+};
+
+class Encode1 : public Encoder<1> // these simply just act as wrappers of Encoder to chuck
+{
+public:
+    Encode1(t_CKFLOAT fs) {};
+};
+
+class Encode2 : public Encoder<2>
+{
+public:
+    Encode2(t_CKFLOAT fs) {};
+};
+
+class Encode3 : public Encoder<3>
+{
+public:
+    Encode3(t_CKFLOAT fs) {};
+};
+
+class Encode4 : public Encoder<4>
+{
+public:
+    Encode4(t_CKFLOAT fs) {};
+};
+
+class Encode5 : public Encoder<5>
+{
+public:
+    Encode5(t_CKFLOAT fs) {};
 };

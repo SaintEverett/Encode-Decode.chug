@@ -15,36 +15,6 @@
 #include "chuckSH.h"
 #include "Encode.h"
 
-class Encode1 : public Encoder<1> // these simply just act as wrappers of Encoder to chuck
-{
-public:
-    Encode1(t_CKFLOAT fs) {};
-};
-
-class Encode2 : public Encoder<2>
-{
-public:
-    Encode2(t_CKFLOAT fs) {};
-};
-
-class Encode3 : public Encoder<3>
-{
-public:
-    Encode3(t_CKFLOAT fs) {};
-};
-
-class Encode4 : public Encoder<4>
-{
-public:
-    Encode4(t_CKFLOAT fs) {};
-};
-
-class Encode5 : public Encoder<5>
-{
-public:
-    Encode5(t_CKFLOAT fs) {};
-};
-
 // declaration of chugin constructor
 // Encode1
 CK_DLL_CTOR(encode1_ctor);
@@ -57,6 +27,8 @@ CK_DLL_MFUN(encode1_position);
 CK_DLL_MFUN(encode1_getSH);
 CK_DLL_MFUN(encode1_setWeights);
 CK_DLL_MFUN(encode1_getWeights);
+CK_DLL_MFUN(encode1_getAzi);
+CK_DLL_MFUN(encode1_getZeni);
 t_CKINT encode1_data_offset = 0;
 // Encode2
 CK_DLL_CTOR(encode2_ctor);
@@ -69,6 +41,8 @@ CK_DLL_MFUN(encode2_position);
 CK_DLL_MFUN(encode2_getSH);
 CK_DLL_MFUN(encode2_setWeights);
 CK_DLL_MFUN(encode2_getWeights);
+CK_DLL_MFUN(encode2_getAzi);
+CK_DLL_MFUN(encode2_getZeni);
 t_CKINT encode2_data_offset = 0;
 // Encode3
 CK_DLL_CTOR(encode3_ctor);
@@ -81,6 +55,8 @@ CK_DLL_MFUN(encode3_position);
 CK_DLL_MFUN(encode3_getSH);
 CK_DLL_MFUN(encode3_setWeights);
 CK_DLL_MFUN(encode3_getWeights);
+CK_DLL_MFUN(encode3_getAzi);
+CK_DLL_MFUN(encode3_getZeni);
 t_CKINT encode3_data_offset = 0;
 // Encode4
 CK_DLL_CTOR(encode4_ctor);
@@ -93,6 +69,8 @@ CK_DLL_MFUN(encode4_position);
 CK_DLL_MFUN(encode4_getSH);
 CK_DLL_MFUN(encode4_setWeights);
 CK_DLL_MFUN(encode4_getWeights);
+CK_DLL_MFUN(encode4_getAzi);
+CK_DLL_MFUN(encode4_getZeni);
 t_CKINT encode4_data_offset = 0;
 // Encode5
 CK_DLL_CTOR(encode5_ctor);
@@ -105,6 +83,8 @@ CK_DLL_MFUN(encode5_position);
 CK_DLL_MFUN(encode5_getSH);
 CK_DLL_MFUN(encode5_setWeights);
 CK_DLL_MFUN(encode5_getWeights);
+CK_DLL_MFUN(encode5_getAzi);
+CK_DLL_MFUN(encode5_getZeni);
 t_CKINT encode5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
@@ -162,6 +142,10 @@ CK_DLL_QUERY(Encode)
     QUERY->add_arg(QUERY, "float", "zenith");
     // retrieve SH
     QUERY->add_mfun(QUERY, encode1_getSH, "float[]", "pos");
+    // retrieve last azimuth 
+    QUERY->add_mfun(QUERY, encode1_getAzi, "float", "azi");
+    // retrieve last given zenith
+    QUERY->add_mfun(QUERY, encode1_getZeni, "float", "zeni");
     // set weights
     QUERY->add_mfun(QUERY, encode1_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
@@ -193,6 +177,8 @@ CK_DLL_QUERY(Encode)
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode2_getSH, "float[]", "pos");
+    QUERY->add_mfun(QUERY, encode2_getAzi, "float", "azi");
+    QUERY->add_mfun(QUERY, encode2_getZeni, "float", "zeni");
     QUERY->add_mfun(QUERY, encode2_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode2_getWeights, "float[]", "weights");
@@ -223,6 +209,8 @@ CK_DLL_QUERY(Encode)
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode3_getSH, "float[]", "pos");
+    QUERY->add_mfun(QUERY, encode3_getAzi, "float", "azi");
+    QUERY->add_mfun(QUERY, encode3_getZeni, "float", "zeni");
     QUERY->add_mfun(QUERY, encode3_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode3_getWeights, "float[]", "weights");
@@ -253,6 +241,8 @@ CK_DLL_QUERY(Encode)
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode4_getSH, "float[]", "pos");
+    QUERY->add_mfun(QUERY, encode4_getAzi, "float", "azi");
+    QUERY->add_mfun(QUERY, encode4_getZeni, "float", "zeni");
     QUERY->add_mfun(QUERY, encode4_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode4_getWeights, "float[]", "weights");
@@ -283,6 +273,8 @@ CK_DLL_QUERY(Encode)
     QUERY->add_arg(QUERY, "float", "azimuth");
     QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode5_getSH, "float[]", "pos");
+    QUERY->add_mfun(QUERY, encode5_getAzi, "float", "azi");
+    QUERY->add_mfun(QUERY, encode5_getZeni, "float", "zeni");
     QUERY->add_mfun(QUERY, encode5_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode5_getWeights, "float[]", "weights");
@@ -386,6 +378,8 @@ CK_DLL_MFUN(encode1_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
+        encode_obj->last_azimuth = azi;
+        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -432,6 +426,18 @@ CK_DLL_MFUN(encode1_getWeights)
     }
 
     RETURN->v_object = (Chuck_Object *)coordinatearray;
+}
+
+CK_DLL_MFUN(encode1_getAzi)
+{
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_azimuth;
+}
+
+CK_DLL_MFUN(encode1_getZeni)
+{
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
 //=================================================//
@@ -520,6 +526,8 @@ CK_DLL_MFUN(encode2_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
+        encode_obj->last_azimuth = azi;
+        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -545,9 +553,9 @@ CK_DLL_MFUN(encode2_setWeights)
 {
     Chuck_ArrayFloat *weights = (Chuck_ArrayFloat *)GET_NEXT_OBJECT(ARGS);
     // get our c++ class pointer
-    Encode2 *encode2_obj = (Encode2 *)OBJ_MEMBER_INT(SELF, encode2_data_offset);
-    if (encode2_obj)
-        encode2_obj->CKsetWeights(weights, API);
+    Encode2 *encode_obj = (Encode2 *)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+    if (encode_obj)
+        encode_obj->CKsetWeights(weights, API);
 }
 
 CK_DLL_MFUN(encode2_getWeights)
@@ -566,6 +574,18 @@ CK_DLL_MFUN(encode2_getWeights)
     }
 
     RETURN->v_object = (Chuck_Object *)coordinatearray;
+}
+
+CK_DLL_MFUN(encode2_getAzi)
+{
+    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_azimuth;
+}
+
+CK_DLL_MFUN(encode2_getZeni)
+{
+    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
 //=================================================//
@@ -654,6 +674,8 @@ CK_DLL_MFUN(encode3_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
+        encode_obj->last_azimuth = azi;
+        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -700,6 +722,18 @@ CK_DLL_MFUN(encode3_getWeights)
     }
 
     RETURN->v_object = (Chuck_Object *)coordinatearray;
+}
+
+CK_DLL_MFUN(encode3_getAzi)
+{
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_azimuth;
+}
+
+CK_DLL_MFUN(encode3_getZeni)
+{
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
 //=================================================//
@@ -788,6 +822,8 @@ CK_DLL_MFUN(encode4_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
+        encode_obj->last_azimuth = azi;
+        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -834,6 +870,18 @@ CK_DLL_MFUN(encode4_getWeights)
     }
 
     RETURN->v_object = (Chuck_Object *)coordinatearray;
+}
+
+CK_DLL_MFUN(encode4_getAzi)
+{
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_azimuth;
+}
+
+CK_DLL_MFUN(encode4_getZeni)
+{
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
 //=================================================//
@@ -922,6 +970,8 @@ CK_DLL_MFUN(encode5_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
+        encode_obj->last_azimuth = azi;
+        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -968,6 +1018,18 @@ CK_DLL_MFUN(encode5_getWeights)
     }
 
     RETURN->v_object = (Chuck_Object *)coordinatearray;
+}
+
+CK_DLL_MFUN(encode5_getAzi)
+{
+    Encode5 *encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_azimuth;
+}
+
+CK_DLL_MFUN(encode5_getZeni)
+{
+    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+    if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
 //=================================================//
