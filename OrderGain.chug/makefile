@@ -1,10 +1,10 @@
 
 # chugin name
-CHUGIN_NAME=BFormat
+CHUGIN_NAME=OrderGain
 
 # all of the c/cpp files that compose this chugin
 C_MODULES=
-CXX_MODULES=src/BFormat.cpp
+CXX_MODULES=src/OrderGain.cpp
 
 INC_DIR = include/
 CXXFLAGS=-c -Wall -I$(INC_DIR)/..
