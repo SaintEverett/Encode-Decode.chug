@@ -9,15 +9,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BFormat.h">
+    <ClInclude Include="include\chugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\chugin.h">
+    <ClInclude Include="include\OrderGain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BFormat.cpp">
+    <ClCompile Include="src\OrderGain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

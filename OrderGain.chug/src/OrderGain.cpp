@@ -6,15 +6,15 @@
 //      but it is possible, of course, to create non-UGen classes in a chugin!
 // To modify this generated file for a non-UGen class...
 //      1. in QUERY->begin_class(), change "UGen" to a different ChucK class
-//         (e.g., `QUERY->begin_class(QUERY, "BFormat", "Object");`)
+//         (e.g., `QUERY->begin_class(QUERY, "OrderGain", "Object");`)
 //      2. remove or commment out the line containing QUERY->add_ugen_func()
 //      3. that's it; the rest is no different for UGens/non-UGens
 //-----------------------------------------------------------------------------
-// NOTE once you have built this into a chugin (BFormat.chug), here are a few
+// NOTE once you have built this into a chugin (OrderGain.chug), here are a few
 //      helpful tools for testing / probing / verifying your new chugin!
 //
-// chuginate also generated a BFormat-test.ck boilerplate ChucK program
-//      to help test your chugin (see BFormat-test.ck for more instructions)
+// chuginate also generated a OrderGain-test.ck boilerplate ChucK program
+//      to help test your chugin (see OrderGain-test.ck for more instructions)
 //
 // run `chuck --chugin-probe` to probe what chugins would be loaded, and
 //      from where in the chugin search paths
@@ -37,65 +37,65 @@
 
 // include chugin header
 #include "chugin.h"
-#include "BFormat.h"
+#include "OrderGain.h"
 
 // general includes
 #include <iostream>
 
 // declaration of chugin constructor
-CK_DLL_CTOR(bformat1_ctor);
-CK_DLL_CTOR(bformat1_ctor2);
-CK_DLL_DTOR(bformat1_dtor);
-CK_DLL_MFUN(bformat1_setGain);
-CK_DLL_MFUN(bformat1_getGain);
-CK_DLL_TICKF(bformat1_tickf);
-t_CKINT bformat1_data_offset = 0;
+CK_DLL_CTOR(ordergain1_ctor);
+CK_DLL_CTOR(ordergain1_ctor2);
+CK_DLL_DTOR(ordergain1_dtor);
+CK_DLL_MFUN(ordergain1_setGain);
+CK_DLL_MFUN(ordergain1_getGain);
+CK_DLL_TICKF(ordergain1_tickf);
+t_CKINT ordergain1_data_offset = 0;
 
-CK_DLL_CTOR(bformat2_ctor);
-CK_DLL_CTOR(bformat2_ctor2);
-CK_DLL_DTOR(bformat2_dtor);
-CK_DLL_MFUN(bformat2_setGain);
-CK_DLL_MFUN(bformat2_getGain);
-CK_DLL_TICKF(bformat2_tickf);
-t_CKINT bformat2_data_offset = 0;
+CK_DLL_CTOR(ordergain2_ctor);
+CK_DLL_CTOR(ordergain2_ctor2);
+CK_DLL_DTOR(ordergain2_dtor);
+CK_DLL_MFUN(ordergain2_setGain);
+CK_DLL_MFUN(ordergain2_getGain);
+CK_DLL_TICKF(ordergain2_tickf);
+t_CKINT ordergain2_data_offset = 0;
 
-CK_DLL_CTOR(bformat3_ctor);
-CK_DLL_CTOR(bformat3_ctor2);
-CK_DLL_DTOR(bformat3_dtor);
-CK_DLL_MFUN(bformat3_setGain);
-CK_DLL_MFUN(bformat3_getGain);
-CK_DLL_TICKF(bformat3_tickf);
-t_CKINT bformat3_data_offset = 0;
+CK_DLL_CTOR(ordergain3_ctor);
+CK_DLL_CTOR(ordergain3_ctor2);
+CK_DLL_DTOR(ordergain3_dtor);
+CK_DLL_MFUN(ordergain3_setGain);
+CK_DLL_MFUN(ordergain3_getGain);
+CK_DLL_TICKF(ordergain3_tickf);
+t_CKINT ordergain3_data_offset = 0;
 
-CK_DLL_CTOR(bformat4_ctor);
-CK_DLL_CTOR(bformat4_ctor2);
-CK_DLL_DTOR(bformat4_dtor);
-CK_DLL_MFUN(bformat4_setGain);
-CK_DLL_MFUN(bformat4_getGain);
-CK_DLL_TICKF(bformat4_tickf);
-t_CKINT bformat4_data_offset = 0;
+CK_DLL_CTOR(ordergain4_ctor);
+CK_DLL_CTOR(ordergain4_ctor2);
+CK_DLL_DTOR(ordergain4_dtor);
+CK_DLL_MFUN(ordergain4_setGain);
+CK_DLL_MFUN(ordergain4_getGain);
+CK_DLL_TICKF(ordergain4_tickf);
+t_CKINT ordergain4_data_offset = 0;
 
-CK_DLL_CTOR(bformat5_ctor);
-CK_DLL_CTOR(bformat5_ctor2);
-CK_DLL_DTOR(bformat5_dtor);
-CK_DLL_MFUN(bformat5_setGain);
-CK_DLL_MFUN(bformat5_getGain);
-CK_DLL_TICKF(bformat5_tickf);
-t_CKINT bformat5_data_offset = 0;
+CK_DLL_CTOR(ordergain5_ctor);
+CK_DLL_CTOR(ordergain5_ctor2);
+CK_DLL_DTOR(ordergain5_dtor);
+CK_DLL_MFUN(ordergain5_setGain);
+CK_DLL_MFUN(ordergain5_getGain);
+CK_DLL_TICKF(ordergain5_tickf);
+t_CKINT ordergain5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
 // info function: ChucK calls this when loading/probing the chugin
 // NOTE: please customize these info fields below; they will be used for
 // chugins loading, probing, and package management and documentation
 //-----------------------------------------------------------------------------
-CK_DLL_INFO(BFormat)
+CK_DLL_INFO(OrderGain)
 {
     // the version string of this chugin, e.g., "v1.2.1"
     QUERY->setinfo(QUERY, CHUGIN_INFO_CHUGIN_VERSION, "");
     // the author(s) of this chugin, e.g., "Alice Baker & Carl Donut"
     QUERY->setinfo(QUERY, CHUGIN_INFO_AUTHORS, "Everett M. Carpenter");
     // text description of this chugin; what is it? what does it do? who is it for?
-    QUERY->setinfo(QUERY, CHUGIN_INFO_DESCRIPTION, "BFormat gain adjustment");
+    QUERY->setinfo(QUERY, CHUGIN_INFO_DESCRIPTION, "Gain adjustment of multichannel buffers");
     // (optional) URL of the homepage for this chugin
     QUERY->setinfo(QUERY, CHUGIN_INFO_URL, "");
     // (optional) contact email
@@ -106,68 +106,68 @@ CK_DLL_INFO(BFormat)
 // query function: ChucK calls this when loading the chugin
 // modify this function to define this chugin's API and language extensions
 //-----------------------------------------------------------------------------
-CK_DLL_QUERY(BFormat)
+CK_DLL_QUERY(OrderGain)
 {
     // generally, don't change this...
-    QUERY->setname(QUERY, "BFormat");
-    QUERY->begin_class(QUERY, "BFormat1", "UGen");
-    QUERY->add_ctor(QUERY, bformat1_ctor);
-    QUERY->add_ctor(QUERY, bformat1_ctor2);
+    QUERY->setname(QUERY, "OrderGain");
+    QUERY->begin_class(QUERY, "OrderGain1", "UGen");
+    QUERY->add_ctor(QUERY, ordergain1_ctor);
+    QUERY->add_ctor(QUERY, ordergain1_ctor2);
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_dtor(QUERY, bformat1_dtor);
-    QUERY->add_ugen_funcf(QUERY, bformat1_tickf, NULL, 4, 4);
-    QUERY->add_mfun(QUERY, bformat1_setGain, "float", "gain");
+    QUERY->add_dtor(QUERY, ordergain1_dtor);
+    QUERY->add_ugen_funcf(QUERY, ordergain1_tickf, NULL, 4, 4);
+    QUERY->add_mfun(QUERY, ordergain1_setGain, "float", "gain");
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_mfun(QUERY, bformat1_getGain, "float", "gain");
-    bformat1_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
+    QUERY->add_mfun(QUERY, ordergain1_getGain, "float", "gain");
+    ordergain1_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
     QUERY->end_class(QUERY);
 
-    QUERY->begin_class(QUERY, "BFormat2", "UGen");
-    QUERY->add_ctor(QUERY, bformat2_ctor);
-    QUERY->add_ctor(QUERY, bformat2_ctor2);
+    QUERY->begin_class(QUERY, "OrderGain2", "UGen");
+    QUERY->add_ctor(QUERY, ordergain2_ctor);
+    QUERY->add_ctor(QUERY, ordergain2_ctor2);
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_dtor(QUERY, bformat2_dtor);
-    QUERY->add_ugen_funcf(QUERY, bformat2_tickf, NULL, 9, 9);
-    QUERY->add_mfun(QUERY, bformat2_setGain, "float", "gain");
+    QUERY->add_dtor(QUERY, ordergain2_dtor);
+    QUERY->add_ugen_funcf(QUERY, ordergain2_tickf, NULL, 9, 9);
+    QUERY->add_mfun(QUERY, ordergain2_setGain, "float", "gain");
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_mfun(QUERY, bformat2_getGain, "float", "gain");
-    bformat2_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
+    QUERY->add_mfun(QUERY, ordergain2_getGain, "float", "gain");
+    ordergain2_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
     QUERY->end_class(QUERY);
 
-    QUERY->begin_class(QUERY, "BFormat3", "UGen");
-    QUERY->add_ctor(QUERY, bformat3_ctor);
-    QUERY->add_ctor(QUERY, bformat3_ctor2);
+    QUERY->begin_class(QUERY, "OrderGain3", "UGen");
+    QUERY->add_ctor(QUERY, ordergain3_ctor);
+    QUERY->add_ctor(QUERY, ordergain3_ctor2);
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_dtor(QUERY, bformat3_dtor);
-    QUERY->add_ugen_funcf(QUERY, bformat3_tickf, NULL, 16, 16);
-    QUERY->add_mfun(QUERY, bformat3_setGain, "float", "gain");
+    QUERY->add_dtor(QUERY, ordergain3_dtor);
+    QUERY->add_ugen_funcf(QUERY, ordergain3_tickf, NULL, 16, 16);
+    QUERY->add_mfun(QUERY, ordergain3_setGain, "float", "gain");
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_mfun(QUERY, bformat3_getGain, "float", "gain");
-    bformat3_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
+    QUERY->add_mfun(QUERY, ordergain3_getGain, "float", "gain");
+    ordergain3_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
     QUERY->end_class(QUERY);
 
-    QUERY->begin_class(QUERY, "BFormat4", "UGen");
-    QUERY->add_ctor(QUERY, bformat4_ctor);
-    QUERY->add_ctor(QUERY, bformat4_ctor2);
+    QUERY->begin_class(QUERY, "OrderGain4", "UGen");
+    QUERY->add_ctor(QUERY, ordergain4_ctor);
+    QUERY->add_ctor(QUERY, ordergain4_ctor2);
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_dtor(QUERY, bformat4_dtor);
-    QUERY->add_ugen_funcf(QUERY, bformat4_tickf, NULL, 25, 25);
-    QUERY->add_mfun(QUERY, bformat4_setGain, "float", "gain");
+    QUERY->add_dtor(QUERY, ordergain4_dtor);
+    QUERY->add_ugen_funcf(QUERY, ordergain4_tickf, NULL, 25, 25);
+    QUERY->add_mfun(QUERY, ordergain4_setGain, "float", "gain");
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_mfun(QUERY, bformat4_getGain, "float", "gain");
-    bformat4_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
+    QUERY->add_mfun(QUERY, ordergain4_getGain, "float", "gain");
+    ordergain4_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
     QUERY->end_class(QUERY);
 
-    QUERY->begin_class(QUERY, "BFormat5", "UGen");
-    QUERY->add_ctor(QUERY, bformat5_ctor);
-    QUERY->add_ctor(QUERY, bformat5_ctor2);
+    QUERY->begin_class(QUERY, "OrderGain5", "UGen");
+    QUERY->add_ctor(QUERY, ordergain5_ctor);
+    QUERY->add_ctor(QUERY, ordergain5_ctor2);
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_dtor(QUERY, bformat5_dtor);
-    QUERY->add_ugen_funcf(QUERY, bformat5_tickf, NULL, 36, 36);
-    QUERY->add_mfun(QUERY, bformat5_setGain, "float", "gain");
+    QUERY->add_dtor(QUERY, ordergain5_dtor);
+    QUERY->add_ugen_funcf(QUERY, ordergain5_tickf, NULL, 36, 36);
+    QUERY->add_mfun(QUERY, ordergain5_setGain, "float", "gain");
     QUERY->add_arg(QUERY, "float", "gain");
-    QUERY->add_mfun(QUERY, bformat5_getGain, "float", "gain");
-    bformat5_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
+    QUERY->add_mfun(QUERY, ordergain5_getGain, "float", "gain");
+    ordergain5_data_offset = QUERY->add_mvar(QUERY, "int", "@bf_data", false);
     QUERY->end_class(QUERY);
 
     // wasn't that a breeze?
@@ -175,51 +175,51 @@ CK_DLL_QUERY(BFormat)
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat1_ctor)
+CK_DLL_CTOR(ordergain1_ctor)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat1_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain1_data_offset) = 0;
 
     // instantiate our internal c++ class representation
-    BFormat1 *bf1_obj = new BFormat1(API->vm->srate(VM));
+    OrderGain1 *bf1_obj = new OrderGain1(API->vm->srate(VM));
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat1_data_offset) = (t_CKINT)bf1_obj;
+    OBJ_MEMBER_INT(SELF, ordergain1_data_offset) = (t_CKINT)bf1_obj;
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat1_ctor2)
+CK_DLL_CTOR(ordergain1_ctor2)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat1_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain1_data_offset) = 0;
 
     t_CKFLOAT temp = GET_NEXT_FLOAT(ARGS);
 
     // instantiate our internal c++ class representation
-    BFormat1* bf1_obj = new BFormat1(API->vm->srate(VM));
+    OrderGain1 *bf1_obj = new OrderGain1(API->vm->srate(VM));
 
     bf1_obj->setGain(temp);
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat1_data_offset) = (t_CKINT)bf1_obj;
+    OBJ_MEMBER_INT(SELF, ordergain1_data_offset) = (t_CKINT)bf1_obj;
 }
 
 // implementation for the destructor
-CK_DLL_DTOR(bformat1_dtor)
+CK_DLL_DTOR(ordergain1_dtor)
 {
     // get our c++ class pointer
-    BFormat1 *bf1_obj = (BFormat1 *)OBJ_MEMBER_INT(SELF, bformat1_data_offset);
+    OrderGain1 *bf1_obj = (OrderGain1 *)OBJ_MEMBER_INT(SELF, ordergain1_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(bf1_obj);
     // set the data field to 0
-    OBJ_MEMBER_INT(SELF, bformat1_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain1_data_offset) = 0;
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICKF(bformat1_tickf)
+CK_DLL_TICKF(ordergain1_tickf)
 {
     // get our c++ class pointer
-    BFormat1 *bf1_obj = (BFormat1 *)OBJ_MEMBER_INT(SELF, bformat1_data_offset);
+    OrderGain1 *bf1_obj = (OrderGain1 *)OBJ_MEMBER_INT(SELF, ordergain1_data_offset);
 
     // invoke our tick function; store in the magical out variable
     if (bf1_obj)
@@ -230,10 +230,10 @@ CK_DLL_TICKF(bformat1_tickf)
 }
 
 // example implementation for setter
-CK_DLL_MFUN(bformat1_setGain)
+CK_DLL_MFUN(ordergain1_setGain)
 {
     // get our c++ class pointer
-    BFormat1 *bf1_obj = (BFormat1 *)OBJ_MEMBER_INT(SELF, bformat1_data_offset);
+    OrderGain1 *bf1_obj = (OrderGain1 *)OBJ_MEMBER_INT(SELF, ordergain1_data_offset);
 
     // get next argument
     // NOTE argument type must match what is specified above in CK_DLL_QUERY
@@ -245,61 +245,61 @@ CK_DLL_MFUN(bformat1_setGain)
 }
 
 // example implementation for getter
-CK_DLL_MFUN(bformat1_getGain)
+CK_DLL_MFUN(ordergain1_getGain)
 {
     // get our c++ class pointer
-    BFormat1 *bf1_obj = (BFormat1 *)OBJ_MEMBER_INT(SELF, bformat1_data_offset);
+    OrderGain1 *bf1_obj = (OrderGain1 *)OBJ_MEMBER_INT(SELF, ordergain1_data_offset);
 
     // call getParam() and set the return value
     RETURN->v_float = bf1_obj->getGain();
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat2_ctor)
+CK_DLL_CTOR(ordergain2_ctor)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat2_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain2_data_offset) = 0;
 
     // instantiate our internal c++ class representation
-    BFormat2 *bf2_obj = new BFormat2(API->vm->srate(VM));
+    OrderGain2 *bf2_obj = new OrderGain2(API->vm->srate(VM));
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat2_data_offset) = (t_CKINT)bf2_obj;
+    OBJ_MEMBER_INT(SELF, ordergain2_data_offset) = (t_CKINT)bf2_obj;
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat2_ctor2)
+CK_DLL_CTOR(ordergain2_ctor2)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat2_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain2_data_offset) = 0;
 
     t_CKFLOAT temp = GET_NEXT_FLOAT(ARGS);
 
     // instantiate our internal c++ class representation
-    BFormat2* bf2_obj = new BFormat2(API->vm->srate(VM));
+    OrderGain2 *bf2_obj = new OrderGain2(API->vm->srate(VM));
 
     bf2_obj->setGain(temp);
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat2_data_offset) = (t_CKINT)bf2_obj;
+    OBJ_MEMBER_INT(SELF, ordergain2_data_offset) = (t_CKINT)bf2_obj;
 }
 
 // implementation for the destructor
-CK_DLL_DTOR(bformat2_dtor)
+CK_DLL_DTOR(ordergain2_dtor)
 {
     // get our c++ class pointer
-    BFormat2 *bf2_obj = (BFormat2 *)OBJ_MEMBER_INT(SELF, bformat2_data_offset);
+    OrderGain2 *bf2_obj = (OrderGain2 *)OBJ_MEMBER_INT(SELF, ordergain2_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(bf2_obj);
     // set the data field to 0
-    OBJ_MEMBER_INT(SELF, bformat2_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain2_data_offset) = 0;
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICKF(bformat2_tickf)
+CK_DLL_TICKF(ordergain2_tickf)
 {
     // get our c++ class pointer
-    BFormat2 *bf2_obj = (BFormat2 *)OBJ_MEMBER_INT(SELF, bformat2_data_offset);
+    OrderGain2 *bf2_obj = (OrderGain2 *)OBJ_MEMBER_INT(SELF, ordergain2_data_offset);
 
     // invoke our tick function; store in the magical out variable
     if (bf2_obj)
@@ -310,10 +310,10 @@ CK_DLL_TICKF(bformat2_tickf)
 }
 
 // example implementation for setter
-CK_DLL_MFUN(bformat2_setGain)
+CK_DLL_MFUN(ordergain2_setGain)
 {
     // get our c++ class pointer
-    BFormat2 *bf2_obj = (BFormat2 *)OBJ_MEMBER_INT(SELF, bformat2_data_offset);
+    OrderGain2 *bf2_obj = (OrderGain2 *)OBJ_MEMBER_INT(SELF, ordergain2_data_offset);
 
     // get next argument
     // NOTE argument type must match what is specified above in CK_DLL_QUERY
@@ -325,61 +325,61 @@ CK_DLL_MFUN(bformat2_setGain)
 }
 
 // example implementation for getter
-CK_DLL_MFUN(bformat2_getGain)
+CK_DLL_MFUN(ordergain2_getGain)
 {
     // get our c++ class pointer
-    BFormat2 *bf2_obj = (BFormat2 *)OBJ_MEMBER_INT(SELF, bformat2_data_offset);
+    OrderGain2 *bf2_obj = (OrderGain2 *)OBJ_MEMBER_INT(SELF, ordergain2_data_offset);
 
     // call getParam() and set the return value
     RETURN->v_float = bf2_obj->getGain();
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat3_ctor)
+CK_DLL_CTOR(ordergain3_ctor)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat3_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain3_data_offset) = 0;
 
     // instantiate our internal c++ class representation
-    BFormat3 *bf3_obj = new BFormat3(API->vm->srate(VM));
+    OrderGain3 *bf3_obj = new OrderGain3(API->vm->srate(VM));
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat3_data_offset) = (t_CKINT)bf3_obj;
+    OBJ_MEMBER_INT(SELF, ordergain3_data_offset) = (t_CKINT)bf3_obj;
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat3_ctor2)
+CK_DLL_CTOR(ordergain3_ctor2)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat3_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain3_data_offset) = 0;
 
     t_CKFLOAT temp = GET_NEXT_FLOAT(ARGS);
 
     // instantiate our internal c++ class representation
-    BFormat3* bf3_obj = new BFormat3(API->vm->srate(VM));
+    OrderGain3 *bf3_obj = new OrderGain3(API->vm->srate(VM));
 
     bf3_obj->setGain(temp);
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat3_data_offset) = (t_CKINT)bf3_obj;
+    OBJ_MEMBER_INT(SELF, ordergain3_data_offset) = (t_CKINT)bf3_obj;
 }
 
 // implementation for the destructor
-CK_DLL_DTOR(bformat3_dtor)
+CK_DLL_DTOR(ordergain3_dtor)
 {
     // get our c++ class pointer
-    BFormat3 *bf3_obj = (BFormat3 *)OBJ_MEMBER_INT(SELF, bformat3_data_offset);
+    OrderGain3 *bf3_obj = (OrderGain3 *)OBJ_MEMBER_INT(SELF, ordergain3_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(bf3_obj);
     // set the data field to 0
-    OBJ_MEMBER_INT(SELF, bformat3_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain3_data_offset) = 0;
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICKF(bformat3_tickf)
+CK_DLL_TICKF(ordergain3_tickf)
 {
     // get our c++ class pointer
-    BFormat3 *bf3_obj = (BFormat3 *)OBJ_MEMBER_INT(SELF, bformat3_data_offset);
+    OrderGain3 *bf3_obj = (OrderGain3 *)OBJ_MEMBER_INT(SELF, ordergain3_data_offset);
 
     // invoke our tick function; store in the magical out variable
     if (bf3_obj)
@@ -390,10 +390,10 @@ CK_DLL_TICKF(bformat3_tickf)
 }
 
 // example implementation for setter
-CK_DLL_MFUN(bformat3_setGain)
+CK_DLL_MFUN(ordergain3_setGain)
 {
     // get our c++ class pointer
-    BFormat3 *bf3_obj = (BFormat3 *)OBJ_MEMBER_INT(SELF, bformat3_data_offset);
+    OrderGain3 *bf3_obj = (OrderGain3 *)OBJ_MEMBER_INT(SELF, ordergain3_data_offset);
 
     // get next argument
     // NOTE argument type must match what is specified above in CK_DLL_QUERY
@@ -405,61 +405,61 @@ CK_DLL_MFUN(bformat3_setGain)
 }
 
 // example implementation for getter
-CK_DLL_MFUN(bformat3_getGain)
+CK_DLL_MFUN(ordergain3_getGain)
 {
     // get our c++ class pointer
-    BFormat3 *bf3_obj = (BFormat3 *)OBJ_MEMBER_INT(SELF, bformat3_data_offset);
+    OrderGain3 *bf3_obj = (OrderGain3 *)OBJ_MEMBER_INT(SELF, ordergain3_data_offset);
 
     // call getParam() and set the return value
     RETURN->v_float = bf3_obj->getGain();
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat4_ctor)
+CK_DLL_CTOR(ordergain4_ctor)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = 0;
 
     // instantiate our internal c++ class representation
-    BFormat4 *bf4_obj = new BFormat4(API->vm->srate(VM));
+    OrderGain4 *bf4_obj = new OrderGain4(API->vm->srate(VM));
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = (t_CKINT)bf4_obj;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = (t_CKINT)bf4_obj;
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat4_ctor2)
+CK_DLL_CTOR(ordergain4_ctor2)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = 0;
 
     t_CKFLOAT temp = GET_NEXT_FLOAT(ARGS);
 
     // instantiate our internal c++ class representation
-    BFormat4* bf4_obj = new BFormat4(API->vm->srate(VM));
+    OrderGain4 *bf4_obj = new OrderGain4(API->vm->srate(VM));
 
     bf4_obj->setGain(temp);
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = (t_CKINT)bf4_obj;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = (t_CKINT)bf4_obj;
 }
 
 // implementation for the destructor
-CK_DLL_DTOR(bformat4_dtor)
+CK_DLL_DTOR(ordergain4_dtor)
 {
     // get our c++ class pointer
-    BFormat4 *bf4_obj = (BFormat4 *)OBJ_MEMBER_INT(SELF, bformat4_data_offset);
+    OrderGain4 *bf4_obj = (OrderGain4 *)OBJ_MEMBER_INT(SELF, ordergain4_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(bf4_obj);
     // set the data field to 0
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = 0;
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICKF(bformat4_tickf)
+CK_DLL_TICKF(ordergain4_tickf)
 {
     // get our c++ class pointer
-    BFormat4 *bf4_obj = (BFormat4 *)OBJ_MEMBER_INT(SELF, bformat4_data_offset);
+    OrderGain4 *bf4_obj = (OrderGain4 *)OBJ_MEMBER_INT(SELF, ordergain4_data_offset);
 
     // invoke our tick function; store in the magical out variable
     if (bf4_obj)
@@ -470,10 +470,10 @@ CK_DLL_TICKF(bformat4_tickf)
 }
 
 // example implementation for setter
-CK_DLL_MFUN(bformat4_setGain)
+CK_DLL_MFUN(ordergain4_setGain)
 {
     // get our c++ class pointer
-    BFormat4 *bf4_obj = (BFormat4 *)OBJ_MEMBER_INT(SELF, bformat4_data_offset);
+    OrderGain4 *bf4_obj = (OrderGain4 *)OBJ_MEMBER_INT(SELF, ordergain4_data_offset);
 
     // get next argument
     // NOTE argument type must match what is specified above in CK_DLL_QUERY
@@ -485,61 +485,61 @@ CK_DLL_MFUN(bformat4_setGain)
 }
 
 // example implementation for getter
-CK_DLL_MFUN(bformat4_getGain)
+CK_DLL_MFUN(ordergain4_getGain)
 {
     // get our c++ class pointer
-    BFormat4 *bf4_obj = (BFormat4 *)OBJ_MEMBER_INT(SELF, bformat4_data_offset);
+    OrderGain4 *bf4_obj = (OrderGain4 *)OBJ_MEMBER_INT(SELF, ordergain4_data_offset);
 
     // call getParam() and set the return value
     RETURN->v_float = bf4_obj->getGain();
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat5_ctor)
+CK_DLL_CTOR(ordergain5_ctor)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat5_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain5_data_offset) = 0;
 
     // instantiate our internal c++ class representation
-    BFormat5 *bf5_obj = new BFormat5(API->vm->srate(VM));
+    OrderGain5 *bf5_obj = new OrderGain5(API->vm->srate(VM));
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat5_data_offset) = (t_CKINT)bf5_obj;
+    OBJ_MEMBER_INT(SELF, ordergain5_data_offset) = (t_CKINT)bf5_obj;
 }
 
 // implementation for the default constructor
-CK_DLL_CTOR(bformat5_ctor2)
+CK_DLL_CTOR(ordergain5_ctor2)
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = 0;
 
     t_CKFLOAT temp = GET_NEXT_FLOAT(ARGS);
 
     // instantiate our internal c++ class representation
-    BFormat4* bf4_obj = new BFormat4(API->vm->srate(VM));
+    OrderGain4 *bf4_obj = new OrderGain4(API->vm->srate(VM));
 
     bf4_obj->setGain(temp);
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, bformat4_data_offset) = (t_CKINT)bf4_obj;
+    OBJ_MEMBER_INT(SELF, ordergain4_data_offset) = (t_CKINT)bf4_obj;
 }
 
 // implementation for the destructor
-CK_DLL_DTOR(bformat5_dtor)
+CK_DLL_DTOR(ordergain5_dtor)
 {
     // get our c++ class pointer
-    BFormat5 *bf5_obj = (BFormat5 *)OBJ_MEMBER_INT(SELF, bformat5_data_offset);
+    OrderGain5 *bf5_obj = (OrderGain5 *)OBJ_MEMBER_INT(SELF, ordergain5_data_offset);
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE(bf5_obj);
     // set the data field to 0
-    OBJ_MEMBER_INT(SELF, bformat5_data_offset) = 0;
+    OBJ_MEMBER_INT(SELF, ordergain5_data_offset) = 0;
 }
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICKF(bformat5_tickf)
+CK_DLL_TICKF(ordergain5_tickf)
 {
     // get our c++ class pointer
-    BFormat5 *bf5_obj = (BFormat5 *)OBJ_MEMBER_INT(SELF, bformat5_data_offset);
+    OrderGain5 *bf5_obj = (OrderGain5 *)OBJ_MEMBER_INT(SELF, ordergain5_data_offset);
 
     // invoke our tick function; store in the magical out variable
     if (bf5_obj)
@@ -550,10 +550,10 @@ CK_DLL_TICKF(bformat5_tickf)
 }
 
 // example implementation for setter
-CK_DLL_MFUN(bformat5_setGain)
+CK_DLL_MFUN(ordergain5_setGain)
 {
     // get our c++ class pointer
-    BFormat5 *bf5_obj = (BFormat5 *)OBJ_MEMBER_INT(SELF, bformat5_data_offset);
+    OrderGain5 *bf5_obj = (OrderGain5 *)OBJ_MEMBER_INT(SELF, ordergain5_data_offset);
 
     // get next argument
     // NOTE argument type must match what is specified above in CK_DLL_QUERY
@@ -565,10 +565,10 @@ CK_DLL_MFUN(bformat5_setGain)
 }
 
 // example implementation for getter
-CK_DLL_MFUN(bformat5_getGain)
+CK_DLL_MFUN(ordergain5_getGain)
 {
     // get our c++ class pointer
-    BFormat5 *bf5_obj = (BFormat5 *)OBJ_MEMBER_INT(SELF, bformat5_data_offset);
+    OrderGain5 *bf5_obj = (OrderGain5 *)OBJ_MEMBER_INT(SELF, ordergain5_data_offset);
 
     // call getParam() and set the return value
     RETURN->v_float = bf5_obj->getGain();

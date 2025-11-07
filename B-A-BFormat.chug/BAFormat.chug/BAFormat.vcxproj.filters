@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{4b018fc9-9f6b-4f37-8fd6-074d37f13f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5e0d670b-efbf-4795-b570-2e94654f1075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Make Files">
+      <UniqueIdentifier>{16662928-3d37-4112-a47e-14915bcced2d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\chugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BAFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\BAFormat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="makefile">
+      <Filter>Make Files</Filter>
+    </None>
+    <None Include="makefile.linux">
+      <Filter>Make Files</Filter>
+    </None>
+    <None Include="makefile.mac">
+      <Filter>Make Files</Filter>
+    </None>
+    <None Include="makefile.win">
+      <Filter>Make Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

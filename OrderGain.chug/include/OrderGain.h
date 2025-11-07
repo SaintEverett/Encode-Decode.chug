@@ -1,10 +1,10 @@
-#ifndef BFORMAT_H
-#define BFORMAT_H
+#ifndef ORDERGAIN_H
+#define ORDERGAIN_H
 
 #include "chugin.h"
 
 template <unsigned int order_>
-class BFormat
+class OrderGain
 {
 public:
 	void tick(SAMPLE *in, SAMPLE *out, unsigned nframes)
@@ -32,34 +32,34 @@ public:
 	constexpr static unsigned channel_count = (order_ + 1) * (order_ + 1);
 };
 
-class BFormat1 : public BFormat<1> // these simply just act as wrappers of BFormat to chuck
+class OrderGain1 : public OrderGain<1> // these simply just act as wrappers of OrderGain to chuck
 {
 public:
-	BFormat1(t_CKFLOAT fs) {};
+	OrderGain1(t_CKFLOAT fs) {};
 };
 
-class BFormat2 : public BFormat<2>
+class OrderGain2 : public OrderGain<2>
 {
 public:
-	BFormat2(t_CKFLOAT fs) {};
+	OrderGain2(t_CKFLOAT fs) {};
 };
 
-class BFormat3 : public BFormat<3>
+class OrderGain3 : public OrderGain<3>
 {
 public:
-	BFormat3(t_CKFLOAT fs) {};
+	OrderGain3(t_CKFLOAT fs) {};
 };
 
-class BFormat4 : public BFormat<4>
+class OrderGain4 : public OrderGain<4>
 {
 public:
-	BFormat4(t_CKFLOAT fs) {};
+	OrderGain4(t_CKFLOAT fs) {};
 };
 
-class BFormat5 : public BFormat<5>
+class OrderGain5 : public OrderGain<5>
 {
 public:
-	BFormat5(t_CKFLOAT fs) {};
+	OrderGain5(t_CKFLOAT fs) {};
 };
 
 #endif
