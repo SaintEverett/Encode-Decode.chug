@@ -1,10 +1,9 @@
-
 # chugin name
 CHUGIN_NAME=ABFormat
 
 # all of the c/cpp files that compose this chugin
 C_MODULES=
-CXX_MODULES=ABFormat.cpp
+CXX_MODULES=src/ABFormat.cpp
 
 INC_DIR = include/
 CXXFLAGS=-c -Wall -I$(INC_DIR)/

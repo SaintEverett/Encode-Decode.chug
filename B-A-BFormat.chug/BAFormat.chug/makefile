@@ -4,7 +4,7 @@ CHUGIN_NAME=BAFormat
 
 # all of the c/cpp files that compose this chugin
 C_MODULES=
-CXX_MODULES=BAFormat.cpp
+CXX_MODULES=src/BAFormat.cpp
 
 INC_DIR = include/
 CXXFLAGS=-c -Wall -I$(INC_DIR)/
