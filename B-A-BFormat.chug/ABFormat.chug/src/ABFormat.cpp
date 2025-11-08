@@ -37,6 +37,7 @@
 
 // include chugin header
 #include "chugin.h"
+#include "ABFormat.h"
 
 // general includes
 #include <iostream>
@@ -47,52 +48,11 @@ CK_DLL_CTOR( abformat_ctor );
 // declaration of chugin desctructor
 CK_DLL_DTOR( abformat_dtor );
 
-// example of getter/setter
-CK_DLL_MFUN( abformat_setParam );
-CK_DLL_MFUN( abformat_getParam );
-
 // for chugins extending UGen, this is mono synthesis function for 1 sample
-CK_DLL_TICK( abformat_tick );
+CK_DLL_TICKF( abformat_tickf );
 
 // this is a special offset reserved for chugin internal data
 t_CKINT abformat_data_offset = 0;
-
-
-//-----------------------------------------------------------------------------
-// class definition for internal chugin data
-// (NOTE this isn't strictly necessary, but is one example of a recommended approach)
-//-----------------------------------------------------------------------------
-class ABFormat
-{
-public:
-    // constructor
-    ABFormat( t_CKFLOAT fs )
-    {
-        m_param = 0;
-    }
-
-    // for chugins extending UGen
-    SAMPLE tick( SAMPLE in )
-    {
-        // default: this passes whatever input is patched into chugin
-        return in;
-    }
-
-    // set parameter example
-    t_CKFLOAT setParam( t_CKFLOAT p )
-    {
-        m_param = p;
-        return p;
-    }
-
-    // get parameter example
-    t_CKFLOAT getParam() { return m_param; }
-    
-private:
-    // instance data
-    t_CKFLOAT m_param;
-};
-
 
 //-----------------------------------------------------------------------------
 // info function: ChucK calls this when loading/probing the chugin
@@ -104,9 +64,9 @@ CK_DLL_INFO( ABFormat )
     // the version string of this chugin, e.g., "v1.2.1"
     QUERY->setinfo( QUERY, CHUGIN_INFO_CHUGIN_VERSION, "" );
     // the author(s) of this chugin, e.g., "Alice Baker & Carl Donut"
-    QUERY->setinfo( QUERY, CHUGIN_INFO_AUTHORS, "" );
+    QUERY->setinfo( QUERY, CHUGIN_INFO_AUTHORS, "Everett M. Carpenter" );
     // text description of this chugin; what is it? what does it do? who is it for?
-    QUERY->setinfo( QUERY, CHUGIN_INFO_DESCRIPTION, "" );
+    QUERY->setinfo( QUERY, CHUGIN_INFO_DESCRIPTION, "A first order A-BFormat converter" );
     // (optional) URL of the homepage for this chugin
     QUERY->setinfo( QUERY, CHUGIN_INFO_URL, "" );
     // (optional) contact email
@@ -122,41 +82,10 @@ CK_DLL_QUERY( ABFormat )
 {
     // generally, don't change this...
     QUERY->setname( QUERY, "ABFormat" );
-
-    // ------------------------------------------------------------------------
-    // begin class definition(s); will be compiled, verified,
-    // and added to the chuck host type system for use
-    // ------------------------------------------------------------------------
-    // NOTE to create a non-UGen class, change the second argument
-    // to extend a different ChucK class (e.g., "Object")
     QUERY->begin_class( QUERY, "ABFormat", "UGen" );
-
-    // register default constructor
     QUERY->add_ctor( QUERY, abformat_ctor );
-    // NOTE constructors can be overloaded like any other functions,
-    // each overloaded constructor begins with `QUERY->add_ctor()`
-    // followed by a sequence of `QUERY->add_arg()`
-
-    // register the destructor (probably no need to change)
     QUERY->add_dtor( QUERY, abformat_dtor );
-
-    // for UGens only: add tick function
-    // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_func( QUERY, abformat_tick, NULL, 1, 1 );
-    // NOTE: if this is to be a UGen with more than 1 channel,
-    // e.g., a multichannel UGen -- will need to use add_ugen_funcf()
-    // and declare a tickf function using CK_DLL_TICKF
-
-    // example of adding setter method
-    QUERY->add_mfun( QUERY, abformat_setParam, "float", "param" );
-    // example of adding argument to the above method
-    QUERY->add_arg( QUERY, "float", "arg" );
-
-    // example of adding getter method
-    QUERY->add_mfun( QUERY, abformat_getParam, "float", "param" );
-    
-    // this reserves a variable in the ChucK internal class to store 
-    // referene to the c++ class we defined above
+    QUERY->add_ugen_funcf( QUERY, abformat_tickf, NULL, 4, 4 );;
     abformat_data_offset = QUERY->add_mvar( QUERY, "int", "@abf_data", false );
 
     // ------------------------------------------------------------------------
@@ -177,7 +106,7 @@ CK_DLL_CTOR( abformat_ctor )
     OBJ_MEMBER_INT( SELF, abformat_data_offset ) = 0;
     
     // instantiate our internal c++ class representation
-    ABFormat * abf_obj = new ABFormat( API->vm->srate(VM) );
+    ABFormat1 * abf_obj = new ABFormat1( API->vm->srate(VM) );
     
     // store the pointer in the ChucK object member
     OBJ_MEMBER_INT( SELF, abformat_data_offset ) = (t_CKINT)abf_obj;
@@ -188,7 +117,7 @@ CK_DLL_CTOR( abformat_ctor )
 CK_DLL_DTOR( abformat_dtor )
 {
     // get our c++ class pointer
-    ABFormat * abf_obj = (ABFormat *)OBJ_MEMBER_INT( SELF, abformat_data_offset );
+    ABFormat1 * abf_obj = (ABFormat1 *)OBJ_MEMBER_INT( SELF, abformat_data_offset );
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE( abf_obj );
     // set the data field to 0
@@ -197,41 +126,14 @@ CK_DLL_DTOR( abformat_dtor )
 
 
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK( abformat_tick )
+CK_DLL_TICKF( abformat_tickf )
 {
     // get our c++ class pointer
-    ABFormat * abf_obj = (ABFormat *)OBJ_MEMBER_INT(SELF, abformat_data_offset);
+    ABFormat1 * abf_obj = (ABFormat1 *)OBJ_MEMBER_INT(SELF, abformat_data_offset);
  
     // invoke our tick function; store in the magical out variable
-    if( abf_obj ) *out = abf_obj->tick( in );
+    if( abf_obj )abf_obj->tick( in, out, nframes );
 
     // yes
     return TRUE;
-}
-
-
-// example implementation for setter
-CK_DLL_MFUN( abformat_setParam )
-{
-    // get our c++ class pointer
-    ABFormat * abf_obj = (ABFormat *)OBJ_MEMBER_INT( SELF, abformat_data_offset );
-
-    // get next argument
-    // NOTE argument type must match what is specified above in CK_DLL_QUERY
-    // NOTE this advances the ARGS pointer, so save in variable for re-use
-    t_CKFLOAT arg1 = GET_NEXT_FLOAT( ARGS );
-    
-    // call setParam() and set the return value
-    RETURN->v_float = abf_obj->setParam( arg1 );
-}
-
-
-// example implementation for getter
-CK_DLL_MFUN(abformat_getParam)
-{
-    // get our c++ class pointer
-    ABFormat * abf_obj = (ABFormat *)OBJ_MEMBER_INT( SELF, abformat_data_offset );
-
-    // call getParam() and set the return value
-    RETURN->v_float = abf_obj->getParam();
 }
