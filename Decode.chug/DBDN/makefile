@@ -6,15 +6,8 @@ CHUGIN_NAME=DBDN
 C_MODULES=
 CXX_MODULES=src/DBDN.cpp
 
-# Automatic dependency generation - FIXED PATHS
-DEPDIR = .deps
-# Create dependency files with full path structure
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
-DEPS = $(CXX_MODULES:%.cpp=$(DEPDIR)/%.d)
-$(shell mkdir -p $(dir $(DEPS)))
-
 INC_DIR = include/
-CXXFLAGS=-c -Wall -I$(INC_DIR)
+CXXFLAGS=-c -Wall -I$(INC_DIR)/..
 
 # where to find chugin.h
 CK_SRC_PATH?=include/

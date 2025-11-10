@@ -29,6 +29,8 @@ CK_DLL_MFUN(encode1_setWeights);
 CK_DLL_MFUN(encode1_getWeights);
 CK_DLL_MFUN(encode1_getAzi);
 CK_DLL_MFUN(encode1_getZeni);
+CK_DLL_MFUN(encode1_setAzi);
+CK_DLL_MFUN(encode1_setZeni);
 t_CKINT encode1_data_offset = 0;
 // Encode2
 CK_DLL_CTOR(encode2_ctor);
@@ -43,6 +45,8 @@ CK_DLL_MFUN(encode2_setWeights);
 CK_DLL_MFUN(encode2_getWeights);
 CK_DLL_MFUN(encode2_getAzi);
 CK_DLL_MFUN(encode2_getZeni);
+CK_DLL_MFUN(encode2_setAzi);
+CK_DLL_MFUN(encode2_setZeni);
 t_CKINT encode2_data_offset = 0;
 // Encode3
 CK_DLL_CTOR(encode3_ctor);
@@ -57,6 +61,8 @@ CK_DLL_MFUN(encode3_setWeights);
 CK_DLL_MFUN(encode3_getWeights);
 CK_DLL_MFUN(encode3_getAzi);
 CK_DLL_MFUN(encode3_getZeni);
+CK_DLL_MFUN(encode3_setAzi);
+CK_DLL_MFUN(encode3_setZeni);
 t_CKINT encode3_data_offset = 0;
 // Encode4
 CK_DLL_CTOR(encode4_ctor);
@@ -71,6 +77,8 @@ CK_DLL_MFUN(encode4_setWeights);
 CK_DLL_MFUN(encode4_getWeights);
 CK_DLL_MFUN(encode4_getAzi);
 CK_DLL_MFUN(encode4_getZeni);
+CK_DLL_MFUN(encode4_setAzi);
+CK_DLL_MFUN(encode4_setZeni);
 t_CKINT encode4_data_offset = 0;
 // Encode5
 CK_DLL_CTOR(encode5_ctor);
@@ -85,6 +93,8 @@ CK_DLL_MFUN(encode5_setWeights);
 CK_DLL_MFUN(encode5_getWeights);
 CK_DLL_MFUN(encode5_getAzi);
 CK_DLL_MFUN(encode5_getZeni);
+CK_DLL_MFUN(encode5_setAzi);
+CK_DLL_MFUN(encode5_setZeni);
 t_CKINT encode5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
@@ -146,6 +156,12 @@ CK_DLL_QUERY(Encode)
     QUERY->add_mfun(QUERY, encode1_getAzi, "float", "azi");
     // retrieve last given zenith
     QUERY->add_mfun(QUERY, encode1_getZeni, "float", "zeni");
+    // set azimuth 
+    QUERY->add_mfun(QUERY, encode1_setAzi, "float", "azi");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    // set  zenith
+    QUERY->add_mfun(QUERY, encode1_setZeni, "float", "zeni");
+    QUERY->add_arg(QUERY, "float", "zenith");
     // set weights
     QUERY->add_mfun(QUERY, encode1_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
@@ -179,6 +195,10 @@ CK_DLL_QUERY(Encode)
     QUERY->add_mfun(QUERY, encode2_getSH, "float[]", "pos");
     QUERY->add_mfun(QUERY, encode2_getAzi, "float", "azi");
     QUERY->add_mfun(QUERY, encode2_getZeni, "float", "zeni");
+    QUERY->add_mfun(QUERY, encode2_setAzi, "float", "azi");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_mfun(QUERY, encode2_setZeni, "float", "zeni");
+    QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode2_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode2_getWeights, "float[]", "weights");
@@ -211,6 +231,10 @@ CK_DLL_QUERY(Encode)
     QUERY->add_mfun(QUERY, encode3_getSH, "float[]", "pos");
     QUERY->add_mfun(QUERY, encode3_getAzi, "float", "azi");
     QUERY->add_mfun(QUERY, encode3_getZeni, "float", "zeni");
+    QUERY->add_mfun(QUERY, encode3_setAzi, "float", "azi");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_mfun(QUERY, encode3_setZeni, "float", "zeni");
+    QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode3_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode3_getWeights, "float[]", "weights");
@@ -243,6 +267,10 @@ CK_DLL_QUERY(Encode)
     QUERY->add_mfun(QUERY, encode4_getSH, "float[]", "pos");
     QUERY->add_mfun(QUERY, encode4_getAzi, "float", "azi");
     QUERY->add_mfun(QUERY, encode4_getZeni, "float", "zeni");
+    QUERY->add_mfun(QUERY, encode4_setAzi, "float", "azi");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_mfun(QUERY, encode4_setZeni, "float", "zeni");
+    QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode4_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode4_getWeights, "float[]", "weights");
@@ -275,6 +303,10 @@ CK_DLL_QUERY(Encode)
     QUERY->add_mfun(QUERY, encode5_getSH, "float[]", "pos");
     QUERY->add_mfun(QUERY, encode5_getAzi, "float", "azi");
     QUERY->add_mfun(QUERY, encode5_getZeni, "float", "zeni");
+    QUERY->add_mfun(QUERY, encode5_setAzi, "float", "azi");
+    QUERY->add_arg(QUERY, "float", "azimuth");
+    QUERY->add_mfun(QUERY, encode5_setZeni, "float", "zeni");
+    QUERY->add_arg(QUERY, "float", "zenith");
     QUERY->add_mfun(QUERY, encode5_setWeights, "void", "weights");
     QUERY->add_arg(QUERY, "float[]", "weights");
     QUERY->add_mfun(QUERY, encode5_getWeights, "float[]", "weights");
@@ -440,6 +472,20 @@ CK_DLL_MFUN(encode1_getZeni)
     if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
+CK_DLL_MFUN(encode1_setAzi)
+{
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    float azi = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(azi, encode_obj->last_zenith);
+}
+
+CK_DLL_MFUN(encode1_setZeni)
+{
+    Encode1* encode_obj = (Encode1*)OBJ_MEMBER_INT(SELF, encode1_data_offset);
+    float zeni = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(encode_obj->last_azimuth, zeni);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //
@@ -586,6 +632,20 @@ CK_DLL_MFUN(encode2_getZeni)
 {
     Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
     if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
+}
+
+CK_DLL_MFUN(encode2_setAzi)
+{
+    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+    float azi = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(azi, encode_obj->last_zenith);
+}
+
+CK_DLL_MFUN(encode2_setZeni)
+{
+    Encode2* encode_obj = (Encode2*)OBJ_MEMBER_INT(SELF, encode2_data_offset);
+    float zeni = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(encode_obj->last_azimuth, zeni);
 }
 
 //=================================================//
@@ -736,6 +796,20 @@ CK_DLL_MFUN(encode3_getZeni)
     if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
+CK_DLL_MFUN(encode3_setAzi)
+{
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+    float azi = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(azi, encode_obj->last_zenith);
+}
+
+CK_DLL_MFUN(encode3_setZeni)
+{
+    Encode3* encode_obj = (Encode3*)OBJ_MEMBER_INT(SELF, encode3_data_offset);
+    float zeni = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(encode_obj->last_azimuth, zeni);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //
@@ -884,6 +958,20 @@ CK_DLL_MFUN(encode4_getZeni)
     if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
 }
 
+CK_DLL_MFUN(encode4_setAzi)
+{
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+    float azi = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(azi, encode_obj->last_zenith);
+}
+
+CK_DLL_MFUN(encode4_setZeni)
+{
+    Encode4* encode_obj = (Encode4*)OBJ_MEMBER_INT(SELF, encode4_data_offset);
+    float zeni = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(encode_obj->last_azimuth, zeni);
+}
+
 //=================================================//
 // ************************************************//
 //                                                 //
@@ -1030,6 +1118,20 @@ CK_DLL_MFUN(encode5_getZeni)
 {
     Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
     if (encode_obj) RETURN->v_float = encode_obj->last_zenith;
+}
+
+CK_DLL_MFUN(encode5_setAzi)
+{
+    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+    float azi = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(azi, encode_obj->last_zenith);
+}
+
+CK_DLL_MFUN(encode5_setZeni)
+{
+    Encode5* encode_obj = (Encode5*)OBJ_MEMBER_INT(SELF, encode5_data_offset);
+    float zeni = GET_NEXT_FLOAT(ARGS);
+    if (encode_obj) encode_obj->position(encode_obj->last_azimuth, zeni);
 }
 
 //=================================================//
