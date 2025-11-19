@@ -7,6 +7,8 @@ Currently functional:
       SADN // sampling ambisonic decoder designed to receive speaker array angles
       DecodeN // sampling ambisonic decoder designed to receive speaker spherical harmonics
       BFormatN // gain UGen for BFormat signals (multi channel gain factor)
+      ABFormat // convert AFromat to BFormat
+      BAFormat // convert BFormat to AFormat
 
 Coming soon:
 
