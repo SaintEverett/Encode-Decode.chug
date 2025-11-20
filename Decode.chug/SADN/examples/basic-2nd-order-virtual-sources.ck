@@ -11,6 +11,7 @@ for(int i; i < speaks.size(); i++)
 Encode2 enc[n];
 NRev rev[n];
 SinOsc obj[n];
+Envelope env[n];
 SAD2 deco(speaks); // constructor!
 
 fun void randomPlacement(Encode2 p)
@@ -25,26 +26,41 @@ fun void randomPlacement(Encode2 p)
     }
 }
 
-fun void randomPitch(SinOsc s)
+fun void randomPitch(SinOsc s, Envelope e)
 {
-    42.0 => float base;
+    22.0 => float base;
     while(true)
     {
         Math.random2(1,5) => float random;
-        Math.random2f(1.0,2.5) * random => random;
+        Math.random2f(0.125,2.5) * random => random;
         base * random => s.freq;
+        //e.duration $ int => int timmy; // how to cast dur to int?
+        35000 => int timmy;
         for(int i; i < 6; i++)
         {
-            s.freq()*2 => s.freq;
+            e.keyOn();
+            e.duration() => now;
+            s.freq()*1.25 => s.freq;
+            for(int i; i < 6; i++)
+            {
+                s.freq()*Math.random2f(0.125, 2.4) => s.freq;
+                (timmy/(Math.random2f(10.0,1000.0)))::ms => now;
+            }
             Math.random2f(4.5,450)::ms => now;
-            //100::ms => now;
-            s.gain(0.0);
-            100::ms => now;
-            s.gain(1.0);
-            (s.freq()/random)*3 => s.freq;
+            e.keyOff();
+            e.duration() => now;
+            e.keyOn();
+            (s.freq()/random)*0.8 => s.freq;
+            for(int i; i < 6; i++)
+            {
+                s.freq()*Math.random2f(0.125, 2.4) => s.freq;
+                (timmy/(6.0))::ms => now;
+            }
+            e.duration() => now;
             Math.random2f(4.5,450)::ms => now;
-            //100::ms => now;
-            s.freq()/8.5 => s.freq;
+            s.freq()*0.5 => s.freq;
+            e.keyOff();
+            e.duration();
         }
         5000::ms => now;
     }
@@ -55,10 +71,11 @@ for(int i; i < n; i++)
 {
     enc[i].gain(1.0/n); // scale
     obj[i].freq(Math.random2f(34.0,1652.0));
-    obj[i] => rev[i] => enc[i] => deco => blackhole;
-    rev[i].mix(0.125);
+    obj[i] => env[i] => rev[i] => enc[i] => deco => blackhole;
+    rev[i].mix(0.0125);
+    Math.random2f(0.125,72.5)::ms => env[i].duration;
     spork ~ randomPlacement(enc[i]);
-    spork ~ randomPitch(obj[i]);
+    spork ~ randomPitch(obj[i], env[i]);
 }
 
 for(int i; i < deco.channels(); i++)
