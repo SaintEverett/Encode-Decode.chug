@@ -34,6 +34,7 @@ input[1] => enc[1];
 // control direction w/ constant elevation
 float direction[2];
 0.0 => float elevation;
+float sh[];
 
 fun void varImpulse(Impulse a, dur speed)
 {
@@ -47,14 +48,26 @@ fun void varImpulse(Impulse a, dur speed)
 spork ~ varImpulse(imp[0], 48::ms); // rapid rate impulse
 spork ~ varImpulse(imp[1], 36::ms);
 
-for(int tick; tick < 360; tick++)
+for(int tick; tick < 720; tick++)
 {
     tick => direction[0]; // rotate
-    360-tick => direction[1]; // rotate opposite direction
+    360.0-tick => direction[1]; // rotate opposite direction
     reso[0].freq(Math.random2f(456.0, 457.9999)); // random reson are nice
     reso[1].freq(Math.random2f(742.0, 744.9999));
     enc[0].pos(direction[0],elevation); // move!
     enc[1].pos(direction[1], elevation);
+    enc[0].pos() @=> sh;
+    for(int i; i < sh.size(); i++)
+    {
+        cherr <= sh[i] <= " ";
+    }
+    cherr <= IO.nl();
+    enc[1].pos() @=> sh;
+    for(int i; i < sh.size(); i++)
+    {
+        cherr <= sh[i] <= " ";
+    }
+    cherr <= IO.nl();
     10::ms => now;
 }
 

@@ -43,6 +43,10 @@ public:
         channel_matrix.resize(channel_count);
         temp_matrix.resize(channel_count);
         weights.resize(channel_count);
+        for (int i = 0; i < weights.size(); i++)
+        {
+            weights[i] = 1.0;
+        }
     };
     // for chugins extending UGen
     void tick(SAMPLE *in, SAMPLE *out, int nframes)
@@ -128,7 +132,9 @@ public:
 
     void position(t_CKFLOAT azimuth_, t_CKFLOAT zenith_)
     {
-        temp_matrix = SH(order, azimuth_, zenith_, 0); // simply just calls the spherical harmonic calculator
+        last_azimuth = azimuth_;
+        last_zenith = zenith_;
+        temp_matrix = SH(order, last_azimuth, last_zenith, 0); // simply just calls the spherical harmonic calculator
     }
 
     std::vector<float> getSH()
@@ -148,7 +154,7 @@ public:
     constexpr static unsigned channel_count = (n_order + 1) * (n_order + 1);
     std::vector<float> channel_matrix; // current gain coeffs
     std::vector<float> temp_matrix;    // temp coeffs to be shifted to current
-    std::vector<float> weights;
+    std::vector<float> weights = { 1.0 };
     float last_azimuth = 0.f;
     float last_zenith = 0.f;
     bool zeroCrossing = FALSE; // is there a zero crossing?

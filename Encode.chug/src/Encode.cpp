@@ -410,8 +410,6 @@ CK_DLL_MFUN(encode1_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
-        encode_obj->last_azimuth = azi;
-        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -572,8 +570,6 @@ CK_DLL_MFUN(encode2_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
-        encode_obj->last_azimuth = azi;
-        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -734,8 +730,6 @@ CK_DLL_MFUN(encode3_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
-        encode_obj->last_azimuth = azi;
-        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -896,8 +890,6 @@ CK_DLL_MFUN(encode4_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
-        encode_obj->last_azimuth = azi;
-        encode_obj->last_zenith = zeni;
     }
 }
 
@@ -1058,8 +1050,6 @@ CK_DLL_MFUN(encode5_position)
     if (encode_obj)
     {
         encode_obj->position(azi, zeni);
-        encode_obj->last_azimuth = azi;
-        encode_obj->last_zenith = zeni;
     }
 }
 
