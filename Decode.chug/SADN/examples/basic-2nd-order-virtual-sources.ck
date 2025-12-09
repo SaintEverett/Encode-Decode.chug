@@ -19,9 +19,10 @@ fun void randomPlacement(Encode2 p)
     Math.random2f(0.0, 360.0) => float randomAzi;
     while(true)
     {
-        randomAzi+Math.random2f(-4.5,4.5) => randomAzi;
+        randomAzi+Math.random2f(0,4.5) => randomAzi;
+        if(randomAzi > 360) randomAzi-360.0 => randomAzi;
         p.pos(randomAzi,0);
-        // <<< randomAzi >>>;
+        <<< randomAzi >>>;
         10::ms => now;
     }
 }

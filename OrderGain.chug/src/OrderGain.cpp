@@ -91,15 +91,15 @@ t_CKINT ordergain5_data_offset = 0;
 CK_DLL_INFO(OrderGain)
 {
     // the version string of this chugin, e.g., "v1.2.1"
-    QUERY->setinfo(QUERY, CHUGIN_INFO_CHUGIN_VERSION, "");
+    QUERY->setinfo(QUERY, CHUGIN_INFO_CHUGIN_VERSION, "v1.0.0");
     // the author(s) of this chugin, e.g., "Alice Baker & Carl Donut"
     QUERY->setinfo(QUERY, CHUGIN_INFO_AUTHORS, "Everett M. Carpenter");
     // text description of this chugin; what is it? what does it do? who is it for?
-    QUERY->setinfo(QUERY, CHUGIN_INFO_DESCRIPTION, "Gain adjustment of multichannel buffers");
+    QUERY->setinfo(QUERY, CHUGIN_INFO_DESCRIPTION, "Gain adjustment of multichannel audio streams");
     // (optional) URL of the homepage for this chugin
-    QUERY->setinfo(QUERY, CHUGIN_INFO_URL, "");
+    QUERY->setinfo(QUERY, CHUGIN_INFO_URL, "https://github.com/SaintEverett/Encode-Decode.chug/tree/32486a2a3fcbb03b66f6b0c5dfaeed064a58e200/OrderGain.chug");
     // (optional) contact email
-    QUERY->setinfo(QUERY, CHUGIN_INFO_EMAIL, "carpee2[@]rpi[.]edu");
+    QUERY->setinfo(QUERY, CHUGIN_INFO_EMAIL, "carpee2[at]rpi[dot]edu");
 }
 
 //-----------------------------------------------------------------------------
