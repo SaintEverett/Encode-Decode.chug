@@ -16,6 +16,7 @@
 class LinkwitzRiley
 {
 public:
+	LinkwitzRiley() {};
 	LinkwitzRiley(float fc, float fs)
 	{
 		s_rate = fs;
@@ -53,42 +54,48 @@ public:
 		float Q = 0.707f;
 		float omega = 2.f * pi * (fc / fs);
 		float alpha = sinf(omega) / (2.f * Q);
+
 		hb_0 = (1.f + cosf(omega)) / 2.f;
-		hb_1 = -1.f - cosf(omega);
+		hb_1 = -(1.f + cosf(omega));
 		hb_2 = hb_0;
-		a_0 = 1 + alpha;
-		a_1 = -2 * cos(omega);
-		a_2 = 1 - alpha;
+
+		a_0 = 1.f + alpha;
+		a_1 = -2.f * cos(omega);
+		a_2 = 1.f - alpha;
+
+		// normalize by a0
 		hb_0 /= a_0;
 		hb_1 /= a_0;
 		hb_2 /= a_0;
 		a_1 /= a_0;
 		a_2 /= a_0;
-		a_0 = 1.0f; 
+		a_0 = 1.0f;
 	}
 
 	void lowpassCoeff(float fc, float fs)
 	{
-		float Q = 0.707f;
+		float Q = 0.707f; 
 		float omega = 2.f * pi * (fc / fs);
 		float alpha = sinf(omega) / (2.f * Q);
-		lb_0 = (1.f - cosf(omega)) / 2.f;
-		lb_1 = 1.f - cosf(omega);
+		float cosw = cosf(omega);
+
+		lb_0 = (1.f - cosw) / 2.f;
+		lb_1 = (1.f - cosw); 
 		lb_2 = lb_0;
-		a_0 = 1 + alpha;
-		a_1 = -2 * cos(omega);
-		a_2 = 1 - alpha;
-		lb_0 /= a_0;
-		lb_1 /= a_0;
-		lb_2 /= a_0;
-		a_1 /= a_0;
-		a_2 /= a_0;
-		a_0 = 1.0f; 
+
+		// normalize by a0
+		float norm = 1.f / a_0;
+		lb_0 *= norm;
+		lb_1 *= norm;
+		lb_2 *= norm;
+		a_1 *= norm;
+		a_2 *= norm;
+		a_0 = 1.0f;
 	}
 
 protected:
 	float s_rate;
-	float cf;
+	float cf = 0;
 	// a coeffs
 	float a_0 = 0;
 	float a_1 = 0;
@@ -102,9 +109,9 @@ protected:
 	float lb_1 = 0;
 	float lb_2 = 0;
 	// in delay
-	SAMPLE in_0;
-	SAMPLE in_1;
-	SAMPLE in_2;
+	SAMPLE in_0 = 0;
+	SAMPLE in_1 = 0;
+	SAMPLE in_2 = 0;
 	// hi state
 	SAMPLE hz_0 = 0;
 	SAMPLE hz_1 = 0;
