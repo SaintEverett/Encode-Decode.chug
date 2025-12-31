@@ -341,7 +341,7 @@ CK_DLL_CTOR(encode1_ctor)
     Encode1 *encodencode_obj = new Encode1(API->vm->srate(VM));
 
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT(SELF, encode1_data_offset) = (t_CKINT)encodencode_obj;
+    OBJ_MEMBER_INT(SELF, encode1_data_offset) = (t_CKINT)encode_obj;
 }
 
 // implementation for the destructor
