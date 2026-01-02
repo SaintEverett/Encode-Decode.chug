@@ -24,44 +24,55 @@
 class Mirror
 {
 public:
-	Mirror(float fs) {};
-	~Mirror() {};
+	Mirror(float fs) { mode(0); };
+	Mirror(float fs, int initmode) { mode(initmode); }
+	~Mirror() { delete[] mirrorValues; delete& lastMode; };
 
 	void mode(int m)
 	{
+		if (m != lastMode) haveChanged = 1;
+		lastMode = m; // save for later reference
 		switch (m)
 		{
 		case 0:
-			for (int i = 0; i < (sizeof(mirrorValues) / sizeof(mirrorValues[0])); i++)
+			for (int i = 0; i < (sizeof(mirrorValues) / sizeof(mirrorValues[0])); i++) // flip up to down and down to up
 			{
 				int n = (floor(sqrt(i)));
 				int m = (i - (n * n) - n);
 				mirrorValues[i] = pow(-1, n + m);
 			}
+			break;
 		case 1:
-			for (int i = 0; i < (sizeof(mirrorValues) / sizeof(mirrorValues[0])); i++)
+			for (int i = 0; i < (sizeof(mirrorValues) / sizeof(mirrorValues[0])); i++) // flip left to right and right to left
 			{
 				int n = (floor(sqrt(i)));
 				int m = (i - (n * n) - n);
 				if (m < 0) mirrorValues[i] = -1;
 				else mirrorValues[i] = 1;
 			}
+			break;
 		case 2:
-			for (int i = 0; i < (sizeof(mirrorValues) / sizeof(mirrorValues[0])); i++)
+			for (int i = 0; i < (sizeof(mirrorValues) / sizeof(mirrorValues[0])); i++) // flip front to back and back to front
 			{
 				int n = (floor(sqrt(i)));
 				int m = (i - (n * n) - n);
 				if (m < 0) mirrorValues[i] = pow(-1, (m + 1));
 				else mirrorValues[i] = pow(-1, m);
 			}
+			break;
+		default:
+			mode(0);
 		}
 	}
 
 	int* getMirror()
 	{
-		return mirrorValues;
+		return mirrorValues; // return array of values
+		haveChanged = 0; // we've called them and have the most recent values
 	}
 
-private:
-	int mirrorValues[36] = { 0 };
+public:
+	int mirrorValues[36] = { 0 }; // where we store our "diag" matrix (more so a vector at this point)
+	int lastMode = 0; // last used mode (defaults to 0 if no constructor arg is used)
+	bool haveChanged = 0; // have they changed since we last called getMirror()?
 };

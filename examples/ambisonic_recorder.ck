@@ -6,12 +6,13 @@ else me.exit();
 ["W","Y","Z","X","V","T","R","S","U","Q","O","M","K","L","N","P"] @=> string letters[]; // symbols
 
 Encode2 enc[2]; // ENCODE
+OrderGain2 sum(1.0); // sum and make life easier
+Mirror2 flip(1); // flip left to right
 WvOut record[enc[0].channels()]; // record
-Gain input(1.0)[2]; // input "fader"
+Gain input(3.0)[2]; // input "fader"
 for(int i; i < enc[0].channels(); i++)
 {
-    enc[0].chan(i) => record[i] => blackhole;
-    enc[1].chan(i) => record[i] => blackhole;
+    sum.chan(i) => record[i] => blackhole;
     record[i].wavFilename(name+"_"+i);
 }
 //--------------------------------------------------------------
@@ -29,8 +30,8 @@ reso[1].set(657.0, 15);
 imp[0] => reso[0] => rev[0] => input[0] => dac;
 imp[1] => reso[1] => rev[1] => input[1] => dac;
 // plug into our encoders
-input[0] => enc[0];
-input[1] => enc[1];
+input[0] => enc[0]  => sum;
+input[1] => enc[1] => sum;
 // control direction w/ constant elevation
 float direction[2];
 0.0 => float elevation;
