@@ -7,7 +7,7 @@ else me.exit();
 
 Encode2 enc[2]; // ENCODE
 OrderGain2 sum(1.0); // sum and make life easier
-Mirror2 flip(1); // flip left to right
+Mirror2 flip(-1); // flip left to right
 WvOut record[enc[0].channels()]; // record
 Gain input(3.0)[2]; // input "fader"
 for(int i; i < enc[0].channels(); i++)
@@ -30,8 +30,10 @@ reso[1].set(657.0, 15);
 imp[0] => reso[0] => rev[0] => input[0] => dac;
 imp[1] => reso[1] => rev[1] => input[1] => dac;
 // plug into our encoders
-input[0] => enc[0]  => sum;
-input[1] => enc[1] => sum;
+input[0] => enc[0] => flip;
+input[1] => enc[1] => flip;
+flip => sum;
+<<< flip.mode() >>>;
 // control direction w/ constant elevation
 float direction[2];
 0.0 => float elevation;
@@ -60,15 +62,15 @@ for(int tick; tick < 720; tick++)
     enc[0].pos() @=> sh;
     for(int i; i < sh.size(); i++)
     {
-        cherr <= sh[i] <= " ";
+        //cherr <= sh[i] <= " ";
     }
-    cherr <= IO.nl();
+    //cherr <= IO.nl();
     enc[1].pos() @=> sh;
     for(int i; i < sh.size(); i++)
     {
-        cherr <= sh[i] <= " ";
+        //cherr <= sh[i] <= " ";
     }
-    cherr <= IO.nl();
+    //cherr <= IO.nl();
     10::ms => now;
 }
 
