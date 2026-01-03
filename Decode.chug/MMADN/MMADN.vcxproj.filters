@@ -2,22 +2,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{a48249dd-3e1c-4a00-aa74-855fbe128e08}</UniqueIdentifier>
+      <UniqueIdentifier>{badffdec-7bbe-42d4-b845-4d87e312a852}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{b2e935f0-0ff6-466c-94b0-9b8bd9d2d874}</UniqueIdentifier>
+      <UniqueIdentifier>{3053ddc1-316e-446c-ae25-073e3543a453}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\chugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\c-Mirror.h">
+    <ClInclude Include="include\DecoderBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MMADN.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Mirror.cpp">
+    <ClCompile Include="src\MMADN.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

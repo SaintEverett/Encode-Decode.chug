@@ -37,62 +37,57 @@
 
 // include chugin header
 #include "chugin.h"
+#include "c-Mirror.h"
 
 // general includes
 #include <iostream>
 
-
 // declaration of chugin constructor
-CK_DLL_CTOR( mirror_ctor );
+CK_DLL_CTOR( mirror1_ctor );
+CK_DLL_CTOR(mirror1_octor);
 // declaration of chugin desctructor
-CK_DLL_DTOR( mirror_dtor );
-
-// example of getter/setter
-CK_DLL_MFUN( mirror_setParam );
-CK_DLL_MFUN( mirror_getParam );
-
-// for chugins extending UGen, this is mono synthesis function for 1 sample
-CK_DLL_TICK( mirror_tick );
-
+CK_DLL_DTOR( mirror1_dtor );
+CK_DLL_TICKF( mirror1_tickf );
+CK_DLL_MFUN(mirror1_setMode);
+CK_DLL_MFUN(mirror1_getMode);
 // this is a special offset reserved for chugin internal data
-t_CKINT mirror_data_offset = 0;
+t_CKINT mirror1_data_offset = 0;
 
+// 2nd order
+CK_DLL_CTOR(mirror2_ctor);
+CK_DLL_CTOR(mirror2_octor);
+CK_DLL_DTOR(mirror2_dtor);
+CK_DLL_TICKF(mirror2_tickf);
+CK_DLL_MFUN(mirror2_setMode);
+CK_DLL_MFUN(mirror2_getMode);
+t_CKINT mirror2_data_offset = 0;
 
-//-----------------------------------------------------------------------------
-// class definition for internal chugin data
-// (NOTE this isn't strictly necessary, but is one example of a recommended approach)
-//-----------------------------------------------------------------------------
-class Mirror
-{
-public:
-    // constructor
-    Mirror( t_CKFLOAT fs )
-    {
-        m_param = 0;
-    }
+// 3rd order
+CK_DLL_CTOR(mirror3_ctor);
+CK_DLL_CTOR(mirror3_octor);
+CK_DLL_DTOR(mirror3_dtor);
+CK_DLL_TICKF(mirror3_tickf);
+CK_DLL_MFUN(mirror3_setMode);
+CK_DLL_MFUN(mirror3_getMode);
+t_CKINT mirror3_data_offset = 0;
 
-    // for chugins extending UGen
-    SAMPLE tick( SAMPLE in )
-    {
-        // default: this passes whatever input is patched into chugin
-        return in;
-    }
+// 4th order
+CK_DLL_CTOR(mirror4_ctor);
+CK_DLL_CTOR(mirror4_octor);
+CK_DLL_DTOR(mirror4_dtor);
+CK_DLL_TICKF(mirror4_tickf);
+CK_DLL_MFUN(mirror4_setMode);
+CK_DLL_MFUN(mirror4_getMode);
+t_CKINT mirror4_data_offset = 0;
 
-    // set parameter example
-    t_CKFLOAT setParam( t_CKFLOAT p )
-    {
-        m_param = p;
-        return p;
-    }
-
-    // get parameter example
-    t_CKFLOAT getParam() { return m_param; }
-    
-private:
-    // instance data
-    t_CKFLOAT m_param;
-};
-
+// 5th order
+CK_DLL_CTOR(mirror5_ctor);
+CK_DLL_CTOR(mirror5_octor);
+CK_DLL_DTOR(mirror5_dtor);
+CK_DLL_TICKF(mirror5_tickf);
+CK_DLL_MFUN(mirror5_setMode);
+CK_DLL_MFUN(mirror5_getMode);
+t_CKINT mirror5_data_offset = 0;
 
 //-----------------------------------------------------------------------------
 // info function: ChucK calls this when loading/probing the chugin
@@ -113,7 +108,6 @@ CK_DLL_INFO( Mirror )
     QUERY->setinfo( QUERY, CHUGIN_INFO_EMAIL, "" );
 }
 
-
 //-----------------------------------------------------------------------------
 // query function: ChucK calls this when loading the chugin
 // modify this function to define this chugin's API and language extensions
@@ -129,35 +123,33 @@ CK_DLL_QUERY( Mirror )
     // ------------------------------------------------------------------------
     // NOTE to create a non-UGen class, change the second argument
     // to extend a different ChucK class (e.g., "Object")
-    QUERY->begin_class( QUERY, "Mirror", "UGen" );
+    QUERY->begin_class( QUERY, "Mirror1", "UGen" );
 
     // register default constructor
-    QUERY->add_ctor( QUERY, mirror_ctor );
+    QUERY->add_ctor( QUERY, mirror1_ctor );
+    QUERY->add_ctor(QUERY, mirror1_octor);
+    QUERY->add_arg(QUERY, "int", "mode");
     // NOTE constructors can be overloaded like any other functions,
     // each overloaded constructor begins with `QUERY->add_ctor()`
     // followed by a sequence of `QUERY->add_arg()`
 
     // register the destructor (probably no need to change)
-    QUERY->add_dtor( QUERY, mirror_dtor );
+    QUERY->add_dtor( QUERY, mirror1_dtor );
+
+    QUERY->add_mfun(QUERY, mirror1_getMode, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror1_setMode, "void", "mode");
+    QUERY->add_arg(QUERY, "int", "newmode");
 
     // for UGens only: add tick function
     // NOTE a non-UGen class should remove or comment out this next line
-    QUERY->add_ugen_func( QUERY, mirror_tick, NULL, 1, 1 );
+    QUERY->add_ugen_funcf(QUERY, mirror1_tickf, NULL, 4, 4);
     // NOTE: if this is to be a UGen with more than 1 channel,
     // e.g., a multichannel UGen -- will need to use add_ugen_funcf()
     // and declare a tickf function using CK_DLL_TICKF
-
-    // example of adding setter method
-    QUERY->add_mfun( QUERY, mirror_setParam, "float", "param" );
-    // example of adding argument to the above method
-    QUERY->add_arg( QUERY, "float", "arg" );
-
-    // example of adding getter method
-    QUERY->add_mfun( QUERY, mirror_getParam, "float", "param" );
-    
+    // 
     // this reserves a variable in the ChucK internal class to store 
     // referene to the c++ class we defined above
-    mirror_data_offset = QUERY->add_mvar( QUERY, "int", "@m_data", false );
+    mirror1_data_offset = QUERY->add_mvar( QUERY, "int", "@m_data", false );
 
     // ------------------------------------------------------------------------
     // end the class definition
@@ -165,73 +157,367 @@ CK_DLL_QUERY( Mirror )
     // ------------------------------------------------------------------------
     QUERY->end_class( QUERY );
 
+    // 2nd order
+    QUERY->begin_class(QUERY, "Mirror2", "UGen");
+    QUERY->add_ctor(QUERY, mirror2_ctor);
+    QUERY->add_ctor(QUERY, mirror2_octor);
+    QUERY->add_arg(QUERY, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror2_getMode, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror2_setMode, "void", "mode");
+    QUERY->add_arg(QUERY, "int", "newmode");
+    QUERY->add_dtor(QUERY, mirror2_dtor);
+    QUERY->add_ugen_funcf(QUERY, mirror2_tickf, NULL, 9, 9);
+    mirror2_data_offset = QUERY->add_mvar(QUERY, "int", "@m_data", false);
+    QUERY->end_class(QUERY);
+
+    // 3rd order
+    QUERY->begin_class(QUERY, "Mirror3", "UGen");
+    QUERY->add_ctor(QUERY, mirror3_ctor);
+    QUERY->add_ctor(QUERY, mirror3_octor);
+    QUERY->add_arg(QUERY, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror3_getMode, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror3_setMode, "void", "mode");
+    QUERY->add_arg(QUERY, "int", "newmode");
+    QUERY->add_dtor(QUERY, mirror3_dtor);
+    QUERY->add_ugen_funcf(QUERY, mirror3_tickf, NULL, 16, 16);
+    mirror3_data_offset = QUERY->add_mvar(QUERY, "int", "@m_data", false);
+    QUERY->end_class(QUERY);
+
+    // 4th order
+    QUERY->begin_class(QUERY, "Mirror4", "UGen");
+    QUERY->add_ctor(QUERY, mirror4_ctor);
+    QUERY->add_ctor(QUERY, mirror4_octor);
+    QUERY->add_arg(QUERY, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror4_getMode, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror4_setMode, "void", "mode");
+    QUERY->add_arg(QUERY, "int", "newmode");
+    QUERY->add_dtor(QUERY, mirror4_dtor);
+    QUERY->add_ugen_funcf(QUERY, mirror4_tickf, NULL, 25, 25);
+    mirror4_data_offset = QUERY->add_mvar(QUERY, "int", "@m_data", false);
+    QUERY->end_class(QUERY);
+
+    // 5th order
+    QUERY->begin_class(QUERY, "Mirror5", "UGen");
+    QUERY->add_ctor(QUERY, mirror5_ctor);
+    QUERY->add_ctor(QUERY, mirror5_octor);
+    QUERY->add_arg(QUERY, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror5_getMode, "int", "mode");
+    QUERY->add_mfun(QUERY, mirror5_setMode, "void", "mode");
+    QUERY->add_arg(QUERY, "int", "newmode");
+    QUERY->add_dtor(QUERY, mirror5_dtor);
+    QUERY->add_ugen_funcf(QUERY, mirror5_tickf, NULL, 36, 36);
+    mirror5_data_offset = QUERY->add_mvar(QUERY, "int", "@m_data", false);
+    QUERY->end_class(QUERY);
+
     // wasn't that a breeze?
     return TRUE;
 }
 
-
+//-----------------------------------------------------------------------------
+// dll functions: settings access functions for dlls
+// modify this function to define this chugin's API and language extensions
+//-----------------------------------------------------------------------------
 // implementation for the default constructor
-CK_DLL_CTOR( mirror_ctor )
+CK_DLL_CTOR( mirror1_ctor )
 {
     // get the offset where we'll store our internal c++ class pointer
-    OBJ_MEMBER_INT( SELF, mirror_data_offset ) = 0;
+    OBJ_MEMBER_INT( SELF, mirror1_data_offset ) = 0;
     
     // instantiate our internal c++ class representation
     Mirror * m_obj = new Mirror( API->vm->srate(VM) );
     
     // store the pointer in the ChucK object member
-    OBJ_MEMBER_INT( SELF, mirror_data_offset ) = (t_CKINT)m_obj;
+    OBJ_MEMBER_INT( SELF, mirror1_data_offset ) = (t_CKINT)m_obj;
 }
 
+CK_DLL_CTOR(mirror1_octor)
+{
+    // get the offset where we'll store our internal c++ class pointer
+    OBJ_MEMBER_INT(SELF, mirror1_data_offset) = 0;
+    t_CKINT input = GET_NEXT_INT(ARGS);
+    // instantiate our internal c++ class representation
+    Mirror* m_obj = new Mirror(API->vm->srate(VM), input);
+
+    // store the pointer in the ChucK object member
+    OBJ_MEMBER_INT(SELF, mirror1_data_offset) = (t_CKINT)m_obj;
+}
 
 // implementation for the destructor
-CK_DLL_DTOR( mirror_dtor )
+CK_DLL_DTOR( mirror1_dtor )
 {
     // get our c++ class pointer
-    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT( SELF, mirror_data_offset );
+    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT( SELF, mirror1_data_offset );
     // clean up (this macro tests for NULL, deletes, and zeros out the variable)
     CK_SAFE_DELETE( m_obj );
     // set the data field to 0
-    OBJ_MEMBER_INT( SELF, mirror_data_offset ) = 0;
+    OBJ_MEMBER_INT( SELF, mirror1_data_offset ) = 0;
 }
 
-
 // implementation for tick function (relevant only for UGens)
-CK_DLL_TICK( mirror_tick )
+CK_DLL_TICKF( mirror1_tickf )
 {
     // get our c++ class pointer
-    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT(SELF, mirror_data_offset);
- 
+    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT(SELF, mirror1_data_offset);
+    
+    int* weights = m_obj->getMirror();
+
     // invoke our tick function; store in the magical out variable
-    if( m_obj ) *out = m_obj->tick( in );
+    if (m_obj)
+    {
+        memset(out, 0, sizeof(SAMPLE) * 4 * nframes); // clear
+        for (int f = 0; f < nframes; f++)
+        {
+            for (int c = 0; c < 4; c++)
+            {
+                out[f * 4 + c] = in[f * 4 + c] * weights[c]; // search up weights and apply
+            }
+        }
+    }
 
     // yes
     return TRUE;
 }
 
-
 // example implementation for setter
-CK_DLL_MFUN( mirror_setParam )
+CK_DLL_MFUN( mirror1_setMode )
 {
     // get our c++ class pointer
-    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT( SELF, mirror_data_offset );
+    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT( SELF, mirror1_data_offset );
 
     // get next argument
     // NOTE argument type must match what is specified above in CK_DLL_QUERY
     // NOTE this advances the ARGS pointer, so save in variable for re-use
-    t_CKFLOAT arg1 = GET_NEXT_FLOAT( ARGS );
+    t_CKINT arg1 = GET_NEXT_INT( ARGS );
     
-    // call setParam() and set the return value
-    RETURN->v_float = m_obj->setParam( arg1 );
+    m_obj->mode( arg1 );
 }
 
-
-// example implementation for getter
-CK_DLL_MFUN(mirror_getParam)
+// example implementation for setter
+CK_DLL_MFUN(mirror1_getMode)
 {
     // get our c++ class pointer
-    Mirror * m_obj = (Mirror *)OBJ_MEMBER_INT( SELF, mirror_data_offset );
-
-    // call getParam() and set the return value
-    RETURN->v_float = m_obj->getParam();
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror1_data_offset);
+    if (m_obj) RETURN->v_int = m_obj->lastMode;
+    else RETURN->v_int = 0;
 }
+//==============================================================================
+CK_DLL_CTOR(mirror2_ctor)
+{
+    OBJ_MEMBER_INT(SELF, mirror2_data_offset) = 0;
+    Mirror* m_obj = new Mirror(API->vm->srate(VM));
+    OBJ_MEMBER_INT(SELF, mirror2_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_CTOR(mirror2_octor)
+{
+    OBJ_MEMBER_INT(SELF, mirror2_data_offset) = 0;
+    t_CKINT input = GET_NEXT_INT(ARGS); // grab init mode
+    Mirror* m_obj = new Mirror(API->vm->srate(VM), input);
+    OBJ_MEMBER_INT(SELF, mirror2_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_DTOR(mirror2_dtor)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror2_data_offset);
+    CK_SAFE_DELETE(m_obj);
+    OBJ_MEMBER_INT(SELF, mirror2_data_offset) = 0;
+}
+
+CK_DLL_TICKF(mirror2_tickf)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror2_data_offset);
+    if (m_obj)
+    {
+        memset(out, 0, sizeof(SAMPLE) * 9 * nframes); // clear
+        for (int f = 0; f < nframes; f++)
+        {
+            for (int c = 0; c < 9; c++)
+            {
+                out[f * 9 + c] = in[f * 9 + c] * m_obj->mirrorValues[c]; // search up weights and apply
+            }
+        }
+    }
+    return TRUE;
+}
+
+CK_DLL_MFUN(mirror2_setMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror2_data_offset);
+    t_CKINT arg1 = GET_NEXT_INT(ARGS);
+
+    m_obj->mode(arg1);
+}
+
+CK_DLL_MFUN(mirror2_getMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror2_data_offset);
+    if (m_obj) RETURN->v_int = m_obj->lastMode;
+    else RETURN->v_int = 0;
+}
+
+//==============================================================================
+CK_DLL_CTOR(mirror3_ctor)
+{
+    OBJ_MEMBER_INT(SELF, mirror3_data_offset) = 0;
+    Mirror* m_obj = new Mirror(API->vm->srate(VM));
+    OBJ_MEMBER_INT(SELF, mirror3_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_CTOR(mirror3_octor)
+{
+    OBJ_MEMBER_INT(SELF, mirror3_data_offset) = 0;
+    t_CKINT input = GET_NEXT_INT(ARGS); // grab init mode
+    Mirror* m_obj = new Mirror(API->vm->srate(VM), input);
+    OBJ_MEMBER_INT(SELF, mirror3_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_DTOR(mirror3_dtor)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror3_data_offset);
+    CK_SAFE_DELETE(m_obj);
+    OBJ_MEMBER_INT(SELF, mirror3_data_offset) = 0;
+}
+
+CK_DLL_TICKF(mirror3_tickf)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror3_data_offset);
+    if (m_obj)
+    {
+        memset(out, 0, sizeof(SAMPLE) * 16 * nframes); // clear
+        for (int f = 0; f < nframes; f++)
+        {
+            for (int c = 0; c < 16; c++)
+            {
+                out[f * 16 + c] = in[f * 16 + c] * m_obj->mirrorValues[c]; // search up weights and apply
+            }
+        }
+    }
+    return TRUE;
+}
+
+CK_DLL_MFUN(mirror3_setMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror3_data_offset);
+    t_CKINT arg1 = GET_NEXT_INT(ARGS);
+
+    m_obj->mode(arg1);
+}
+
+CK_DLL_MFUN(mirror3_getMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror3_data_offset);
+    if (m_obj) RETURN->v_int = m_obj->lastMode;
+    else RETURN->v_int = 0;
+}
+
+//==============================================================================
+CK_DLL_CTOR(mirror4_ctor)
+{
+    OBJ_MEMBER_INT(SELF, mirror4_data_offset) = 0;
+    Mirror* m_obj = new Mirror(API->vm->srate(VM));
+    OBJ_MEMBER_INT(SELF, mirror4_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_CTOR(mirror4_octor)
+{
+    OBJ_MEMBER_INT(SELF, mirror4_data_offset) = 0;
+    t_CKINT input = GET_NEXT_INT(ARGS); // grab init mode
+    Mirror* m_obj = new Mirror(API->vm->srate(VM), input);
+    OBJ_MEMBER_INT(SELF, mirror4_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_DTOR(mirror4_dtor)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror4_data_offset);
+    CK_SAFE_DELETE(m_obj);
+    OBJ_MEMBER_INT(SELF, mirror4_data_offset) = 0;
+}
+
+CK_DLL_TICKF(mirror4_tickf)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror4_data_offset);
+    if (m_obj)
+    {
+        memset(out, 0, sizeof(SAMPLE) * 25 * nframes); // clear
+        for (int f = 0; f < nframes; f++)
+        {
+            for (int c = 0; c < 25; c++)
+            {
+                out[f * 25 + c] = in[f * 25 + c] * m_obj->mirrorValues[c]; // search up weights and apply
+            }
+        }
+    }
+    return TRUE;
+}
+
+CK_DLL_MFUN(mirror4_setMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror4_data_offset);
+    t_CKINT arg1 = GET_NEXT_INT(ARGS);
+
+    m_obj->mode(arg1);
+}
+
+CK_DLL_MFUN(mirror4_getMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror4_data_offset);
+    if (m_obj) RETURN->v_int = m_obj->lastMode;
+    else RETURN->v_int = 0;
+}
+
+//==============================================================================
+CK_DLL_CTOR(mirror5_ctor)
+{
+    OBJ_MEMBER_INT(SELF, mirror5_data_offset) = 0;
+    Mirror* m_obj = new Mirror(API->vm->srate(VM));
+    OBJ_MEMBER_INT(SELF, mirror5_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_CTOR(mirror5_octor)
+{
+    OBJ_MEMBER_INT(SELF, mirror5_data_offset) = 0;
+    t_CKINT input = GET_NEXT_INT(ARGS); // grab init mode
+    Mirror* m_obj = new Mirror(API->vm->srate(VM), input);
+    OBJ_MEMBER_INT(SELF, mirror5_data_offset) = (t_CKINT)m_obj;
+}
+
+CK_DLL_DTOR(mirror5_dtor)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror5_data_offset);
+    CK_SAFE_DELETE(m_obj);
+    OBJ_MEMBER_INT(SELF, mirror5_data_offset) = 0;
+}
+
+CK_DLL_TICKF(mirror5_tickf)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror5_data_offset);
+    if (m_obj)
+    {
+        memset(out, 0, sizeof(SAMPLE) * 36 * nframes); // clear
+        for (int f = 0; f < nframes; f++)
+        {
+            for (int c = 0; c < 36; c++)
+            {
+                out[f * 36 + c] = in[f * 36 + c] * m_obj->mirrorValues[c]; // search up weights and apply
+            }
+        }
+    }
+    return TRUE;
+}
+
+CK_DLL_MFUN(mirror5_setMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror5_data_offset);
+    t_CKINT arg1 = GET_NEXT_INT(ARGS);
+
+    m_obj->mode(arg1);
+}
+
+CK_DLL_MFUN(mirror5_getMode)
+{
+    Mirror* m_obj = (Mirror*)OBJ_MEMBER_INT(SELF, mirror5_data_offset);
+    if (m_obj) RETURN->v_int = m_obj->lastMode;
+    else RETURN->v_int = 0;
+}
+
+//==============================================================================

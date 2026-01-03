@@ -9,7 +9,7 @@ class SADN : public Decoder<order_>
 public:
 	SADN()
 	{
-		efactor = efactor = 2.f * 3.14159265;
+		efactor = 2.f * 3.14159265;
 		efactor = sqrtf((efactor / (float)this->n_channels));
 	}
 	void tick(SAMPLE *in, SAMPLE *out, unsigned nframes) override
