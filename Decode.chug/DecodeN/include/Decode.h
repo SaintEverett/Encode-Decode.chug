@@ -23,6 +23,26 @@ public:
 			}
 		}
 	}
+
+	void CKsetSpeakSH(Chuck_Object* coord, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
+	{
+		Chuck_ArrayInt* column = (Chuck_ArrayInt*)coord;
+		if (API->object->array_int_size(column) >= n_channels)
+		{
+			for (t_CKINT i = 0; i < n_channels; i++)
+			{
+				Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
+				t_CKUINT size = API->object->array_float_size(row);
+				if (API->object->array_int_size(column) == size)
+				{
+					for (int j = 0; j < size; j++)
+					{
+						this->SpeakSH[i][j] = API->object->array_float_get_idx(row, j);
+					}
+				}
+			}
+		}
+	}
 };
 
 // this is actually what gets called and used by the chugin

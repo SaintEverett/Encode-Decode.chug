@@ -6,6 +6,7 @@
 
 #include <array>
 #include <limits>
+#include "math.h"
 
 constexpr unsigned int factorial(unsigned int n) // only using at compile time so i don't really care if this is slow
 {
