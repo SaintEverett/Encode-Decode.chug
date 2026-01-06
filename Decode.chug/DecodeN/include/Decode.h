@@ -2,6 +2,7 @@
 #define DECODEN_H
 
 #include "DecoderBase.h"
+#include <array>
 
 template <const unsigned order_>
 class Decode : public Decoder<order_> // seems redundant, but essentially takes all decoder commonalities, gives to this "Basic decoder" class with a sampling tick function
@@ -27,7 +28,7 @@ public:
 	void CKsetSpeakSH(Chuck_Object* coord, CK_DL_API API) // using a multi-dimensional chuck array of speaker angles, set the SHs of each speaker
 	{
 		Chuck_ArrayInt* column = (Chuck_ArrayInt*)coord;
-		if (API->object->array_int_size(column) >= n_channels)
+		if (API->object->array_int_size(column) >= this->n_channels)
 		{
 			for (t_CKINT i = 0; i < n_channels; i++)
 			{
