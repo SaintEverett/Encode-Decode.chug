@@ -30,7 +30,7 @@ public:
 		Chuck_ArrayInt* column = (Chuck_ArrayInt*)coord;
 		if (API->object->array_int_size(column) >= this->n_channels)
 		{
-			for (t_CKINT i = 0; i < n_channels; i++)
+			for (t_CKINT i = 0; i < this->n_channels; i++)
 			{
 				Chuck_ArrayFloat* row = (Chuck_ArrayFloat*)API->object->array_int_get_idx(column, i);
 				t_CKUINT size = API->object->array_float_size(row);
