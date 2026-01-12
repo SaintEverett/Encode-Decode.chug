@@ -11,12 +11,10 @@
 
 #include <cmath>
 
-#define dn 1.0e20f
-
 class LinkwitzRiley
 {
 public:
-	LinkwitzRiley() {};
+	LinkwitzRiley() { s_rate = 0; };
 	LinkwitzRiley(float fc, float fs)
 	{
 		s_rate = fs;

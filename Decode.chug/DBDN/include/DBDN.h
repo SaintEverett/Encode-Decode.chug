@@ -9,49 +9,53 @@ public:
 	{
 		// Initialize filters array using the base class n_channels
 		filters = new LinkwitzRiley[this->n_channels];
-		for (unsigned i = 0; i < this->n_channels; i++) 
+		for (int i = 0; i < this->n_channels; i++) 
 		{
 			filters[i] = LinkwitzRiley(700.f, fs);
 		}
-		highblock = new SAMPLE[this->n_channels];
-		lowblock = new SAMPLE[this->n_channels];
+		highend = new SAMPLE[this->n_channels];
+		lowend = new SAMPLE[this->n_channels];
 	}
 	~DBDN()
 	{
 		delete[] filters;
-		delete[] highblock;
-		delete[] lowblock;
+		filters = nullptr;
+		delete[] highend;
+		highend = nullptr;
+		delete[] lowend;
+		lowend = nullptr;
 	}
 
 	void tick(SAMPLE *in, SAMPLE *out, unsigned nframes)
 	{
 		memset(out, 0, sizeof(SAMPLE) * this->n_channels * nframes); // clear
-		for (int f = 0; f < nframes; f++)							 // go through each frame
+		memset(highend, 0, sizeof(SAMPLE) * this->n_channels * nframes); // store filtered blocks
+		memset(lowend, 0, sizeof(SAMPLE) * this->n_channels * nframes);
+		for (int f = 0; f < nframes; f++)
 		{
-			memset(highblock, 0, sizeof(SAMPLE) * this->n_channels * nframes);
-			memset(lowblock, 0, sizeof(SAMPLE) * this->n_channels * nframes);
-			for (int j = 0; j < this->n_channels; j++)
+			for (int c = 0; c < this->n_channels; c++) // filter the entire input buffer
 			{
-				highblock[j] = filters[j].htick(in[f * this->n_channels + j]);
-				lowblock[j] = filters[j].ltick(in[f * this->n_channels + j]);
+				highend[f * this->n_channels + c] = filters[c].htick(in[f * this->n_channels + c]);
+				lowend[f * this->n_channels + c] = filters[c].ltick(in[f * this->n_channels + c]);
 			}
-			for (int c = 0; c < this->n_channels; c++) // go through each output channel
+		}
+
+		for (int f = 0; f < nframes; f++)
+		{
+			for (int c = 0; c < this->n_channels; c++)
 			{
-				SAMPLE sum_high = 0.f;
-				SAMPLE sum_low = 0.f;
-				for (int n = 0; n < this->n_channels; n++) // sum over input channels
+				SAMPLE summation = 0.0;
+				for (int n = 0; n < this->n_channels; n++)
 				{
-					sum_high += highblock[n] * this->SpeakSH[c][n];
-					sum_low += lowblock[n] * this->SpeakSH[c][n];
+					// summation += ((0.86602540f * highend[f * this->n_channels + n]) + lowend[f * this->n_channels + n]) * SpeakSH[c][n]; // multiply the nth input signal by the cth speaker's nth spherical harmonic and summate them all
+					summation += ((0.86602540f * highend[f * this->n_channels + n]) + lowend[f * this->n_channels + n]) * SpeakSH[c][n];
 				}
-				// Combine with the 0.866 scaling factor for high frequencies
-				//out[f * this->n_channels + c] = this->channelBalance * ((0.86602540f * sum_high) + sum_low);
-				out[f * this->n_channels + c] = this->channelBalance * (0.86602540f * sum_high);
+				out[f * this->n_channels + c] = summation;
 			}
 		}
 	}
 private:
 	LinkwitzRiley* filters;
-	SAMPLE* highblock;
-	SAMPLE* lowblock;
+	SAMPLE* highend;
+	SAMPLE* lowend;
 };

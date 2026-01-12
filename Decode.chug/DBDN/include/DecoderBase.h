@@ -9,6 +9,8 @@
 #define DECODE_BASE_H
 
 #include "chugin.h"
+#include "chuckSH.h"
+#include <array>
 
 template<const unsigned order_>
 class Decoder
@@ -108,7 +110,7 @@ protected:
 	static constexpr unsigned order = order_; // order
 	static constexpr unsigned n_channels = (order + 1) * (order + 1); // how many channels
 	std::array<std::array<float, n_channels>, n_channels> SpeakSH{}; // spherical harmonics
-	std::array<float, n_channels> weights{1.f}; // weights
+	std::array<float, n_channels> weights{ 1.f }; // weights
 	static constexpr float channelBalance = (1.f / n_channels);
 };
 

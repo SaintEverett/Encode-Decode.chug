@@ -50,7 +50,7 @@ imp => enc => sad => blackhole;
 
 for(int i; i < sad.channels(); i++)
 {
-    SpeakFeed[i].wavFilename("SAD_TEST_SPEAKER_"+(i+1));
+    SpeakFeed[i].wavFilename("DBDN_TEST_SPEAKER_"+(i+1));
     sad.chan(i) => SpeakFeed[i] => blackhole;
     SpeakFeed[i].record(1);
     if(dac.channels() >= sad.channels())
