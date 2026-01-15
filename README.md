@@ -9,10 +9,13 @@ Currently functional:
       BFormatN // gain UGen for BFormat signals (multi channel gain factor)
       ABFormat // convert AFromat to BFormat
       BAFormat // convert BFormat to AFormat
+      MirrorN // mirroring of sound fields along axes
 
 Coming soon:
 
       DBDN // dual band ambisonic decoding
       MMADN // mode matching ambisonic decoding
+      RotateN // rotation of sound fields
+      WarpN // warping of sound fields
 
 All UGens are capable of up to 5th order ambisonics, but can be compiled to 12th order if desired.
