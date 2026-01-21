@@ -2,7 +2,7 @@
 // Encode OSC controller   
 //      example by : everett m. carpenter
 //
-// Uses radar style touchOSC controller where the magnitude of the circular coordinate vector is mapped so when 
+// Uses radar style touchOSC controller where the magnitude of the circular coordinate vector is mapped so that when 
 // it's fully extended, it is along the equator directly level with listener's ears. When at it's shortest, it
 // is 90 degrees above the listener's head. Angle between the vector and a unit vector pointing directly infront 
 // of the listener corresponds to the azimuth of the sound source.

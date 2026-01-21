@@ -12,4 +12,4 @@ for(int i; i < coeff.size(); i++)
     cherr <= IO.newline();
 }
 
-dec.set(coeff);
+dec.placement(coeff);

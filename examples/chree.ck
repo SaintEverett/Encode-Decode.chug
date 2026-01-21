@@ -15,7 +15,7 @@ for(int i; i < record.size(); i++)
 
 Encode2 trunkEnco;
 SAD2 deco;
-BFormat2 bSum(1.0);
+OrderGain2 bSum(1.0);
 SinOsc trunk;
 int branchCollection;
 
